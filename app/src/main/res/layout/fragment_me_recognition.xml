@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    android:id="@+id/me_recognition_background"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="250dp"
+    app:cardElevation="0dp"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="10sp"
+    app:cardBackgroundColor="@color/black"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/me_recognition_image"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:src="@drawable/gloaa"
+            android:scaleType="centerCrop">
+        </ImageView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:background="#75000000">
+        </View>
+
+        <TextView
+            android:id="@+id/me_recognition_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:maxLines="8"
+            android:ellipsize="end"
+            android:fontFamily="@font/openbold"
+            android:layout_gravity="bottom"
+            android:padding="15sp"
+            android:text="@string/about_content">
+        </TextView>
+    </FrameLayout>
+</androidx.cardview.widget.CardView>

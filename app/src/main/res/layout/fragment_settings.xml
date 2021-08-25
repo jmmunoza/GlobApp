@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_marginTop="30dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@string/settings"
+                android:fontFamily="@font/openbold"
+                android:padding="20dp"
+                android:textSize="30sp">
+
+            </TextView>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_baseline_notifications_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/opensemibold"
+                    android:text="@string/settings_notifications"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView4"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <RadioGroup
+                android:id="@+id/notifications_selection"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="60dp"
+                android:gravity="left"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:textSize="13sp"
+                    android:id="@+id/radio_masculino"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/opensemibold"
+                    android:checked="true"
+                    android:text="Masculino" />
+
+                <RadioButton
+                    android:textSize="13sp"
+                    android:fontFamily="@font/opensemibold"
+                    android:id="@+id/radio_femenino"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="Femenino" />
+            </RadioGroup>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <ImageView
+
+                    android:id="@+id/imageView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_baseline_language_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/opensemibold"
+                    android:text="@string/settings_language"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView5"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <RadioGroup
+                android:id="@+id/language_selection"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="60dp"
+                android:gravity="left"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:textSize="13sp"
+                    android:id="@+id/radio_english"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/opensemibold"
+                    android:text="@string/english" />
+
+                <RadioButton
+                    android:textSize="13sp"
+                    android:fontFamily="@font/opensemibold"
+                    android:id="@+id/radio_spanish"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/spanish" />
+            </RadioGroup>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <ImageView
+
+                    android:id="@+id/imageView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_baseline_dark_mode_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/opensemibold"
+                    android:text="@string/settings_dark_mode"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView6"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <RadioGroup
+                android:id="@+id/dark_mode_selection"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="60dp"
+                android:gravity="left"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:textSize="13sp"
+                    android:id="@+id/radio_dark_mode_enabled"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/opensemibold"
+                    android:text="@string/enabled" />
+
+                <RadioButton
+                    android:textSize="13sp"
+                    android:fontFamily="@font/opensemibold"
+                    android:id="@+id/radio_dark_mode_disabled"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/disabled" />
+            </RadioGroup>
+
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_baseline_info_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_about"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/opensemibold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView3"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:textSize="12sp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/opensemibold"
+                android:text="@string/about_content"
+                android:layout_marginLeft="60dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </TextView>
+
+
+                <LinearLayout
+                    android:layout_gravity="center"
+                    android:padding="20dp"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                    <ImageButton
+                        android:id="@+id/settings_logout_button"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="60dp"
+                        android:background="@drawable/rounded_image_button"
+                        android:src="@drawable/ic_baseline_logout_24"
+                        android:adjustViewBounds="true">
+                    </ImageButton>
+
+                    <TextView
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:text="@string/settings_logout"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/opensemibold"
+                        android:padding="5dp"
+                        android:layout_height="wrap_content">
+                    </TextView>
+                </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

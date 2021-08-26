@@ -29,4 +29,6 @@
     <string name="recognitions">Recognitions</string>
     <string name="user_activity">User activity</string>
     <string name="give_star">Give star!</string>
+    <string name="reaction">reaction</string>
+    <string name="reactions">reactions</string>
 </resources>

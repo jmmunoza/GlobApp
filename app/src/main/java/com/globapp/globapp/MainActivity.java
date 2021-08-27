@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     public Boolean isDarkMode;
     public Boolean isEnglish;
 
-    // Temporal
+    // Temporal data
     public Me me;
     public ArrayList<User> users;
     public ArrayList<News> news;

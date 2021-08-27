@@ -2,18 +2,26 @@ package com.globapp.globapp.classes;
 
 public class News {
 
-    private String newsID;
-    private String newsContent;
-    private int    newsImage;
-    private int    newsUserImage;
-    private String newsUserName;
+    private String  newsID;
+    private String  newsContent;
+    private int     newsImage;
+    private User    newsUserOwner;
+    private boolean newsIsRecognition;
 
-    public News(String newsID, String newsContent, int newsImage, String newsUserName, int newsUserImage){
-        this.newsID        = newsID;
-        this.newsContent   = newsContent;
-        this.newsImage     = newsImage;
-        this.newsUserImage = newsUserImage;
-        this.newsUserName  = newsUserName;
+    public News(String newsID, String newsContent, int newsImage, User newsUserOwner){
+        this.newsID            = newsID;
+        this.newsContent       = newsContent;
+        this.newsImage         = newsImage;
+        this.newsUserOwner     = newsUserOwner;
+        this.newsIsRecognition = false;
+    }
+
+    public boolean isNewsIsRecognition() {
+        return newsIsRecognition;
+    }
+
+    public void setNewsIsRecognition(boolean newsIsRecognition) {
+        this.newsIsRecognition = newsIsRecognition;
     }
 
     public int getNewsImage() {
@@ -28,11 +36,7 @@ public class News {
         return newsID;
     }
 
-    public int getNewsUserImage() {
-        return newsUserImage;
-    }
-
-    public String getNewsUserName() {
-        return newsUserName;
+    public User getNewsUserOwner() {
+        return newsUserOwner;
     }
 }

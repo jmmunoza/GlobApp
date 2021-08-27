@@ -25,10 +25,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 import com.globapp.globapp.classes.News;
+import com.globapp.globapp.classes.NewsRecognition;
 import com.globapp.globapp.fragmentmain.fragmentuser.FragmentUser;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHolder> {
 
@@ -54,12 +57,84 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull NewsListAdapter.ViewHolder holder, int position) {
         News news = newsList.get(position);
-        holder.newsUsername.setText(news.getNewsUserName());
+        holder.newsUsername.setText(news.getNewsUserOwner().getMeName());
         holder.newsPostContent.setText(news.getNewsContent());
 
-        switch (news.getNewsUserImage()){
+        if(newsList.get(position) instanceof NewsRecognition){
+            holder.newsRecognitionUserNameCongratulated.setText(((NewsRecognition)newsList.get(position)).getNewsUserRecognized().getMeName());
+            switch (((NewsRecognition) newsList.get(position)).getNewsUserRecognized().getMeImage()){
+                case 1:
+                    holder.newsRecognitionSecondUserImage.setImageResource(R.drawable.meimage1);
+                    break;
+                case 2:
+                    holder.newsRecognitionSecondUserImage.setImageResource(R.drawable.user2);
+                    break;
+                case 3:
+                    holder.newsRecognitionSecondUserImage.setImageResource(R.drawable.user3);
+                    break;
+                case 4:
+                    holder.newsRecognitionSecondUserImage.setImageResource(R.drawable.user4);
+                    break;
+                case 5:
+                    holder.newsRecognitionSecondUserImage.setImageResource(R.drawable.user5);
+                    break;
+                case 6:
+                    holder.newsRecognitionSecondUserImage.setImageResource(R.drawable.user6);
+                    break;
+                case 7:
+                    holder.newsRecognitionSecondUserImage.setImageResource(R.drawable.user7);
+                    break;
+            }
+
+            switch (((NewsRecognition) newsList.get(position)).getNewsUserOwner().getMeImage()){
+                case 1:
+                    holder.newsRecognitionFirstUserImage.setImageResource(R.drawable.meimage1);
+                    break;
+                case 2:
+                    holder.newsRecognitionFirstUserImage.setImageResource(R.drawable.user2);
+                    break;
+                case 3:
+                    holder.newsRecognitionFirstUserImage.setImageResource(R.drawable.user3);
+                    break;
+                case 4:
+                    holder.newsRecognitionFirstUserImage.setImageResource(R.drawable.user4);
+                    break;
+                case 5:
+                    holder.newsRecognitionFirstUserImage.setImageResource(R.drawable.user5);
+                    break;
+                case 6:
+                    holder.newsRecognitionFirstUserImage.setImageResource(R.drawable.user6);
+                    break;
+                case 7:
+                    holder.newsRecognitionFirstUserImage.setImageResource(R.drawable.user7);
+                    break;
+            }
+        } else {
+            holder.newsRecognitionLayout.setVisibility(View.GONE);
+        }
+
+
+        switch (news.getNewsUserOwner().getMeImage()){
             case 1:
                 holder.newsUserImage.setImageResource(R.drawable.meimage1);
+                break;
+            case 2:
+                holder.newsUserImage.setImageResource(R.drawable.user2);
+                break;
+            case 3:
+                holder.newsUserImage.setImageResource(R.drawable.user3);
+                break;
+            case 4:
+                holder.newsUserImage.setImageResource(R.drawable.user4);
+                break;
+            case 5:
+                holder.newsUserImage.setImageResource(R.drawable.user5);
+                break;
+            case 6:
+                holder.newsUserImage.setImageResource(R.drawable.user6);
+                break;
+            case 7:
+                holder.newsUserImage.setImageResource(R.drawable.user7);
                 break;
         }
 
@@ -72,6 +147,27 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                 break;
             case 3:
                 holder.newsPostImage.setImageResource(R.drawable.meactivity3);
+                break;
+            case 6:
+                holder.newsPostImage.setImageResource(R.drawable.news6);
+                break;
+            case 7:
+                holder.newsPostImage.setImageResource(R.drawable.news7);
+                break;
+            case 8:
+                holder.newsPostImage.setImageResource(R.drawable.news8);
+                break;
+            case 9:
+                holder.newsPostImage.setImageResource(R.drawable.news9);
+                break;
+            case 10:
+                holder.newsPostImage.setImageResource(R.drawable.news10);
+                break;
+            case 11:
+                holder.newsPostImage.setImageResource(R.drawable.news11);
+                break;
+            case 12:
+                holder.newsPostImage.setImageResource(R.drawable.news12);
                 break;
         }
     }
@@ -144,17 +240,25 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         TextView newsPostContent;
         ConstraintLayout newsReactionButton;
         ConstraintLayout newsCommentButton;
+        ConstraintLayout newsRecognitionLayout;
+        ImageView newsRecognitionFirstUserImage;
+        ImageView newsRecognitionSecondUserImage;
+        TextView newsRecognitionUserNameCongratulated;
 
         @SuppressLint("ClickableViewAccessibility")
         ViewHolder(View itemView) {
             super(itemView);
 
-            newsUsername       = (TextView)         itemView.findViewById(R.id.news_item_username);
-            newsPostContent    = (TextView)         itemView.findViewById(R.id.news_item_post_content);
-            newsUserImage      = (ImageView)        itemView.findViewById(R.id.news_item_user_image);
-            newsPostImage      = (ImageView)        itemView.findViewById(R.id.news_item_post_image);
-            newsReactionButton = (ConstraintLayout) itemView.findViewById(R.id.news_item_reaction_button);
-            newsCommentButton  = (ConstraintLayout) itemView.findViewById(R.id.news_item_comment_button);
+            newsUsername                         = (TextView)         itemView.findViewById(R.id.news_item_username);
+            newsPostContent                      = (TextView)         itemView.findViewById(R.id.news_item_post_content);
+            newsUserImage                        = (ImageView)        itemView.findViewById(R.id.news_item_user_image);
+            newsPostImage                        = (ImageView)        itemView.findViewById(R.id.news_item_post_image);
+            newsReactionButton                   = (ConstraintLayout) itemView.findViewById(R.id.news_item_reaction_button);
+            newsCommentButton                    = (ConstraintLayout) itemView.findViewById(R.id.news_item_comment_button);
+            newsRecognitionLayout                = (ConstraintLayout) itemView.findViewById(R.id.news_item_recognition_layout);
+            newsRecognitionFirstUserImage        = (CircleImageView)  itemView.findViewById(R.id.news_item_recognition_first_user_image);
+            newsRecognitionSecondUserImage       = (CircleImageView)  itemView.findViewById(R.id.news_item_recognition_second_user_image);
+            newsRecognitionUserNameCongratulated = (TextView)         itemView.findViewById(R.id.news_item_recognition_user_name_congratulated);
 
             GestureDetector gestureDetector = new GestureDetector(itemView.getContext(), new MainActivity.SingleTapConfirm());
 
@@ -163,7 +267,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                 public boolean onTouch(View v, MotionEvent event) {
                     if(gestureDetector.onTouchEvent(event)) {
                         newsUserImage.setAlpha((float) 1);
-                        ((MainActivity)context).addFragment(new FragmentUser());
+                        ((MainActivity)context).addFragment(new FragmentUser(newsList.get(getAdapterPosition()).getNewsUserOwner()));
                     } else if(event.getAction() == MotionEvent.ACTION_DOWN){
                         newsUserImage.setAlpha((float) 0.5);
                     } else if (event.getAction() == MotionEvent.ACTION_UP){

@@ -39,8 +39,8 @@ public class FragmentUser extends Fragment {
     ImageView       userCoverImage;
     ImageView       userImage;
 
-    public FragmentUser(){
-
+    public FragmentUser(User user){
+        this.user = user;
     }
 
     @Nullable
@@ -69,36 +69,54 @@ public class FragmentUser extends Fragment {
         userActivityList = getView().findViewById(R.id.user_activity);
         recognitionPager = getView().findViewById(R.id.user_recognitions);
 
-        // Temporal ----------------------
-        ArrayList<String> recognitions = new ArrayList<>();
-        recognitions.add("NOTIFICATION");
-        recognitions.add("NOTIFICATION");
-        recognitions.add("NOTIFICATION");
-        recognitions.add("NOTIFICATION");
-        recognitions.add("NOTIFICATION");
-        recognitions.add("NOTIFICATION");
-        recognitions.add("NOTIFICATION");
-        recognitions.add("NOTIFICATION");
-        recognitions.add("NOTIFICATION");
-        recognitions.add("NOTIFICATION");
-        // -------------------------------------
+        userName.setText(user.getMeName());
+        userDescription.setText(user.getMeDescription());
 
+        switch (user.getMeImage()){
+            case 1:
+                userImage.setImageResource(R.drawable.meimage1);
+                break;
+            case 2:
+                userImage.setImageResource(R.drawable.user2);
+                break;
+            case 3:
+                userImage.setImageResource(R.drawable.user3);
+                break;
+            case 4:
+                userImage.setImageResource(R.drawable.user4);
+                break;
+            case 5:
+                userImage.setImageResource(R.drawable.user5);
+                break;
+            case 6:
+                userImage.setImageResource(R.drawable.user6);
+                break;
+            case 7:
+                userImage.setImageResource(R.drawable.user7);
+                break;
+            case 8:
+                userImage.setImageResource(R.drawable.user8);
+                break;
+        }
 
+        switch (user.getMeCoverImage()){
+            case 1:
+                userCoverImage.setImageResource(R.drawable.mecoverimage1);
+        }
 
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.VERTICAL,
                 false);
-        userActivityListAdapter = new NewsListAdapter(getContext(), ((MainActivity)getContext()).me.getMeNews());
+        userActivityListAdapter = new NewsListAdapter(getContext(), user.getMeNews());
         userActivityList.setLayoutManager(verticalLayoutManager);
         userActivityList.setAdapter(userActivityListAdapter);
-
 
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.HORIZONTAL,
                 false);
-        recognitionPagerAdapter = new MePagerAdapter(getContext(), ((MainActivity)getContext()).me.getMeRecognitions());
+        recognitionPagerAdapter = new MePagerAdapter(getContext(), user.getMeRecognitions());
 
         RecyclerView.OnItemTouchListener listener = new RecyclerView.OnItemTouchListener() {
             @Override

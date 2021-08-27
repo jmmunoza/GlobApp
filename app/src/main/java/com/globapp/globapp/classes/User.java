@@ -23,6 +23,25 @@ public class User {
         this.meRecognitions = meRecognitions;
     }
 
+    public User(String meID, String meName, String meDescription,  int meImage, int meCoverImage){
+
+        this.meID           = meID;
+        this.meName         = meName;
+        this.meDescription  = meDescription;
+        this.meImage        = meImage;
+        this.meCoverImage   = meCoverImage;
+        this.meNews         = new ArrayList<>();
+        this.meRecognitions = new ArrayList<>();
+    }
+
+    public void addMeRecognitions(Recognition recognition){
+        meRecognitions.add(recognition);
+    }
+
+    public void addMeNews(News news){
+        meNews.add(news);
+    }
+
     public String getMeID() {
         return meID;
     }

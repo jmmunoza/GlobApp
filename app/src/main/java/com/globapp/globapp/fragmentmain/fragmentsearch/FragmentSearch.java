@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.Nullable;
+
+import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 
 import java.util.concurrent.TimeUnit;
@@ -16,7 +18,11 @@ public class FragmentSearch extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         postponeEnterTransition(1, TimeUnit.MILLISECONDS);
-        return inflater.inflate(R.layout.fragment_search, null);
+        if(((MainActivity)getContext()).isDarkMode){
+            return inflater.inflate(R.layout.fragment_search_dark, null);
+        } else {
+            return inflater.inflate(R.layout.fragment_search, null);
+        }
     }
 
     @Override

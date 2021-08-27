@@ -17,6 +17,14 @@ public class Me extends User {
         this.meStars        = meStars;
     }
 
+    public Me(String meID, String meName, String meDescription, int meCredits,
+              int meStars, int meImage,   int meCoverImage){
+
+        super(meID, meName, meDescription, meImage, meCoverImage);
+        this.meCredits      = meCredits;
+        this.meStars        = meStars;
+    }
+
     public int getMeCredits() {
         return meCredits;
     }

@@ -4,25 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSnapHelper;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.WindowManager;
 
 import com.globapp.globapp.classes.Me;
 import com.globapp.globapp.classes.News;
+import com.globapp.globapp.classes.NewsRecognition;
 import com.globapp.globapp.classes.Recognition;
+import com.globapp.globapp.classes.User;
 import com.globapp.globapp.fragmentlogin.FragmentLogin;
 import com.globapp.globapp.fragmentmain.FragmentMain;
-import com.globapp.globapp.fragmentmain.fragmentnews.NewsListAdapter;
-import com.globapp.globapp.fragmentmain.fragmentnews.NewsPagerAdapter;
-
 import java.nio.channels.NonReadableChannelException;
 import java.util.ArrayList;
 
@@ -35,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     // Temporal
     public Me me;
+    public ArrayList<User> users;
+    public ArrayList<News> news;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,29 +74,36 @@ public class MainActivity extends AppCompatActivity {
 
     // Mientras hacemos la base de datos jajja
     private void createData(){
-        Recognition meRecognition1 = new Recognition("Mejor empleado de la temporada 2020-2021", 1);
-        Recognition meRecognition2 = new Recognition("Empleado más participativo de la semana 27", 2);
-        Recognition meRecognition3 = new Recognition("Mayor tiempo dedicado al proyecto 'EX-APP'", 3);
-        Recognition meRecognition4 = new Recognition("Participación destacada en la ultima investigacion del DANE", 4);
-        Recognition meRecognition5 = new Recognition("Reciclador del mes Agosto", 5);
-
-        ArrayList<Recognition> meRecognitions = new ArrayList<>();
-        meRecognitions.add(meRecognition1);
-        meRecognitions.add(meRecognition2);
-        meRecognitions.add(meRecognition3);
-        meRecognitions.add(meRecognition4);
-        meRecognitions.add(meRecognition5);
-
-        News meActivity1 = new News("0", "Ha dado un reconocimiento a Javier Ibarra. '¡Excelente trabajo allá en Ibiza! Muy bien manejada esa conferencia'.", 1, "Sebastian Samuel Castro Martínez", 1);
-        News meActivity2 = new News("1", "Ha dado un reconocimiento a Samuel Vanegas. 'Bienvenido a la empresa compañero, que la pases muy bien'.", 2, "Sebastian Samuel Castro Martínez", 1);
-        News meActivity3 = new News("2", "Ha dado un reconocimiento a Samantha Ruedas. 'Gran experiencia la llevada contigo en el evento de la FECODE!!!'.", 3, "Sebastian Samuel Castro Martínez", 1);
-        ArrayList<News> meActivities = new ArrayList<>();
-        meActivities.add(meActivity1);
-        meActivities.add(meActivity2);
-        meActivities.add(meActivity3);
+        users = new ArrayList<>();
+        users.add(new User("1", "Samanta de Jesús Echeverri", "Dirigente encargada del Departamento de Manufactura", 2, 2));
+        users.add(new User("2", "José Hernesto Pérez", "Dirigente encargado del Departamento de Tecnología y Software", 3, 3));
+        users.add(new User("3", "Cristiano Ronaldo", "Máximo ponente en Relaciones Internacionales", 4, 4));
+        users.add(new User("4", "Julián Arboleda Bermudez", "Alto mando de la Unidad de Control de Finanzas", 5, 5));
+        users.add(new User("5", "José Castro Peláez", "Director Ejecutivo del Departamento de Logistica", 6, 6));
+        users.add(new User("6", "Leonel Álvares Arias", "Dirigente personal del aseo", 7, 7));
 
         me = new Me("0", "Sebastian Samuel Castro Martínez",
                 "Encargado de la división de Sistemas Técnicos de la sede de Ayacucho",
-                12, 215, 1, 1, meActivities, meRecognitions);
+                22, 215, 1, 1);
+
+        me.addMeRecognitions(new Recognition("Mejor empleado de la temporada 2020-2021", 1));
+        me.addMeRecognitions(new Recognition("Empleado más participativo de la semana 27", 2));
+        me.addMeRecognitions(new Recognition("Mayor tiempo dedicado al proyecto 'EX-APP'", 3));
+        me.addMeRecognitions(new Recognition("Participación destacada en la ultima investigacion del DANE", 4));
+        me.addMeRecognitions(new Recognition("Reciclador del mes Agosto", 5));
+
+        me.addMeNews(new NewsRecognition("0", "¡Excelente trabajo allá en Ibiza! Muy bien manejada esa conferencia.", 1, me, users.get(0)));
+        me.addMeNews(new NewsRecognition("1", "Bienvenido a la empresa compañero, que la pases muy bien.", 2, me, users.get(1)));
+        me.addMeNews(new NewsRecognition("2", "Gran experiencia la llevada contigo en el evento de la FECODE!!!", 3, me, users.get(2)));
+
+        news = new ArrayList<>();
+        news.add(new NewsRecognition("0", "Excelente trabajo allá en Cartagena! Muy bien manejada esa conferencia.", 6, users.get(1), me));
+        news.add(new NewsRecognition("0", "Dios te bendiga y muchos exitos.", 7, users.get(2), me));
+        news.add(new News("0", "Amo trabajar acá :).", 8, users.get(3)));
+        news.add(new News("0", "Espero nunca salir de acá.", 9, users.get(1)));
+        news.add(new NewsRecognition("0", "Merecido el reconocimiento mi hermano, muy buen desepeño", 10, me, users.get(5)));
+        news.add(new NewsRecognition("0", "Nos fuimos a Italia gracias a tu entrega!!!", 11, me, users.get(4)));
+        news.add(new News("0", "Mañana la empresa se expandirá a Italia gente", 12, users.get(2)));
+
     }
 }

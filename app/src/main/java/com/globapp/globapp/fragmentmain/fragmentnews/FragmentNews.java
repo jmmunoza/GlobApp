@@ -62,7 +62,7 @@ public class FragmentNews extends Fragment {
                 getContext(),
                 LinearLayoutManager.VERTICAL,
                 false);
-        newsListAdapter = new NewsListAdapter(getContext(), ((MainActivity)getContext()).me.getMeNews());
+        newsListAdapter = new NewsListAdapter(getContext(), ((MainActivity)getContext()).news);
         newsList.setLayoutManager(verticalLayoutManager);
         newsList.setAdapter(newsListAdapter);
 

@@ -11,4 +11,8 @@
     <color name="dark">#1B1515</color>
     <color name="dark_item">#1D1F22</color>
     <color name="gray_bg">#E9ECED</color>
+    <!--<color name="globant_main_color">#c0d731</color>-->
+    <!--<color name="dark">#1B1515</color>-->
+    <!--<color name="dark_item">#1D1F22</color>-->
+    <!--<color name="gray_bg">#E9ECED</color>-->
 </resources>

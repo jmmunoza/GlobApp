@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.globapp.globapp.MainActivity;
@@ -74,32 +75,10 @@ public class FragmentNews extends Fragment {
                 LinearLayoutManager.HORIZONTAL,
                 false);
         newsPagerAdapter = new NewsPagerAdapter(getContext(), news);
-        RecyclerView.OnItemTouchListener listener = new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-                int action = e.getAction();
-                if (newsPager.canScrollHorizontally(RecyclerView.FOCUS_FORWARD)) {
-                    switch (action){
-                        case MotionEvent.ACTION_MOVE:
-                            rv.getParent().requestDisallowInterceptTouchEvent(true);
-                    }
-                    return false;
-                } else {
-                    switch (action){
-                        case MotionEvent.ACTION_MOVE:
-                            rv.getParent().requestDisallowInterceptTouchEvent(false);
-                    }
-                    newsPager.removeOnItemTouchListener(this);
-                    return true;
-                }
-            }
-            @Override
-            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {}
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {}
-        };
         newsPager.setLayoutManager(horizontalLayoutManager);
         newsPager.setAdapter(newsPagerAdapter);
-        newsPager.addOnItemTouchListener(listener);
+
+        PagerSnapHelper linearSnapHelper = new PagerSnapHelper();
+        linearSnapHelper.attachToRecyclerView(newsPager);
     }
 }

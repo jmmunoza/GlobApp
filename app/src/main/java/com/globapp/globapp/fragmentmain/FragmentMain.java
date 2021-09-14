@@ -110,6 +110,7 @@ public class FragmentMain extends Fragment {
 
         mainViewPager = getView().findViewById(R.id.main_view_pager);
         mainViewPager.setAdapter(viewPagerAdapter);
+        mainViewPager.setUserInputEnabled(false);
         mainViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {

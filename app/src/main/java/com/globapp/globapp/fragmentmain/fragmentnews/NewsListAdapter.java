@@ -61,7 +61,8 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         holder.newsPostContent.setText(news.getNewsContent());
 
         if(newsList.get(position) instanceof NewsRecognition){
-            holder.newsRecognitionUserNameCongratulated.setText(((NewsRecognition)newsList.get(position)).getNewsUserRecognized().getMeName());
+            holder.newsPostLayout.setVisibility(View.GONE);
+            //holder.newsRecognitionUserNameCongratulated.setText(((NewsRecognition)newsList.get(position)).getNewsUserRecognized().getMeName());
             switch (((NewsRecognition) newsList.get(position)).getNewsUserRecognized().getMeImage()){
                 case 1:
                     holder.newsRecognitionSecondUserImage.setImageResource(R.drawable.meimage1);
@@ -238,12 +239,12 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         ImageView newsUserImage;
         ImageView newsPostImage;
         TextView newsPostContent;
-        ConstraintLayout newsReactionButton;
-        ConstraintLayout newsCommentButton;
+        ImageButton newsLikeButton;
+        ImageButton newsCommentButton;
+        ConstraintLayout newsPostLayout;
         ConstraintLayout newsRecognitionLayout;
         ImageView newsRecognitionFirstUserImage;
         ImageView newsRecognitionSecondUserImage;
-        TextView newsRecognitionUserNameCongratulated;
 
         @SuppressLint("ClickableViewAccessibility")
         ViewHolder(View itemView) {
@@ -253,12 +254,12 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
             newsPostContent                      = (TextView)         itemView.findViewById(R.id.news_item_post_content);
             newsUserImage                        = (ImageView)        itemView.findViewById(R.id.news_item_user_image);
             newsPostImage                        = (ImageView)        itemView.findViewById(R.id.news_item_post_image);
-            newsReactionButton                   = (ConstraintLayout) itemView.findViewById(R.id.news_item_reaction_button);
-            newsCommentButton                    = (ConstraintLayout) itemView.findViewById(R.id.news_item_comment_button);
+            newsLikeButton                       = (ImageButton)      itemView.findViewById(R.id.news_item_like_button);
+            newsCommentButton                    = (ImageButton)      itemView.findViewById(R.id.news_item_comment_button);
             newsRecognitionLayout                = (ConstraintLayout) itemView.findViewById(R.id.news_item_recognition_layout);
             newsRecognitionFirstUserImage        = (CircleImageView)  itemView.findViewById(R.id.news_item_recognition_first_user_image);
             newsRecognitionSecondUserImage       = (CircleImageView)  itemView.findViewById(R.id.news_item_recognition_second_user_image);
-            newsRecognitionUserNameCongratulated = (TextView)         itemView.findViewById(R.id.news_item_recognition_user_name_congratulated);
+            newsPostLayout                       = (ConstraintLayout) itemView.findViewById(R.id.news_item_post_layout);
 
             GestureDetector gestureDetector = new GestureDetector(itemView.getContext(), new MainActivity.SingleTapConfirm());
 
@@ -297,19 +298,19 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                 }
             });
 
-            newsReactionButton.setOnTouchListener(new View.OnTouchListener() {
+            newsLikeButton.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if(gestureDetector.onTouchEvent(event)) {
-                        newsReactionButton.setAlpha((float) 1);
+                        newsLikeButton.setAlpha((float) 1);
                         ReactionsDialog reactionsDialog = new ReactionsDialog();
                         reactionsDialog.show();
                     } else if(event.getAction() == MotionEvent.ACTION_DOWN){
-                        newsReactionButton.setAlpha((float) 0.5);
+                        newsLikeButton.setAlpha((float) 0.5);
                     } else if (event.getAction() == MotionEvent.ACTION_UP){
-                        newsReactionButton.setAlpha((float) 1);
+                        newsLikeButton.setAlpha((float) 1);
                     } else if (event.getAction() == MotionEvent.ACTION_CANCEL){
-                        newsReactionButton.setAlpha((float) 1);
+                        newsLikeButton.setAlpha((float) 1);
                     }
                     return true;
                 }

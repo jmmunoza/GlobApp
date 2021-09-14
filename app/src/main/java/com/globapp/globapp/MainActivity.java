@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import androidx.fragment.app.FragmentTransaction;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -15,10 +17,15 @@ import com.globapp.globapp.classes.Recognition;
 import com.globapp.globapp.classes.User;
 import com.globapp.globapp.fragmentlogin.FragmentLogin;
 import com.globapp.globapp.fragmentmain.FragmentMain;
+
+import java.lang.reflect.Type;
 import java.nio.channels.NonReadableChannelException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String DATA      = "DATA";
+    public static final String DARK_MODE = "DARK_MODE";
+
     public FragmentMain fragmentMain;
     public FragmentLogin fragmentLogin;
 
@@ -36,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         createData();
-        isDarkMode    = false;
+        loadData();
         isEnglish     = true;
         fragmentLogin = new FragmentLogin();
         fragmentMain  = new FragmentMain();
@@ -52,6 +59,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getSupportFragmentManager().popBackStackImmediate();
         }
+    }
+
+    private void loadData(){
+        SharedPreferences sharedPreferences = getSharedPreferences(DATA, MODE_PRIVATE);
+        isDarkMode = sharedPreferences.getBoolean(DARK_MODE, false);
     }
 
     public void addFragment(Fragment fragment){

@@ -9,10 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 import com.globapp.globapp.classes.Recognition;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class MePagerAdapter extends RecyclerView.Adapter<MePagerAdapter.ViewHolder> {
 
@@ -28,7 +31,11 @@ public class MePagerAdapter extends RecyclerView.Adapter<MePagerAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(inflater.inflate(R.layout.fragment_me_recognition, parent, false));
+        if(((MainActivity)context).isDarkMode){
+            return new ViewHolder(inflater.inflate(R.layout.fragment_me_recognition_dark, null));
+        } else {
+            return new ViewHolder(inflater.inflate(R.layout.fragment_me_recognition, null));
+        }
     }
 
     @Override

@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,8 @@ import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 import com.globapp.globapp.fragmentmain.FragmentMain;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class FragmentSettings extends Fragment {
@@ -47,6 +51,7 @@ public class FragmentSettings extends Fragment {
         logoutButton  = ((MainActivity)getContext()).findViewById(R.id.settings_logout_button);
         // Radio language settings
         radioLanguage = ((MainActivity)getContext()).findViewById(R.id.language_selection);
+
         if(((MainActivity)getContext()).isEnglish){
             radioLanguage.check(R.id.radio_english);
         } else {
@@ -70,7 +75,9 @@ public class FragmentSettings extends Fragment {
 
         // Radio dark mode settings
         radioDarkMode = ((MainActivity)getContext()).findViewById(R.id.dark_mode_selection);
-        if(((MainActivity)getContext()).isDarkMode){
+        SharedPreferences sharedPreferences = ((MainActivity)getContext()).getSharedPreferences(MainActivity.DATA, Context.MODE_PRIVATE);
+
+        if(sharedPreferences.getBoolean(MainActivity.DARK_MODE, false)){
             radioDarkMode.check(R.id.radio_dark_mode_enabled);
         } else {
             radioDarkMode.check(R.id.radio_dark_mode_disabled);
@@ -80,23 +87,19 @@ public class FragmentSettings extends Fragment {
         {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                SharedPreferences sharedPreferences = ((MainActivity)getContext()).getSharedPreferences(MainActivity.DATA, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
                 switch (checkedId){
                     case R.id.radio_dark_mode_disabled:
-                        ((MainActivity)getContext()).isDarkMode = false;
+                        editor.putBoolean(MainActivity.DARK_MODE, false);
                         break;
                     case R.id.radio_dark_mode_enabled:
-                        ((MainActivity)getContext()).isDarkMode = true;
+                        editor.putBoolean(MainActivity.DARK_MODE, true);
                 }
 
-                int fragmentsCount = ((MainActivity)getContext()).getSupportFragmentManager().getBackStackEntryCount();
-
-                while (fragmentsCount != 0){
-                    ((MainActivity)getContext()).getSupportFragmentManager().popBackStack();
-                    fragmentsCount--;
-                }
-
-                ((MainActivity)getContext()).addFragment(new FragmentMain());
-                ((MainActivity)getContext()).addFragment(FragmentSettings.this);
+                editor.apply();
+                editor.commit();
             }
         });
     }

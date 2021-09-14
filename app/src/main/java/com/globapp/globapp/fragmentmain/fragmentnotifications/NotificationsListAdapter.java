@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.globapp.globapp.MainActivity;
@@ -52,14 +53,14 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView notificationText;
         ImageView notificationUserImage;
-        CardView notificationBackground;
+        ConstraintLayout notificationBackground;
 
         ViewHolder(View itemView) {
             super(itemView);
 
             notificationText       = (TextView) itemView.findViewById(R.id.notification_item_text);
             notificationUserImage  = (ImageView) itemView.findViewById(R.id.notification_item_user_image);
-            notificationBackground = (CardView) itemView.findViewById(R.id.notification_item_background);
+            notificationBackground = (ConstraintLayout) itemView.findViewById(R.id.notification_item_background);
 
             GestureDetector gestureDetector = new GestureDetector(itemView.getContext(), new MainActivity.SingleTapConfirm());
 

@@ -34,7 +34,7 @@
         android:maxLines="8"
         android:padding="15sp"
         android:text="@string/about_content"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

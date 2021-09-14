@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -97,41 +98,9 @@ public class FragmentMe extends Fragment {
         userActivityListAdapter = new NewsListAdapter(getContext(), me.getMeNews());
         userActivityList.setLayoutManager(verticalLayoutManager);
         userActivityList.setAdapter(userActivityListAdapter);
-
-
-        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(
-                getContext(),
-                LinearLayoutManager.HORIZONTAL,
-                false);
+        
         recognitionPagerAdapter = new MePagerAdapter(getContext(), me.getMeRecognitions());
-
-        RecyclerView.OnItemTouchListener listener = new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-                int action = e.getAction();
-                if (recognitionPager.canScrollHorizontally(RecyclerView.FOCUS_FORWARD)) {
-                    switch (action){
-                        case MotionEvent.ACTION_MOVE:
-                            rv.getParent().requestDisallowInterceptTouchEvent(true);
-                    }
-                    return false;
-                } else {
-                    switch (action){
-                        case MotionEvent.ACTION_MOVE:
-                            rv.getParent().requestDisallowInterceptTouchEvent(false);
-                    }
-                    recognitionPager.removeOnItemTouchListener(this);
-                    return true;
-                }
-            }
-            @Override
-            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {}
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {}
-        };
-
-        recognitionPager.setLayoutManager(horizontalLayoutManager);
+        recognitionPager.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recognitionPager.setAdapter(recognitionPagerAdapter);
-        recognitionPager.addOnItemTouchListener(listener);
     }
 }

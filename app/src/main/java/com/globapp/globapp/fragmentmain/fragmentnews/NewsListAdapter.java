@@ -185,7 +185,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
 
         public CommentDialog() {
             LayoutInflater inflater = LayoutInflater.from(context);
-
             if(((MainActivity)context).isDarkMode){
                 view = inflater.inflate(R.layout.fragment_news_item_comment_dark, null, false);
             } else {

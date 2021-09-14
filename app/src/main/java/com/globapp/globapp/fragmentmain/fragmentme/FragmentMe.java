@@ -35,8 +35,6 @@ public class FragmentMe extends Fragment {
     // UI Components
     RecyclerView    recognitionPager;
     MePagerAdapter  recognitionPagerAdapter;
-    RecyclerView    userActivityList;
-    NewsListAdapter userActivityListAdapter;
     ImageView       meCoverImage;
     CircleImageView meImage;
     TextView        meName;
@@ -72,7 +70,6 @@ public class FragmentMe extends Fragment {
         meStars          = getView().findViewById(R.id.me_user_stars);
         meCoverImage     = getView().findViewById(R.id.me_cover_image);
         meImage          = getView().findViewById(R.id.me_user_image);
-        userActivityList = getView().findViewById(R.id.me_user_activity);
         recognitionPager = getView().findViewById(R.id.me_user_recognitions);
 
         meName.setText(me.getMeName());
@@ -90,14 +87,6 @@ public class FragmentMe extends Fragment {
             case 1:
                 meCoverImage.setImageResource(R.drawable.mecoverimage1);
         }
-
-        LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(
-                getContext(),
-                LinearLayoutManager.VERTICAL,
-                false);
-        userActivityListAdapter = new NewsListAdapter(getContext(), me.getMeNews());
-        userActivityList.setLayoutManager(verticalLayoutManager);
-        userActivityList.setAdapter(userActivityListAdapter);
         
         recognitionPagerAdapter = new MePagerAdapter(getContext(), me.getMeRecognitions());
         recognitionPager.setLayoutManager(new GridLayoutManager(getContext(), 2));

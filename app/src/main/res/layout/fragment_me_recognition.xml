@@ -12,6 +12,8 @@
         android:layout_margin="5dp"
         app:cardBackgroundColor="@color/black"
         app:cardCornerRadius="10sp"
+        android:clickable="true"
+        android:foreground="?android:selectableItemBackground"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -13,6 +13,8 @@
         app:cardBackgroundColor="@color/black"
         app:cardCornerRadius="10sp"
         app:cardElevation="0dp"
+        android:clickable="true"
+        android:foreground="?android:selectableItemBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

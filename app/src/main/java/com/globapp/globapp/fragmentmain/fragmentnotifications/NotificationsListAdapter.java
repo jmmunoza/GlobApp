@@ -62,21 +62,10 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
             notificationUserImage  = (ImageView) itemView.findViewById(R.id.notification_item_user_image);
             notificationBackground = (ConstraintLayout) itemView.findViewById(R.id.notification_item_background);
 
-            GestureDetector gestureDetector = new GestureDetector(itemView.getContext(), new MainActivity.SingleTapConfirm());
-
-            itemView.setOnTouchListener(new View.OnTouchListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if(gestureDetector.onTouchEvent(event)) {
-                        notificationBackground.setAlpha((float) 1);
-                    } else if(event.getAction() == MotionEvent.ACTION_DOWN){
-                        notificationBackground.setAlpha((float) 0.5);
-                    } else if (event.getAction() == MotionEvent.ACTION_UP){
-                        notificationBackground.setAlpha((float) 1);
-                    } else if (event.getAction() == MotionEvent.ACTION_CANCEL){
-                        notificationBackground.setAlpha((float) 1);
-                    }
-                    return true;
+                public void onClick(View v) {
+
                 }
             });
         }

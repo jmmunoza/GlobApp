@@ -21,6 +21,8 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/news_item_user_image"
             android:layout_width="35dp"
+            android:clickable="true"
+            android:foreground="?android:selectableItemBackground"
             android:layout_height="35dp"
             android:scaleType="centerCrop"
             android:src="@drawable/user"
@@ -41,7 +43,7 @@
                 android:id="@+id/news_item_username"
                 android:layout_width="match_parent"
                 android:ellipsize="end"
-                android:maxLines="1"
+                android:maxLines="3"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/robotomedium"
                 android:text="@string/username"
@@ -68,76 +70,38 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/news_item_recognition_layout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/news_item_post_layout">
 
+
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/news_item_recognition_first_user_image"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:id="@+id/news_item_recognition_user_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:padding="20dp"
+            android:clickable="true"
+            android:foreground="?android:selectableItemBackground"
             android:scaleType="centerCrop"
             android:src="@drawable/user"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/gifImageView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/news_item_recognition_second_user_image"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/gifImageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/user"
+            android:src="@drawable/star_animated_1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+
             app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/imageView9"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:src="@drawable/ic_baseline_congratulation"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/news_item_recognition_second_user_image"
-            app:layout_constraintStart_toEndOf="@+id/news_item_recognition_first_user_image"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/news_item_username1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:fontFamily="@font/robotomedium"
-            android:maxLines="1"
-            android:text="@string/username"
-            android:textColor="@color/black"
-            android:textSize="13sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imageView9"
-            app:layout_constraintStart_toEndOf="@+id/news_item_recognition_first_user_image"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </TextView>
-
-        <TextView
-            android:id="@+id/news_item_username5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:fontFamily="@font/robotomedium"
-            android:maxLines="1"
-            android:text="@string/username"
-            android:textColor="@color/black"
-            android:textSize="13sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/news_item_recognition_second_user_image"
-            app:layout_constraintStart_toEndOf="@+id/imageView9"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </TextView>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

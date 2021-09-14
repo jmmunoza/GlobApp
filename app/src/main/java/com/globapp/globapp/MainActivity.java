@@ -67,11 +67,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addFragment(Fragment fragment){
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment, fragment)
-                .setReorderingAllowed(true)
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_in_up,
+                        R.anim.slide_out_down,
+                        R.anim.slide_in_down,
+                        R.anim.slide_out_up)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .replace(R.id.fragment, fragment)
                 .addToBackStack(null)
                 .commit();
     }

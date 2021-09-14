@@ -216,26 +216,14 @@
             </TextView>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:splitMotionEvents="false"
                 android:id="@+id/me_user_recognitions"
                 android:layout_width="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="?android:actionBarSize"
                 android:layout_height="wrap_content">
             </androidx.recyclerview.widget.RecyclerView>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/openbold"
-                android:padding="20dp"
-                android:text="@string/user_activity"
-                android:textColor="@color/black"
-                android:textSize="30sp">
-            </TextView>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/me_user_activity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </androidx.recyclerview.widget.RecyclerView>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

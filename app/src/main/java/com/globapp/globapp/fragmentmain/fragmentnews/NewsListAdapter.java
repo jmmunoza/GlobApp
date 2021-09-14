@@ -57,63 +57,38 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull NewsListAdapter.ViewHolder holder, int position) {
         News news = newsList.get(position);
-        holder.newsUsername.setText(news.getNewsUserOwner().getMeName());
         holder.newsPostContent.setText(news.getNewsContent());
 
         if(newsList.get(position) instanceof NewsRecognition){
-            holder.newsPostLayout.setVisibility(View.GONE);
-            //holder.newsRecognitionUserNameCongratulated.setText(((NewsRecognition)newsList.get(position)).getNewsUserRecognized().getMeName());
+            //holder.newsPostLayout.setVisibility(View.GONE);
+            holder.newsUsername.setText(news.getNewsUserOwner().getMeName() + " congratulated " + ((NewsRecognition)newsList.get(position)).getNewsUserRecognized().getMeName());
             switch (((NewsRecognition) newsList.get(position)).getNewsUserRecognized().getMeImage()){
                 case 1:
-                    holder.newsRecognitionSecondUserImage.setImageResource(R.drawable.meimage1);
+                    holder.newsRecognitionUserImage.setImageResource(R.drawable.meimage1);
                     break;
                 case 2:
-                    holder.newsRecognitionSecondUserImage.setImageResource(R.drawable.user2);
+                    holder.newsRecognitionUserImage.setImageResource(R.drawable.user2);
                     break;
                 case 3:
-                    holder.newsRecognitionSecondUserImage.setImageResource(R.drawable.user3);
+                    holder.newsRecognitionUserImage.setImageResource(R.drawable.user3);
                     break;
                 case 4:
-                    holder.newsRecognitionSecondUserImage.setImageResource(R.drawable.user4);
+                    holder.newsRecognitionUserImage.setImageResource(R.drawable.user4);
                     break;
                 case 5:
-                    holder.newsRecognitionSecondUserImage.setImageResource(R.drawable.user5);
+                    holder.newsRecognitionUserImage.setImageResource(R.drawable.user5);
                     break;
                 case 6:
-                    holder.newsRecognitionSecondUserImage.setImageResource(R.drawable.user6);
+                    holder.newsRecognitionUserImage.setImageResource(R.drawable.user6);
                     break;
                 case 7:
-                    holder.newsRecognitionSecondUserImage.setImageResource(R.drawable.user7);
-                    break;
-            }
-
-            switch (((NewsRecognition) newsList.get(position)).getNewsUserOwner().getMeImage()){
-                case 1:
-                    holder.newsRecognitionFirstUserImage.setImageResource(R.drawable.meimage1);
-                    break;
-                case 2:
-                    holder.newsRecognitionFirstUserImage.setImageResource(R.drawable.user2);
-                    break;
-                case 3:
-                    holder.newsRecognitionFirstUserImage.setImageResource(R.drawable.user3);
-                    break;
-                case 4:
-                    holder.newsRecognitionFirstUserImage.setImageResource(R.drawable.user4);
-                    break;
-                case 5:
-                    holder.newsRecognitionFirstUserImage.setImageResource(R.drawable.user5);
-                    break;
-                case 6:
-                    holder.newsRecognitionFirstUserImage.setImageResource(R.drawable.user6);
-                    break;
-                case 7:
-                    holder.newsRecognitionFirstUserImage.setImageResource(R.drawable.user7);
+                    holder.newsRecognitionUserImage.setImageResource(R.drawable.user7);
                     break;
             }
         } else {
             holder.newsRecognitionLayout.setVisibility(View.GONE);
+            holder.newsUsername.setText(news.getNewsUserOwner().getMeName());
         }
-
 
         switch (news.getNewsUserOwner().getMeImage()){
             case 1:
@@ -242,8 +217,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         ImageButton newsCommentButton;
         ConstraintLayout newsPostLayout;
         ConstraintLayout newsRecognitionLayout;
-        ImageView newsRecognitionFirstUserImage;
-        ImageView newsRecognitionSecondUserImage;
+        ImageView newsRecognitionUserImage;
 
         @SuppressLint("ClickableViewAccessibility")
         ViewHolder(View itemView) {
@@ -256,26 +230,24 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
             newsLikeButton                       = (ImageButton)      itemView.findViewById(R.id.news_item_like_button);
             newsCommentButton                    = (ImageButton)      itemView.findViewById(R.id.news_item_comment_button);
             newsRecognitionLayout                = (ConstraintLayout) itemView.findViewById(R.id.news_item_recognition_layout);
-            newsRecognitionFirstUserImage        = (CircleImageView)  itemView.findViewById(R.id.news_item_recognition_first_user_image);
-            newsRecognitionSecondUserImage       = (CircleImageView)  itemView.findViewById(R.id.news_item_recognition_second_user_image);
+            newsRecognitionUserImage             = (CircleImageView)  itemView.findViewById(R.id.news_item_recognition_user_image);
             newsPostLayout                       = (ConstraintLayout) itemView.findViewById(R.id.news_item_post_layout);
 
             GestureDetector gestureDetector = new GestureDetector(itemView.getContext(), new MainActivity.SingleTapConfirm());
 
-            newsUserImage.setOnTouchListener(new View.OnTouchListener() {
+            newsUserImage.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if(gestureDetector.onTouchEvent(event)) {
-                        newsUserImage.setAlpha((float) 1);
-                        ((MainActivity)context).addFragment(new FragmentUser(newsList.get(getAdapterPosition()).getNewsUserOwner()));
-                    } else if(event.getAction() == MotionEvent.ACTION_DOWN){
-                        newsUserImage.setAlpha((float) 0.5);
-                    } else if (event.getAction() == MotionEvent.ACTION_UP){
-                        newsUserImage.setAlpha((float) 1);
-                    } else if (event.getAction() == MotionEvent.ACTION_CANCEL){
-                        newsUserImage.setAlpha((float) 1);
-                    }
-                    return true;
+                public void onClick(View v) {
+                    ((MainActivity)context).addFragment(
+                            new FragmentUser(newsList.get(getAdapterPosition()).getNewsUserOwner()));
+                }
+            });
+
+            newsRecognitionUserImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((MainActivity)context).addFragment(
+                            new FragmentUser(((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized()));
                 }
             });
 

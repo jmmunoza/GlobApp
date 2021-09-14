@@ -10,8 +10,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
         android:layout_marginTop="30dp"
+        android:layout_height="?actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -86,27 +86,31 @@
         android:id="@+id/main_view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/view2"
+        app:layout_constraintBottom_toBottomOf="@+id/bottom_navigation_bar"
         app:layout_constraintTop_toBottomOf="@+id/view" />
 
+
     <View
-        android:id="@+id/view2"
+        android:id="@+id/view4"
         android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/globant_main_color"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation_bar"
+        android:layout_height="150dp"
+        android:background="@drawable/bottom_shadow"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
     </View>
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_bar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         app:labelVisibilityMode="unlabeled"
-        app:itemBackground="@color/dark"
-        app:itemIconSize="35dp"
+        android:background="#00000000"
+        app:elevation="0dp"
+        android:theme="@style/NavigationTheme"
+        app:itemIconSize="30dp"
         app:itemIconTint="@drawable/ic_menu_item_style_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

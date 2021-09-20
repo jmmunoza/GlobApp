@@ -1,6 +1,8 @@
 package com.globapp.globapp.fragmentmain.fragmentuser;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,9 +34,7 @@ public class FragmentUser extends Fragment {
     // UI Components
     RecyclerView    recognitionPager;
     MePagerAdapter  recognitionPagerAdapter;
-    RecyclerView    userActivityList;
-    NewsListAdapter userActivityListAdapter;
-    ImageButton     userStarButton;
+    ConstraintLayout userStarButton;
     TextView        userName;
     TextView        userDescription;
     ImageView       userCoverImage;
@@ -66,7 +67,6 @@ public class FragmentUser extends Fragment {
         userDescription  = getView().findViewById(R.id.user_description);
         userCoverImage   = getView().findViewById(R.id.user_cover_image);
         userImage        = getView().findViewById(R.id.user_image);
-        userActivityList = getView().findViewById(R.id.user_activity);
         recognitionPager = getView().findViewById(R.id.user_recognitions);
 
         userName.setText(user.getMeName());
@@ -104,18 +104,7 @@ public class FragmentUser extends Fragment {
                 userCoverImage.setImageResource(R.drawable.mecoverimage1);
         }
 
-        LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(
-                getContext(),
-                LinearLayoutManager.VERTICAL,
-                false);
-        userActivityListAdapter = new NewsListAdapter(getContext(), user.getMeNews());
-        userActivityList.setLayoutManager(verticalLayoutManager);
-        userActivityList.setAdapter(userActivityListAdapter);
 
-        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(
-                getContext(),
-                LinearLayoutManager.HORIZONTAL,
-                false);
         recognitionPagerAdapter = new MePagerAdapter(getContext(), user.getMeRecognitions());
 
         RecyclerView.OnItemTouchListener listener = new RecyclerView.OnItemTouchListener() {
@@ -143,7 +132,7 @@ public class FragmentUser extends Fragment {
             public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {}
         };
 
-        recognitionPager.setLayoutManager(horizontalLayoutManager);
+        recognitionPager.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recognitionPager.setAdapter(recognitionPagerAdapter);
         recognitionPager.addOnItemTouchListener(listener);
     }

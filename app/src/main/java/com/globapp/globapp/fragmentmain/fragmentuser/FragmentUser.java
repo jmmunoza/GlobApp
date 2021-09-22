@@ -32,13 +32,13 @@ public class FragmentUser extends Fragment {
     User user;
 
     // UI Components
-    RecyclerView    recognitionPager;
-    MePagerAdapter  recognitionPagerAdapter;
+    RecyclerView     recognitionPager;
+    MePagerAdapter   recognitionPagerAdapter;
     ConstraintLayout userStarButton;
-    TextView        userName;
-    TextView        userDescription;
-    ImageView       userCoverImage;
-    ImageView       userImage;
+    TextView         userName;
+    TextView         userDescription;
+    ImageView        userCoverImage;
+    ImageView        userImage;
 
     public FragmentUser(User user){
         this.user = user;
@@ -71,6 +71,12 @@ public class FragmentUser extends Fragment {
 
         userName.setText(user.getMeName());
         userDescription.setText(user.getMeDescription());
+        userStarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getContext()).addFragment(new FragmentGiveStar(user));
+            }
+        });
 
         switch (user.getMeImage()){
             case 1:
@@ -106,34 +112,7 @@ public class FragmentUser extends Fragment {
 
 
         recognitionPagerAdapter = new MePagerAdapter(getContext(), user.getMeRecognitions());
-
-        RecyclerView.OnItemTouchListener listener = new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-                int action = e.getAction();
-                if (recognitionPager.canScrollHorizontally(RecyclerView.FOCUS_FORWARD)) {
-                    switch (action){
-                        case MotionEvent.ACTION_MOVE:
-                            rv.getParent().requestDisallowInterceptTouchEvent(true);
-                    }
-                    return false;
-                } else {
-                    switch (action){
-                        case MotionEvent.ACTION_MOVE:
-                            rv.getParent().requestDisallowInterceptTouchEvent(false);
-                    }
-                    recognitionPager.removeOnItemTouchListener(this);
-                    return true;
-                }
-            }
-            @Override
-            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {}
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {}
-        };
-
         recognitionPager.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recognitionPager.setAdapter(recognitionPagerAdapter);
-        recognitionPager.addOnItemTouchListener(listener);
     }
 }

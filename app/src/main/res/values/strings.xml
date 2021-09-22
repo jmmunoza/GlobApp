@@ -32,4 +32,11 @@
     <string name="reaction">reaction</string>
     <string name="reactions">reactions</string>
     <string name="search_somenone">Search someone</string>
+    <string name="post">Post</string>
+    <string name="cancel">Cancel</string>
+    <string name="type_to">Type something to</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="you_havent_picked_image">You haven´t picked Image</string>
+    <string name="minimum_length_text">Minimum text length is 20 characters</string>
+    <string name="maximum_length_text">Maximum text length is 500 characters</string>
 </resources>

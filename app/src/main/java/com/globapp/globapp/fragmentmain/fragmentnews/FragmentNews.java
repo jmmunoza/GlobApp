@@ -11,18 +11,21 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 public class FragmentNews extends Fragment {
-    RecyclerView newsList;
-    NewsListAdapter newsListAdapter;
-    RecyclerView newsPager;
-    NewsPagerAdapter newsPagerAdapter;
+    public RecyclerView newsList;
+    public NewsListAdapter newsListAdapter;
+    public RecyclerView newsPager;
+    public NewsPagerAdapter newsPagerAdapter;
+    public SwipeRefreshLayout newsRefresh;
 
     @Nullable
     @Override
@@ -42,6 +45,20 @@ public class FragmentNews extends Fragment {
     }
 
     private void loadComponents(){
+
+        newsRefresh = getView().findViewById(R.id.news_refresh);
+        newsRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                ((MainActivity)getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        newsListAdapter.notifyDataSetChanged();
+                        newsRefresh.setRefreshing(false);
+                    }
+                });
+            }
+        });
 
         // Temporal ----------------------
         ArrayList<String> news = new ArrayList<>();
@@ -63,6 +80,7 @@ public class FragmentNews extends Fragment {
                 getContext(),
                 LinearLayoutManager.VERTICAL,
                 false);
+
         newsListAdapter = new NewsListAdapter(getContext(), ((MainActivity)getContext()).news);
         newsList.setLayoutManager(verticalLayoutManager);
         newsList.setAdapter(newsListAdapter);

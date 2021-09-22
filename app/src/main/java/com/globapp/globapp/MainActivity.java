@@ -17,17 +17,18 @@ import com.globapp.globapp.classes.Recognition;
 import com.globapp.globapp.classes.User;
 import com.globapp.globapp.fragmentlogin.FragmentLogin;
 import com.globapp.globapp.fragmentmain.FragmentMain;
-
-import java.lang.reflect.Type;
-import java.nio.channels.NonReadableChannelException;
 import java.util.ArrayList;
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 public class MainActivity extends AppCompatActivity {
     public static final String DATA      = "DATA";
     public static final String DARK_MODE = "DARK_MODE";
 
-    public FragmentMain fragmentMain;
+    public FragmentMain  fragmentMain;
     public FragmentLogin fragmentLogin;
+
+    public GifImageView animationContainer;
 
     public Boolean isDarkMode;
     public Boolean isEnglish;
@@ -44,10 +45,20 @@ public class MainActivity extends AppCompatActivity {
 
         createData();
         loadData();
-        isEnglish     = true;
-        fragmentLogin = new FragmentLogin();
-        fragmentMain  = new FragmentMain();
+        animationContainer = findViewById(R.id.animation_container);
+        isEnglish          = true;
+        fragmentLogin      = new FragmentLogin();
+        fragmentMain       = new FragmentMain();
         addFragment(fragmentLogin);
+    }
+
+    public void enableAnimation(int animationID){
+        animationContainer.setImageResource(animationID);
+        ((GifDrawable)animationContainer.getDrawable()).start();
+        ((GifDrawable)animationContainer.getDrawable()).addAnimationListener(i -> {
+            ((GifDrawable)animationContainer.getDrawable()).stop();
+            animationContainer.setImageBitmap(null);
+        });
     }
 
     @Override
@@ -87,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Mientras hacemos la base de datos jajja
     private void createData(){
         users = new ArrayList<>();
         users.add(new User("1", "Samanta de Jesús Echeverri", "Dirigente encargada del Departamento de Manufactura", 2, 2));

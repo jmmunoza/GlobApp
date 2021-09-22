@@ -1,18 +1,20 @@
 package com.globapp.globapp.classes;
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 
 public class News {
 
     private String  newsID;
     private String  newsContent;
-    private int     newsImage;
+    private Uri     newsImage;
     private int     newsLikes;
     private User    newsUserOwner;
     private boolean newsIsRecognition;
     private ArrayList<Comment> newsComments;
 
-    public News(String newsID, String newsContent, int newsImage, User newsUserOwner){
+    public News(String newsID, String newsContent, Uri newsImage, User newsUserOwner){
         this.newsID            = newsID;
         this.newsContent       = newsContent;
         this.newsImage         = newsImage;
@@ -50,7 +52,7 @@ public class News {
         this.newsIsRecognition = newsIsRecognition;
     }
 
-    public int getNewsImage() {
+    public Uri getNewsImage() {
         return newsImage;
     }
 

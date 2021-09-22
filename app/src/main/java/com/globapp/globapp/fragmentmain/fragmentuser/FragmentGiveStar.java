@@ -25,9 +25,12 @@ import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 import com.globapp.globapp.classes.NewsRecognition;
 import com.globapp.globapp.classes.User;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
 public class FragmentGiveStar extends Fragment {
@@ -39,6 +42,7 @@ public class FragmentGiveStar extends Fragment {
     CardView  postButton;
     CardView  addImageButton;
     ImageView imageAdded;
+    Uri       imageAddedURI;
     TextView  typeTo;
     EditText  postText;
 
@@ -59,20 +63,17 @@ public class FragmentGiveStar extends Fragment {
     }
 
     @Override
+    @SuppressLint("NewApi")
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == MainActivity.RESULT_OK && requestCode == 9998) {
-            try {
-                final Uri imageUri = data.getData();
-                final InputStream imageStream = ((MainActivity)getContext()).getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                imageAdded.setImageBitmap(selectedImage);
-            } catch (FileNotFoundException e) {
-                Toast.makeText(getContext(), getString(R.string.something_went_wrong), Toast.LENGTH_LONG).show();
-            }
-
-        }else {
+        if (resultCode == MainActivity.RESULT_OK && requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            imageAdded.setImageURI(result.getUri());
+            imageAddedURI = result.getUri();
+        } else if (resultCode == MainActivity.RESULT_OK && requestCode == 9998) {
+            CropImage.activity(data.getData()).start(getContext(), this);
+        } else {
             Toast.makeText(getContext(), getString(R.string.you_havent_picked_image),Toast.LENGTH_LONG).show();
         }
     }
@@ -91,6 +92,7 @@ public class FragmentGiveStar extends Fragment {
         imageAdded     = getView().findViewById(R.id.give_star_image);
         postText       = getView().findViewById(R.id.give_star_text);
         typeTo         = getView().findViewById(R.id.give_star_type_to);
+        imageAddedURI  = null;
 
         typeTo.setText(getString(R.string.type_to) + " " + user.getMeName() + "...");
 
@@ -110,7 +112,7 @@ public class FragmentGiveStar extends Fragment {
             int textLength = postText.getText().toString().length();
             if(textLength > 20 && textLength < 500){
                 ((MainActivity)getContext()).news.add(0,
-                        new NewsRecognition(postText.toString(), postText.getText().toString(), 6, ((MainActivity)getContext()).me, user)
+                        new NewsRecognition(postText.toString(), postText.getText().toString(), imageAddedURI, ((MainActivity)getContext()).me, user)
                 );
                 ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);

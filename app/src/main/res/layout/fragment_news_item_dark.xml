@@ -123,8 +123,7 @@
             android:layout_height="wrap_content"
             android:maxHeight="400dp"
             android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:src="@drawable/gloaa">
+            android:adjustViewBounds="true">
 
         </ImageView>
     </androidx.cardview.widget.CardView>
@@ -177,7 +176,7 @@
         </ImageButton>
 
         <TextView
-            android:id="@+id/textView10"
+            android:id="@+id/news_item_comment_counter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"

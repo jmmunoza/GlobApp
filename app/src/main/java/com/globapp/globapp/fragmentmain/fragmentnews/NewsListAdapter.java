@@ -29,6 +29,7 @@ import com.globapp.globapp.classes.Comment;
 import com.globapp.globapp.classes.Me;
 import com.globapp.globapp.classes.News;
 import com.globapp.globapp.classes.NewsRecognition;
+import com.globapp.globapp.fragmentmain.FragmentMain;
 import com.globapp.globapp.fragmentmain.fragmentme.FragmentMe;
 import com.globapp.globapp.fragmentmain.fragmentuser.FragmentUser;
 import com.google.android.material.textfield.TextInputEditText;
@@ -40,7 +41,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHolder> {
 
     private ArrayList<News> newsList;
-    private LayoutInflater inflater;
+    private LayoutInflater  inflater;
     Context context;
 
     public NewsListAdapter(Context context, ArrayList<News> newsList){
@@ -63,11 +64,12 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
     public void onBindViewHolder(@NonNull NewsListAdapter.ViewHolder holder, int position) {
         News news = newsList.get(position);
         holder.newsPostContent.setText(news.getNewsContent());
-        holder.newsLikeCounter.setText(String.valueOf(newsList.get(position).getNewsLikes()));
+        holder.newsLikeCounter.setText(String.valueOf(news.getNewsLikes()));
+        holder.newsCommentCounter.setText(String.valueOf(news.getNewsComments().size()));
+        holder.newsPostImage.setImageURI(news.getNewsImage());
 
         if(newsList.get(position) instanceof NewsRecognition){
             holder.newsRecognitionLayout.setVisibility(View.VISIBLE);
-            //holder.newsPostLayout.setVisibility(View.GONE);
             holder.newsUsername.setText(news.getNewsUserOwner().getMeName() + " congratulated " + ((NewsRecognition)newsList.get(position)).getNewsUserRecognized().getMeName());
             switch (((NewsRecognition) newsList.get(position)).getNewsUserRecognized().getMeImage()){
                 case 1:
@@ -120,39 +122,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                 holder.newsUserImage.setImageResource(R.drawable.user7);
                 break;
         }
-
-        switch (news.getNewsImage()){
-            case 1:
-                holder.newsPostImage.setImageResource(R.drawable.meactivity1);
-                break;
-            case 2:
-                holder.newsPostImage.setImageResource(R.drawable.meactivity2);
-                break;
-            case 3:
-                holder.newsPostImage.setImageResource(R.drawable.meactivity3);
-                break;
-            case 6:
-                holder.newsPostImage.setImageResource(R.drawable.news6);
-                break;
-            case 7:
-                holder.newsPostImage.setImageResource(R.drawable.news7);
-                break;
-            case 8:
-                holder.newsPostImage.setImageResource(R.drawable.news8);
-                break;
-            case 9:
-                holder.newsPostImage.setImageResource(R.drawable.news9);
-                break;
-            case 10:
-                holder.newsPostImage.setImageResource(R.drawable.news10);
-                break;
-            case 11:
-                holder.newsPostImage.setImageResource(R.drawable.news11);
-                break;
-            case 12:
-                holder.newsPostImage.setImageResource(R.drawable.news12);
-                break;
-        }
     }
 
     @Override
@@ -167,8 +136,9 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         private RecyclerView       commentList;
         private View               view;
         private News               commentNews;
+        private int                commentNewsPosition;
 
-        public CommentDialog(News commentNews) {
+        public CommentDialog(News commentNews, int commentNewsPosition) {
             LayoutInflater inflater = LayoutInflater.from(context);
             if(((MainActivity)context).isDarkMode){
                 view = inflater.inflate(R.layout.fragment_news_item_comment_dark, null, false);
@@ -176,10 +146,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                 view = inflater.inflate(R.layout.fragment_news_item_comment, null, false);
             }
 
-            this.commentNews  = commentNews;
-            commentInput      = view.findViewById(R.id.comment_input);
-            commentSendButton = view.findViewById(R.id.comment_send_button);
-            commentList       = view.findViewById(R.id.comment_list);
+            this.commentNews         = commentNews;
+            this.commentNewsPosition = commentNewsPosition;
+            commentInput             = view.findViewById(R.id.comment_input);
+            commentSendButton        = view.findViewById(R.id.comment_send_button);
+            commentList              = view.findViewById(R.id.comment_list);
 
             commentListAdapter = new CommentListAdapter(view.getContext(), commentNews.getNewsComments());
             commentList.setLayoutManager(new LinearLayoutManager(
@@ -192,10 +163,13 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                 @Override
                 public void onClick(View v) {
                     if(commentInput.getText().toString().length() > 0){
-                        System.out.println(commentNews.getNewsComments().size());
                         commentNews.addComment(new Comment("0", commentInput.getText().toString(), ((MainActivity)context).me));
                         commentInput.setText("");
+                        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(commentInput.getWindowToken(), 0);
                         commentListAdapter.notifyDataSetChanged();
+                        commentList.scrollToPosition(commentNews.getNewsComments().size()-1);
+                        (NewsListAdapter.this).notifyItemChanged(commentNewsPosition);
                     }
                 }
             });
@@ -288,22 +262,24 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         ConstraintLayout newsContainer;
         ImageView        newsRecognitionUserImage;
         TextView         newsLikeCounter;
+        TextView         newsCommentCounter;
 
         @SuppressLint("ClickableViewAccessibility")
         ViewHolder(View itemView) {
             super(itemView);
 
-            newsUsername                         = (TextView)         itemView.findViewById(R.id.news_item_username);
-            newsPostContent                      = (TextView)         itemView.findViewById(R.id.news_item_post_content);
-            newsUserImage                        = (ImageView)        itemView.findViewById(R.id.news_item_user_image);
-            newsPostImage                        = (ImageView)        itemView.findViewById(R.id.news_item_post_image);
-            newsLikeButton                       = (ImageButton)      itemView.findViewById(R.id.news_item_like_button);
-            newsCommentButton                    = (ImageButton)      itemView.findViewById(R.id.news_item_comment_button);
-            newsRecognitionLayout                = (ConstraintLayout) itemView.findViewById(R.id.news_item_recognition_layout);
-            newsRecognitionUserImage             = (CircleImageView)  itemView.findViewById(R.id.news_item_recognition_user_image);
-            newsPostLayout                       = (ConstraintLayout) itemView.findViewById(R.id.news_item_post_layout);
-            newsContainer                        = (ConstraintLayout) itemView.findViewById(R.id.news_item_container);
-            newsLikeCounter                      = (TextView)         itemView.findViewById(R.id.news_item_like_counter);
+            newsUsername             = (TextView)         itemView.findViewById(R.id.news_item_username);
+            newsPostContent          = (TextView)         itemView.findViewById(R.id.news_item_post_content);
+            newsUserImage            = (ImageView)        itemView.findViewById(R.id.news_item_user_image);
+            newsPostImage            = (ImageView)        itemView.findViewById(R.id.news_item_post_image);
+            newsLikeButton           = (ImageButton)      itemView.findViewById(R.id.news_item_like_button);
+            newsCommentButton        = (ImageButton)      itemView.findViewById(R.id.news_item_comment_button);
+            newsRecognitionLayout    = (ConstraintLayout) itemView.findViewById(R.id.news_item_recognition_layout);
+            newsRecognitionUserImage = (CircleImageView)  itemView.findViewById(R.id.news_item_recognition_user_image);
+            newsPostLayout           = (ConstraintLayout) itemView.findViewById(R.id.news_item_post_layout);
+            newsContainer            = (ConstraintLayout) itemView.findViewById(R.id.news_item_container);
+            newsLikeCounter          = (TextView)         itemView.findViewById(R.id.news_item_like_counter);
+            newsCommentCounter       = (TextView)         itemView.findViewById(R.id.news_item_comment_counter);
 
             GestureDetector gestureDetector = new GestureDetector(itemView.getContext(), new MainActivity.SingleTapConfirm());
 
@@ -329,13 +305,16 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                 @Override
                 public void onClick(View v) {
                     if(((MainActivity)context).me.equals(newsList.get(getAdapterPosition()).getNewsUserOwner())){
-                        ((MainActivity)context).addFragment(
-                                new FragmentMe((Me)newsList.get(getAdapterPosition()).getNewsUserOwner()));
+                        if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
+                            ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
+                        } else {
+                            ((MainActivity)context).addFragment(
+                                    new FragmentMe((Me)newsList.get(getAdapterPosition()).getNewsUserOwner()));
+                        }
                     } else {
                         ((MainActivity)context).addFragment(
                                 new FragmentUser(newsList.get(getAdapterPosition()).getNewsUserOwner()));
                     }
-
                 }
             });
 
@@ -343,8 +322,12 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                 @Override
                 public void onClick(View v) {
                     if(((MainActivity)context).me.equals(((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized())){
-                        ((MainActivity)context).addFragment(
-                                new FragmentMe((Me)((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized()));
+                        if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
+                            ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
+                        } else {
+                            ((MainActivity)context).addFragment(
+                                    new FragmentMe((Me)((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized()));
+                        }
                     } else {
                         ((MainActivity)context).addFragment(
                                 new FragmentUser(((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized()));
@@ -357,7 +340,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                 public boolean onTouch(View v, MotionEvent event) {
                     if(gestureDetector.onTouchEvent(event)) {
                         newsCommentButton.setAlpha((float) 1);
-                        CommentDialog commentDialog = new CommentDialog(newsList.get(getAdapterPosition()));
+                        CommentDialog commentDialog = new CommentDialog(newsList.get(getAdapterPosition()), getAdapterPosition());
                         commentDialog.show();
                     } else if(event.getAction() == MotionEvent.ACTION_DOWN){
                         newsCommentButton.setAlpha((float) 0.5);

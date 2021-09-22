@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         loadData();
         animationContainer = findViewById(R.id.animation_container);
         isEnglish          = true;
+
         fragmentLogin      = new FragmentLogin();
         fragmentMain       = new FragmentMain();
         addFragment(fragmentLogin);
@@ -117,18 +118,18 @@ public class MainActivity extends AppCompatActivity {
         me.addMeRecognitions(new Recognition("Participación destacada en la ultima investigacion del DANE", 4));
         me.addMeRecognitions(new Recognition("Reciclador del mes Agosto", 5));
 
-        me.addMeNews(new NewsRecognition("0", "¡Excelente trabajo allá en Ibiza! Muy bien manejada esa conferencia.", 1, me, users.get(0)));
-        me.addMeNews(new NewsRecognition("1", "Bienvenido a la empresa compañero, que la pases muy bien.", 2, me, users.get(1)));
-        me.addMeNews(new NewsRecognition("2", "Gran experiencia la llevada contigo en el evento de la FECODE!!!", 3, me, users.get(2)));
+        me.addMeNews(new NewsRecognition("0", "¡Excelente trabajo allá en Ibiza! Muy bien manejada esa conferencia.", null, me, users.get(0)));
+        me.addMeNews(new NewsRecognition("1", "Bienvenido a la empresa compañero, que la pases muy bien.", null, me, users.get(1)));
+        me.addMeNews(new NewsRecognition("2", "Gran experiencia la llevada contigo en el evento de la FECODE!!!", null, me, users.get(2)));
 
         news = new ArrayList<>();
-        news.add(new NewsRecognition("0", "Excelente trabajo allá en Cartagena! Muy bien manejada esa conferencia.", 6, users.get(1), me));
-        news.add(new NewsRecognition("0", "Dios te bendiga y muchos exitos.", 7, users.get(2), me));
-        news.add(new News("0", "Amo trabajar acá :).", 8, users.get(3)));
-        news.add(new News("0", "Espero nunca salir de acá.", 9, users.get(1)));
-        news.add(new NewsRecognition("0", "Merecido el reconocimiento mi hermano, muy buen desepeño", 10, me, users.get(5)));
-        news.add(new NewsRecognition("0", "Nos fuimos a Italia gracias a tu entrega!!!", 11, me, users.get(4)));
-        news.add(new News("0", "Mañana la empresa se expandirá a Italia gente", 12, users.get(2)));
+        news.add(new NewsRecognition("0", "Excelente trabajo allá en Cartagena! Muy bien manejada esa conferencia.", null, users.get(1), me));
+        news.add(new NewsRecognition("0", "Dios te bendiga y muchos exitos.", null, users.get(2), me));
+        news.add(new News("0", "Amo trabajar acá :).", null, users.get(3)));
+        news.add(new News("0", "Espero nunca salir de acá.", null, users.get(1)));
+        news.add(new NewsRecognition("0", "Merecido el reconocimiento mi hermano, muy buen desepeño", null, me, users.get(5)));
+        news.add(new NewsRecognition("0", "Nos fuimos a Italia gracias a tu entrega!!!", null, me, users.get(4)));
+        news.add(new News("0", "Mañana la empresa se expandirá a Italia gente", null, users.get(2)));
 
     }
 }

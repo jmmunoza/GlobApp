@@ -37,16 +37,16 @@ public class FragmentMain extends Fragment {
     private FragmentNotifications fragmentNotifications;
 
     // Consonants
-    private static final int NEWS = 0;
-    private static final int NOTIFICATIONS = 1;
-    private static final int ME = 2;
+    public static final int NEWS = 0;
+    public static final int NOTIFICATIONS = 1;
+    public static final int ME = 2;
 
     // Components
-    private ViewPager2           mainViewPager;
-    private ViewPagerAdapter     viewPagerAdapter;
-    private BottomNavigationView bottomNavigationView;
-    private ImageButton          search_button;
-    private ImageButton          settings_button;
+    public ViewPager2           mainViewPager;
+    public ViewPagerAdapter     viewPagerAdapter;
+    public BottomNavigationView bottomNavigationView;
+    public ImageButton          search_button;
+    public ImageButton          settings_button;
 
     @Nullable
     @Override
@@ -106,8 +106,8 @@ public class FragmentMain extends Fragment {
                 return true;
             }
         });
-        viewPagerAdapter = new ViewPagerAdapter((MainActivity)getContext());
 
+        viewPagerAdapter = new ViewPagerAdapter((MainActivity)getContext());
         mainViewPager = getView().findViewById(R.id.main_view_pager);
         mainViewPager.setAdapter(viewPagerAdapter);
         mainViewPager.setUserInputEnabled(false);

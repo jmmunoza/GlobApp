@@ -30,11 +30,11 @@ import java.util.concurrent.TimeUnit;
 
 public class FragmentMain extends Fragment {
     // Fragments
-    private FragmentMe            fragmentMe;
-    private FragmentNews          fragmentNews;
-    private FragmentSearch        fragmentSearch;
-    private FragmentSettings      fragmentSettings;
-    private FragmentNotifications fragmentNotifications;
+    public FragmentMe            fragmentMe;
+    public FragmentNews          fragmentNews;
+    public FragmentSearch        fragmentSearch;
+    public FragmentSettings      fragmentSettings;
+    public FragmentNotifications fragmentNotifications;
 
     // Consonants
     public static final int NEWS = 0;

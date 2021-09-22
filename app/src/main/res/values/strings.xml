@@ -39,4 +39,8 @@
     <string name="you_havent_picked_image">You haven´t picked Image</string>
     <string name="minimum_length_text">Minimum text length is 20 characters</string>
     <string name="maximum_length_text">Maximum text length is 500 characters</string>
+    <string name="type_your_description">Type your description here</string>
+    <string name="select_cover">Select your cover image</string>
+    <string name="select_image">Select your profile image</string>
+    <string name="continue1">Continue</string>
 </resources>

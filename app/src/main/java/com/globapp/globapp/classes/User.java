@@ -1,19 +1,26 @@
 package com.globapp.globapp.classes;
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 
 public class User {
     private String                 meID;
     private String                 meName;
     private String                 meDescription;
-    private int                    meImage;
-    private int                    meCoverImage;
+    private Uri                    meImage;
+    private Uri                    meCoverImage;
+    private int                    meCredits;
+    private int                    meStars;
     private ArrayList<News>        meNews;
     private ArrayList<Recognition> meRecognitions;
 
-    public User(String meID,      String meName,          String meDescription,  int meImage,
-                int meCoverImage, ArrayList<News> meNews, ArrayList<Recognition> meRecognitions){
+    public User(String meID,      String meName,          String meDescription,  Uri meImage,
+                Uri meCoverImage, ArrayList<News> meNews, ArrayList<Recognition> meRecognitions,
+                int meCredits,    int meStars){
 
+        this.meCredits      = meCredits;
+        this.meStars        = meStars;
         this.meID           = meID;
         this.meName         = meName;
         this.meDescription  = meDescription;
@@ -23,8 +30,10 @@ public class User {
         this.meRecognitions = meRecognitions;
     }
 
-    public User(String meID, String meName, String meDescription,  int meImage, int meCoverImage){
+    public User(String meID, String meName, String meDescription,  Uri meImage, Uri meCoverImage){
 
+        this.meCredits      = 0;
+        this.meStars        = 0;
         this.meID           = meID;
         this.meName         = meName;
         this.meDescription  = meDescription;
@@ -32,6 +41,14 @@ public class User {
         this.meCoverImage   = meCoverImage;
         this.meNews         = new ArrayList<>();
         this.meRecognitions = new ArrayList<>();
+    }
+
+    public int getMeStars() {
+        return meStars;
+    }
+
+    public int getMeCredits() {
+        return meCredits;
     }
 
     public void addMeRecognitions(Recognition recognition){
@@ -54,11 +71,11 @@ public class User {
         return meRecognitions;
     }
 
-    public int getMeCoverImage() {
+    public Uri getMeCoverImage() {
         return meCoverImage;
     }
 
-    public int getMeImage() {
+    public Uri getMeImage() {
         return meImage;
     }
 

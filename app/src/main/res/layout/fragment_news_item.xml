@@ -89,13 +89,13 @@
             android:scaleType="centerCrop"
             android:src="@drawable/user"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/gifImageView"
+            app:layout_constraintEnd_toStartOf="@+id/news_item_star"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
 
         <pl.droidsonroids.gif.GifImageView
-            android:id="@+id/gifImageView"
+            android:id="@+id/news_item_star"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:scaleType="centerCrop"

@@ -1,17 +1,13 @@
 package com.globapp.globapp.fragmentmain.fragmentnews;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -26,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 import com.globapp.globapp.classes.Comment;
-import com.globapp.globapp.classes.Me;
 import com.globapp.globapp.classes.News;
 import com.globapp.globapp.classes.NewsRecognition;
 import com.globapp.globapp.fragmentmain.FragmentMain;
@@ -37,6 +32,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHolder> {
 
@@ -67,60 +64,16 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         holder.newsLikeCounter.setText(String.valueOf(news.getNewsLikes()));
         holder.newsCommentCounter.setText(String.valueOf(news.getNewsComments().size()));
         holder.newsPostImage.setImageURI(news.getNewsImage());
+        holder.newsUserImage.setImageURI(news.getNewsUserOwner().getMeImage());
 
         if(newsList.get(position) instanceof NewsRecognition){
             holder.newsRecognitionLayout.setVisibility(View.VISIBLE);
             holder.newsUsername.setText(news.getNewsUserOwner().getMeName() + " congratulated " + ((NewsRecognition)newsList.get(position)).getNewsUserRecognized().getMeName());
-            switch (((NewsRecognition) newsList.get(position)).getNewsUserRecognized().getMeImage()){
-                case 1:
-                    holder.newsRecognitionUserImage.setImageResource(R.drawable.meimage1);
-                    break;
-                case 2:
-                    holder.newsRecognitionUserImage.setImageResource(R.drawable.user2);
-                    break;
-                case 3:
-                    holder.newsRecognitionUserImage.setImageResource(R.drawable.user3);
-                    break;
-                case 4:
-                    holder.newsRecognitionUserImage.setImageResource(R.drawable.user4);
-                    break;
-                case 5:
-                    holder.newsRecognitionUserImage.setImageResource(R.drawable.user5);
-                    break;
-                case 6:
-                    holder.newsRecognitionUserImage.setImageResource(R.drawable.user6);
-                    break;
-                case 7:
-                    holder.newsRecognitionUserImage.setImageResource(R.drawable.user7);
-                    break;
-            }
+            holder.newsRecognitionUserImage.setImageURI(((NewsRecognition) newsList.get(position)).getNewsUserRecognized().getMeImage());
+
         } else {
             holder.newsRecognitionLayout.setVisibility(View.GONE);
             holder.newsUsername.setText(news.getNewsUserOwner().getMeName());
-        }
-
-        switch (news.getNewsUserOwner().getMeImage()){
-            case 1:
-                holder.newsUserImage.setImageResource(R.drawable.meimage1);
-                break;
-            case 2:
-                holder.newsUserImage.setImageResource(R.drawable.user2);
-                break;
-            case 3:
-                holder.newsUserImage.setImageResource(R.drawable.user3);
-                break;
-            case 4:
-                holder.newsUserImage.setImageResource(R.drawable.user4);
-                break;
-            case 5:
-                holder.newsUserImage.setImageResource(R.drawable.user5);
-                break;
-            case 6:
-                holder.newsUserImage.setImageResource(R.drawable.user6);
-                break;
-            case 7:
-                holder.newsUserImage.setImageResource(R.drawable.user7);
-                break;
         }
     }
 
@@ -211,6 +164,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
 
                 holder.commentContent.setText(comment.getCommentContent());
                 holder.commentUsername.setText(comment.getCommentUser().getMeName());
+                holder.commentUserImage.setImageURI(comment.getCommentUser().getMeImage());
             }
 
             @Override
@@ -237,14 +191,13 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                         @Override
                         public void onClick(View v) {
                             if(((MainActivity)context).me.equals(newsComments.get(getAdapterPosition()).getCommentUser())){
-                                ((MainActivity)context).addFragment(new FragmentMe((Me)newsComments.get(getAdapterPosition()).getCommentUser()));
+                                ((MainActivity)context).addFragment(new FragmentMe((newsComments.get(getAdapterPosition()).getCommentUser())));
                             } else {
                                 ((MainActivity)context).addFragment(
                                         new FragmentUser(newsComments.get(getAdapterPosition()).getCommentUser()));
                             }
                         }
                     });
-
                 }
             }
         }
@@ -262,24 +215,34 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         ConstraintLayout newsContainer;
         ImageView        newsRecognitionUserImage;
         TextView         newsLikeCounter;
+        GifImageView     newsStar;
         TextView         newsCommentCounter;
 
         @SuppressLint("ClickableViewAccessibility")
         ViewHolder(View itemView) {
             super(itemView);
 
-            newsUsername             = (TextView)         itemView.findViewById(R.id.news_item_username);
-            newsPostContent          = (TextView)         itemView.findViewById(R.id.news_item_post_content);
-            newsUserImage            = (ImageView)        itemView.findViewById(R.id.news_item_user_image);
-            newsPostImage            = (ImageView)        itemView.findViewById(R.id.news_item_post_image);
-            newsLikeButton           = (ImageButton)      itemView.findViewById(R.id.news_item_like_button);
-            newsCommentButton        = (ImageButton)      itemView.findViewById(R.id.news_item_comment_button);
-            newsRecognitionLayout    = (ConstraintLayout) itemView.findViewById(R.id.news_item_recognition_layout);
-            newsRecognitionUserImage = (CircleImageView)  itemView.findViewById(R.id.news_item_recognition_user_image);
-            newsPostLayout           = (ConstraintLayout) itemView.findViewById(R.id.news_item_post_layout);
-            newsContainer            = (ConstraintLayout) itemView.findViewById(R.id.news_item_container);
-            newsLikeCounter          = (TextView)         itemView.findViewById(R.id.news_item_like_counter);
-            newsCommentCounter       = (TextView)         itemView.findViewById(R.id.news_item_comment_counter);
+            newsUsername             = itemView.findViewById(R.id.news_item_username);
+            newsPostContent          = itemView.findViewById(R.id.news_item_post_content);
+            newsUserImage            = itemView.findViewById(R.id.news_item_user_image);
+            newsPostImage            = itemView.findViewById(R.id.news_item_post_image);
+            newsLikeButton           = itemView.findViewById(R.id.news_item_like_button);
+            newsCommentButton        = itemView.findViewById(R.id.news_item_comment_button);
+            newsRecognitionLayout    = itemView.findViewById(R.id.news_item_recognition_layout);
+            newsRecognitionUserImage = itemView.findViewById(R.id.news_item_recognition_user_image);
+            newsPostLayout           = itemView.findViewById(R.id.news_item_post_layout);
+            newsContainer            = itemView.findViewById(R.id.news_item_container);
+            newsLikeCounter          = itemView.findViewById(R.id.news_item_like_counter);
+            newsCommentCounter       = itemView.findViewById(R.id.news_item_comment_counter);
+            newsStar                 = itemView.findViewById(R.id.news_item_star);
+
+            ((GifDrawable)newsStar.getDrawable()).stop();
+            newsStar.setOnClickListener(v -> {
+                ((GifDrawable)newsStar.getDrawable()).start();
+                ((GifDrawable)newsStar.getDrawable()).addAnimationListener(i -> {
+                    ((GifDrawable)newsStar.getDrawable()).stop();
+                });
+            });
 
             GestureDetector gestureDetector = new GestureDetector(itemView.getContext(), new MainActivity.SingleTapConfirm());
 
@@ -301,74 +264,62 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                 });
             });
 
-            newsUserImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(((MainActivity)context).me.equals(newsList.get(getAdapterPosition()).getNewsUserOwner())){
-                        if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
-                            ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
-                        } else {
-                            ((MainActivity)context).addFragment(
-                                    new FragmentMe((Me)newsList.get(getAdapterPosition()).getNewsUserOwner()));
-                        }
+            newsUserImage.setOnClickListener(v -> {
+                if(((MainActivity)context).me.equals(newsList.get(getAdapterPosition()).getNewsUserOwner())){
+                    if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
+                        ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
                     } else {
                         ((MainActivity)context).addFragment(
-                                new FragmentUser(newsList.get(getAdapterPosition()).getNewsUserOwner()));
+                                new FragmentMe(newsList.get(getAdapterPosition()).getNewsUserOwner()));
                     }
+                } else {
+                    ((MainActivity)context).addFragment(
+                            new FragmentUser(newsList.get(getAdapterPosition()).getNewsUserOwner()));
                 }
             });
 
-            newsRecognitionUserImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(((MainActivity)context).me.equals(((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized())){
-                        if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
-                            ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
-                        } else {
-                            ((MainActivity)context).addFragment(
-                                    new FragmentMe((Me)((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized()));
-                        }
+            newsRecognitionUserImage.setOnClickListener(v -> {
+                if(((MainActivity)context).me.equals(((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized())){
+                    if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
+                        ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
                     } else {
                         ((MainActivity)context).addFragment(
-                                new FragmentUser(((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized()));
+                                new FragmentMe(((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized()));
                     }
+                } else {
+                    ((MainActivity)context).addFragment(
+                            new FragmentUser(((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized()));
                 }
             });
 
-            newsCommentButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if(gestureDetector.onTouchEvent(event)) {
-                        newsCommentButton.setAlpha((float) 1);
-                        CommentDialog commentDialog = new CommentDialog(newsList.get(getAdapterPosition()), getAdapterPosition());
-                        commentDialog.show();
-                    } else if(event.getAction() == MotionEvent.ACTION_DOWN){
-                        newsCommentButton.setAlpha((float) 0.5);
-                    } else if (event.getAction() == MotionEvent.ACTION_UP){
-                        newsCommentButton.setAlpha((float) 1);
-                    } else if (event.getAction() == MotionEvent.ACTION_CANCEL){
-                        newsCommentButton.setAlpha((float) 1);
-                    }
-                    return true;
+            newsCommentButton.setOnTouchListener((v, event) -> {
+                if(gestureDetector.onTouchEvent(event)) {
+                    newsCommentButton.setAlpha((float) 1);
+                    CommentDialog commentDialog = new CommentDialog(newsList.get(getAdapterPosition()), getAdapterPosition());
+                    commentDialog.show();
+                } else if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    newsCommentButton.setAlpha((float) 0.5);
+                } else if (event.getAction() == MotionEvent.ACTION_UP){
+                    newsCommentButton.setAlpha((float) 1);
+                } else if (event.getAction() == MotionEvent.ACTION_CANCEL){
+                    newsCommentButton.setAlpha((float) 1);
                 }
+                return true;
             });
 
-            newsLikeButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if(gestureDetector.onTouchEvent(event)) {
-                        newsLikeButton.setAlpha((float) 1);
-                        newsList.get(getAdapterPosition()).addLike();
-                        newsLikeCounter.setText(String.valueOf(newsList.get(getAdapterPosition()).getNewsLikes()));
-                    } else if(event.getAction() == MotionEvent.ACTION_DOWN){
-                        newsLikeButton.setAlpha((float) 0.5);
-                    } else if (event.getAction() == MotionEvent.ACTION_UP){
-                        newsLikeButton.setAlpha((float) 1);
-                    } else if (event.getAction() == MotionEvent.ACTION_CANCEL){
-                        newsLikeButton.setAlpha((float) 1);
-                    }
-                    return true;
+            newsLikeButton.setOnTouchListener((v, event) -> {
+                if(gestureDetector.onTouchEvent(event)) {
+                    newsLikeButton.setAlpha((float) 1);
+                    newsList.get(getAdapterPosition()).addLike();
+                    newsLikeCounter.setText(String.valueOf(newsList.get(getAdapterPosition()).getNewsLikes()));
+                } else if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    newsLikeButton.setAlpha((float) 0.5);
+                } else if (event.getAction() == MotionEvent.ACTION_UP){
+                    newsLikeButton.setAlpha((float) 1);
+                } else if (event.getAction() == MotionEvent.ACTION_CANCEL){
+                    newsLikeButton.setAlpha((float) 1);
                 }
+                return true;
             });
         }
     }

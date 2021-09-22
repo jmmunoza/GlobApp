@@ -70,6 +70,8 @@ public class FragmentUser extends Fragment {
         recognitionPager = getView().findViewById(R.id.user_recognitions);
 
         userName.setText(user.getMeName());
+        userImage.setImageURI(user.getMeImage());
+        userCoverImage.setImageURI(user.getMeCoverImage());
         userDescription.setText(user.getMeDescription());
         userStarButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,39 +79,6 @@ public class FragmentUser extends Fragment {
                 ((MainActivity)getContext()).addFragment(new FragmentGiveStar(user));
             }
         });
-
-        switch (user.getMeImage()){
-            case 1:
-                userImage.setImageResource(R.drawable.meimage1);
-                break;
-            case 2:
-                userImage.setImageResource(R.drawable.user2);
-                break;
-            case 3:
-                userImage.setImageResource(R.drawable.user3);
-                break;
-            case 4:
-                userImage.setImageResource(R.drawable.user4);
-                break;
-            case 5:
-                userImage.setImageResource(R.drawable.user5);
-                break;
-            case 6:
-                userImage.setImageResource(R.drawable.user6);
-                break;
-            case 7:
-                userImage.setImageResource(R.drawable.user7);
-                break;
-            case 8:
-                userImage.setImageResource(R.drawable.user8);
-                break;
-        }
-
-        switch (user.getMeCoverImage()){
-            case 1:
-                userCoverImage.setImageResource(R.drawable.mecoverimage1);
-        }
-
 
         recognitionPagerAdapter = new MePagerAdapter(getContext(), user.getMeRecognitions());
         recognitionPager.setLayoutManager(new GridLayoutManager(getContext(), 2));

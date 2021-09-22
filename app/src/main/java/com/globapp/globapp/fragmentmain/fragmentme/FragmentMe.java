@@ -4,33 +4,26 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
-import com.globapp.globapp.classes.Me;
 import com.globapp.globapp.classes.User;
-import com.globapp.globapp.fragmentmain.fragmentnews.NewsListAdapter;
-import com.globapp.globapp.fragmentmain.fragmentnews.NewsPagerAdapter;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FragmentMe extends Fragment {
     // Data
-    Me me;
+    User me;
 
     // UI Components
     RecyclerView    recognitionPager;
@@ -42,7 +35,7 @@ public class FragmentMe extends Fragment {
     TextView        meCredits;
     TextView        meStars;
 
-    public FragmentMe(Me me){
+    public FragmentMe(User me){
         this.me = me;
     }
 
@@ -76,17 +69,8 @@ public class FragmentMe extends Fragment {
         meDescription.setText(me.getMeDescription());
         meStars.setText(String.valueOf(me.getMeStars()));
         meCredits.setText(String.valueOf(me.getMeCredits()));
-
-        switch (me.getMeImage()){
-            case 1:
-                meImage.setImageResource(R.drawable.meimage1);
-                break;
-        }
-
-        switch (me.getMeCoverImage()){
-            case 1:
-                meCoverImage.setImageResource(R.drawable.mecoverimage1);
-        }
+        meImage.setImageURI(me.getMeImage());
+        meCoverImage.setImageURI(me.getMeCoverImage());
         
         recognitionPagerAdapter = new MePagerAdapter(getContext(), me.getMeRecognitions());
         recognitionPager.setLayoutManager(new GridLayoutManager(getContext(), 2));

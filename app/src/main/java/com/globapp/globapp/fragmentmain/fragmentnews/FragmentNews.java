@@ -85,7 +85,6 @@ public class FragmentNews extends Fragment {
         newsList.setLayoutManager(verticalLayoutManager);
         newsList.setAdapter(newsListAdapter);
 
-
         // News pager configuration
         newsPager = getView().findViewById(R.id.news_pager);
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(

@@ -78,6 +78,9 @@ public class FragmentMe extends Fragment {
                     public void run() {
                         meStars.setText(String.valueOf(me.getMeStars()));
                         meCredits.setText(String.valueOf(me.getMeCredits()));
+                        meDescription.setText(me.getMeDescription());
+                        if(me.getMeImage() != null) meImage.setImageURI(me.getMeImage());
+                        if(me.getMeCoverImage() != null) meCoverImage.setImageURI(me.getMeCoverImage());
                         if(me.getMeRecognitions().size() == 0){
                             meRecognitionText.setVisibility(View.GONE);
                         } else {

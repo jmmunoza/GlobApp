@@ -76,6 +76,13 @@ public class FragmentSettings extends Fragment {
         if (((MainActivity)getContext()).me.getMeImage() != null) userImage.setImageURI(((MainActivity)getContext()).me.getMeImage());
         username.setText(((MainActivity)getContext()).me.getMeName());
 
+        // EDIT PROFILE SETTINGS
+        editProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getContext()).addFragmentRight(new FragmentEditProfile());
+            }
+        });
 
 
         // DARK MODE SETTINGS

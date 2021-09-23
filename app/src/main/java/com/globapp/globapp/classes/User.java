@@ -43,6 +43,18 @@ public class User {
         this.meRecognitions = new ArrayList<>();
     }
 
+    public void setMeCoverImage(Uri meCoverImage) {
+        this.meCoverImage = meCoverImage;
+    }
+
+    public void setMeDescription(String meDescription) {
+        this.meDescription = meDescription;
+    }
+
+    public void setMeImage(Uri meImage) {
+        this.meImage = meImage;
+    }
+
     public int getMeStars() {
         return meStars;
     }

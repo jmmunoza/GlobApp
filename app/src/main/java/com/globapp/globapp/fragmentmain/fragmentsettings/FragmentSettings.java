@@ -1,6 +1,7 @@
 package com.globapp.globapp.fragmentmain.fragmentsettings;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import android.app.Activity;
@@ -10,8 +11,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentTransaction;
@@ -24,10 +28,18 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class FragmentSettings extends Fragment {
-    private ImageButton logoutButton;
-    private RadioGroup radioLanguage;
-    private RadioGroup radioDarkMode;
+
+    private CircleImageView userImage;
+    private TextView        username;
+    private CardView        editProfileButton;
+    private Switch          darkModeSwitch;
+    private CardView        languageButton;
+    private CardView        notificationButton;
+    private CardView        aboutButton;
+    private CardView        logoutButton;
 
     @Nullable
     @Override
@@ -47,57 +59,33 @@ public class FragmentSettings extends Fragment {
     }
 
     private void loadComponents(){
+        userImage          = getView().findViewById(R.id.settings_user_image);
+        username           = getView().findViewById(R.id.settings_username);
+        editProfileButton  = getView().findViewById(R.id.settings_edit_profile_button);
+        darkModeSwitch     = getView().findViewById(R.id.settings_dark_mode_switch);
+        languageButton     = getView().findViewById(R.id.settings_language_button);
+        notificationButton = getView().findViewById(R.id.settings_notification_button);
+        aboutButton        = getView().findViewById(R.id.settings_about_button);
+        logoutButton       = getView().findViewById(R.id.settings_logout_button);
 
-        logoutButton  = ((MainActivity)getContext()).findViewById(R.id.settings_logout_button);
-        // Radio language settings
-        radioLanguage = ((MainActivity)getContext()).findViewById(R.id.language_selection);
-
-        if(((MainActivity)getContext()).isEnglish){
-            radioLanguage.check(R.id.radio_english);
-        } else {
-            radioLanguage.check(R.id.radio_spanish);
-        }
-
-        radioLanguage.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId){
-                    case R.id.radio_english:
-                        ((MainActivity)getContext()).isEnglish = true;
-                        break;
-                    case R.id.radio_spanish:
-                        ((MainActivity)getContext()).isEnglish = false;
-                }
-            }
-        });
+        if (((MainActivity)getContext()).me.getMeImage() != null) userImage.setImageURI(((MainActivity)getContext()).me.getMeImage());
+        username.setText(((MainActivity)getContext()).me.getMeName());
 
 
-        // Radio dark mode settings
-        radioDarkMode = ((MainActivity)getContext()).findViewById(R.id.dark_mode_selection);
+
+        // DARK MODE SETTINGS
         SharedPreferences sharedPreferences = ((MainActivity)getContext()).getSharedPreferences(MainActivity.DATA, Context.MODE_PRIVATE);
-
         if(sharedPreferences.getBoolean(MainActivity.DARK_MODE, false)){
-            radioDarkMode.check(R.id.radio_dark_mode_enabled);
+            darkModeSwitch.setChecked(true);
         } else {
-            radioDarkMode.check(R.id.radio_dark_mode_disabled);
+            darkModeSwitch.setChecked(false);
         }
 
-        radioDarkMode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
+        darkModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SharedPreferences sharedPreferences = ((MainActivity)getContext()).getSharedPreferences(MainActivity.DATA, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                switch (checkedId){
-                    case R.id.radio_dark_mode_disabled:
-                        editor.putBoolean(MainActivity.DARK_MODE, false);
-                        break;
-                    case R.id.radio_dark_mode_enabled:
-                        editor.putBoolean(MainActivity.DARK_MODE, true);
-                }
-
+                editor.putBoolean(MainActivity.DARK_MODE, isChecked);
                 editor.apply();
                 editor.commit();
             }

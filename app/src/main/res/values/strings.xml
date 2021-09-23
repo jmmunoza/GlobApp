@@ -42,5 +42,6 @@
     <string name="type_your_description">Type your description here</string>
     <string name="select_cover">Select your cover image</string>
     <string name="select_image">Select your profile image</string>
+    <string name="edit_profile">Edit profile</string>
     <string name="continue1">Continue</string>
 </resources>

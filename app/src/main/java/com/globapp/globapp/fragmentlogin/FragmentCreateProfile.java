@@ -92,7 +92,7 @@ public class FragmentCreateProfile extends Fragment {
         userDescription  = getView().findViewById(R.id.create_profile_text);
         username         = getView().findViewById(R.id.create_profile_username);
 
-        username.setText("Juan Manuel Muñoz Arias");
+        username.setText("Jesus de Nazaret Gutierrez");
 
         cancelButton.setOnClickListener((View.OnClickListener) v -> {
             ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();

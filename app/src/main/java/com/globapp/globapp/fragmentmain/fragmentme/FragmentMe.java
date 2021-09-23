@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
@@ -26,14 +27,16 @@ public class FragmentMe extends Fragment {
     User me;
 
     // UI Components
-    RecyclerView    recognitionPager;
-    MePagerAdapter  recognitionPagerAdapter;
-    ImageView       meCoverImage;
-    CircleImageView meImage;
-    TextView        meName;
-    TextView        meDescription;
-    TextView        meCredits;
-    TextView        meStars;
+    RecyclerView       recognitionPager;
+    MePagerAdapter     recognitionPagerAdapter;
+    ImageView          meCoverImage;
+    CircleImageView    meImage;
+    TextView           meName;
+    TextView           meDescription;
+    TextView           meCredits;
+    TextView           meStars;
+    TextView           meRecognitionText;
+    SwipeRefreshLayout meRefresh;
 
     public FragmentMe(User me){
         this.me = me;
@@ -57,13 +60,35 @@ public class FragmentMe extends Fragment {
     }
 
     void loadComponents(){
-        meName           = getView().findViewById(R.id.me_user_name);
-        meDescription    = getView().findViewById(R.id.me_user_description);
-        meCredits        = getView().findViewById(R.id.me_user_credits);
-        meStars          = getView().findViewById(R.id.me_user_stars);
-        meCoverImage     = getView().findViewById(R.id.me_cover_image);
-        meImage          = getView().findViewById(R.id.me_user_image);
-        recognitionPager = getView().findViewById(R.id.me_user_recognitions);
+        meName            = getView().findViewById(R.id.me_user_name);
+        meDescription     = getView().findViewById(R.id.me_user_description);
+        meCredits         = getView().findViewById(R.id.me_user_credits);
+        meStars           = getView().findViewById(R.id.me_user_stars);
+        meCoverImage      = getView().findViewById(R.id.me_cover_image);
+        meImage           = getView().findViewById(R.id.me_user_image);
+        meRecognitionText = getView().findViewById(R.id.me_user_recognitions_text);
+        recognitionPager  = getView().findViewById(R.id.me_user_recognitions);
+        meRefresh         = getView().findViewById(R.id.me_refresh);
+
+        meRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                ((MainActivity)getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        meStars.setText(String.valueOf(me.getMeStars()));
+                        meCredits.setText(String.valueOf(me.getMeCredits()));
+                        if(me.getMeRecognitions().size() == 0){
+                            meRecognitionText.setVisibility(View.GONE);
+                        } else {
+                            meRecognitionText.setVisibility(View.VISIBLE);
+                        }
+                        recognitionPagerAdapter.notifyDataSetChanged();
+                        meRefresh.setRefreshing(false);
+                    }
+                });
+            }
+        });
 
         meName.setText(me.getMeName());
         meDescription.setText(me.getMeDescription());
@@ -71,7 +96,13 @@ public class FragmentMe extends Fragment {
         meCredits.setText(String.valueOf(me.getMeCredits()));
         meImage.setImageURI(me.getMeImage());
         meCoverImage.setImageURI(me.getMeCoverImage());
-        
+
+        if(me.getMeRecognitions().size() == 0){
+            meRecognitionText.setVisibility(View.GONE);
+        } else {
+            meRecognitionText.setVisibility(View.VISIBLE);
+        }
+
         recognitionPagerAdapter = new MePagerAdapter(getContext(), me.getMeRecognitions());
         recognitionPager.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recognitionPager.setAdapter(recognitionPagerAdapter);

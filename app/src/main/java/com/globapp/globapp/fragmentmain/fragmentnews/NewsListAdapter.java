@@ -178,7 +178,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                 TextView        commentContent;
                 TextView        commentTime;
 
-
                 public ViewHolder(@NonNull View itemView) {
                     super(itemView);
 

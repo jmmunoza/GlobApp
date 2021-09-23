@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
@@ -17,8 +18,9 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class FragmentNotifications extends Fragment {
-    RecyclerView notificationsList;
+    RecyclerView             notificationsList;
     NotificationsListAdapter notificationsListAdapter;
+    SwipeRefreshLayout       notificationsRefresh;
 
     @Nullable
     @Override
@@ -38,6 +40,20 @@ public class FragmentNotifications extends Fragment {
     }
 
     private void loadComponents(){
+
+        notificationsRefresh = getView().findViewById(R.id.notification_refresh);
+        notificationsRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                ((MainActivity)getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        notificationsListAdapter.notifyDataSetChanged();
+                        notificationsRefresh.setRefreshing(false);
+                    }
+                });
+            }
+        });
 
         // Temporal ----------------------
         ArrayList<String> notifications = new ArrayList<>();

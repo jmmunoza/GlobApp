@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentLogin      = new FragmentLogin();
         fragmentMain       = new FragmentMain();
-        addFragment(fragmentLogin);
+        addFragmentRight(fragmentLogin);
     }
 
     public void enableAnimation(int animationID){
@@ -91,13 +91,39 @@ public class MainActivity extends AppCompatActivity {
         isEnglish  = sharedPreferences.getBoolean(IS_ENGLISH, true);
     }
 
-    public void addFragment(Fragment fragment){
+    public void addFragmentUp(Fragment fragment){
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(
                         R.anim.slide_in_up,
                         R.anim.slide_out_down,
                         R.anim.slide_in_down,
                         R.anim.slide_out_up)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .replace(R.id.fragment, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void addFragmentLeft(Fragment fragment){
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_in_left,
+                        R.anim.slide_out_right,
+                        R.anim.slide_in_right,
+                        R.anim.slide_out_left)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .replace(R.id.fragment, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void addFragmentRight(Fragment fragment){
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_in_right,
+                        R.anim.slide_out_left,
+                        R.anim.slide_in_left,
+                        R.anim.slide_out_right)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .replace(R.id.fragment, fragment)
                 .addToBackStack(null)

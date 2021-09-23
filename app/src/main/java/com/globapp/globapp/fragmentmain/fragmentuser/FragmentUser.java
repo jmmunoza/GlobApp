@@ -76,7 +76,7 @@ public class FragmentUser extends Fragment {
         userStarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getContext()).addFragment(new FragmentGiveStar(user));
+                ((MainActivity)getContext()).addFragmentUp(new FragmentGiveStar(user));
             }
         });
 

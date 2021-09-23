@@ -32,6 +32,8 @@
         </ImageView>
 
         <ImageButton
+            android:clickable="true"
+            android:foreground="?android:selectableItemBackground"
             android:id="@+id/search_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -40,11 +42,14 @@
             android:background="@drawable/rounded_image_button"
             android:scaleType="center"
             android:src="@drawable/ic_baseline_search_white_24"
+            android:backgroundTint="@color/dark_item"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/settings_button"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
+            android:clickable="true"
+            android:foreground="?android:selectableItemBackground"
             android:id="@+id/settings_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -52,6 +57,7 @@
             android:adjustViewBounds="true"
             android:background="@drawable/rounded_image_button"
             android:scaleType="center"
+            android:backgroundTint="@color/dark_item"
             android:src="@drawable/ic_baseline_settings_white_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

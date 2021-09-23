@@ -76,7 +76,7 @@ public class FragmentMain extends Fragment {
         settings_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getContext()).addFragment(fragmentSettings);
+                ((MainActivity)getContext()).addFragmentRight(fragmentSettings);
             }
         });
 
@@ -84,7 +84,7 @@ public class FragmentMain extends Fragment {
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getContext()).addFragment(fragmentSearch);
+                ((MainActivity)getContext()).addFragmentLeft(fragmentSearch);
             }
         });
 

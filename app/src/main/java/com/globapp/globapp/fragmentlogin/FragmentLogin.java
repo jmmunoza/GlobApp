@@ -46,7 +46,7 @@ public class FragmentLogin extends Fragment {
                 if(gestureDetector.onTouchEvent(event)) {
                     loginButton.setAlpha((float) 1);
                     ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
-                    ((MainActivity)getContext()).addFragment(new FragmentCreateProfile());
+                    ((MainActivity)getContext()).addFragmentRight(new FragmentCreateProfile());
                 } else if(event.getAction() == MotionEvent.ACTION_DOWN){
                     loginButton.setAlpha((float) 0.5);
                 } else if (event.getAction() == MotionEvent.ACTION_UP){

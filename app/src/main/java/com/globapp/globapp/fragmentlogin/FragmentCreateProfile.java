@@ -96,7 +96,7 @@ public class FragmentCreateProfile extends Fragment {
 
         cancelButton.setOnClickListener((View.OnClickListener) v -> {
             ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
-            ((MainActivity)getContext()).addFragment(((MainActivity)getContext()).fragmentLogin);
+            ((MainActivity)getContext()).addFragmentRight(((MainActivity)getContext()).fragmentLogin);
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(userDescription.getWindowToken(), 0);
         });
@@ -122,7 +122,7 @@ public class FragmentCreateProfile extends Fragment {
                 ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(userDescription.getWindowToken(), 0);
-                ((MainActivity)getContext()).addFragment(((MainActivity)getContext()).fragmentMain);
+                ((MainActivity)getContext()).addFragmentRight(((MainActivity)getContext()).fragmentMain);
             } else {
                 if(textLength <= 20){
                     Toast.makeText(getContext(), getString(R.string.minimum_length_text), Toast.LENGTH_LONG).show();

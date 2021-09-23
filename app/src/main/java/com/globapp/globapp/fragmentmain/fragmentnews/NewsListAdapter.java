@@ -222,11 +222,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                                 if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
                                     ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
                                 } else {
-                                    ((MainActivity)context).addFragment(
+                                    ((MainActivity)context).addFragmentUp(
                                             new FragmentMe(newsComments.get(getAdapterPosition()).getCommentUser()));
                                 }
                             } else {
-                                ((MainActivity)context).addFragment(
+                                ((MainActivity)context).addFragmentUp(
                                         new FragmentUser(newsComments.get(getAdapterPosition()).getCommentUser()));
                             }
                         }
@@ -302,11 +302,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                     if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
                         ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
                     } else {
-                        ((MainActivity)context).addFragment(
+                        ((MainActivity)context).addFragmentLeft(
                                 new FragmentMe(newsList.get(getAdapterPosition()).getNewsUserOwner()));
                     }
                 } else {
-                    ((MainActivity)context).addFragment(
+                    ((MainActivity)context).addFragmentLeft(
                             new FragmentUser(newsList.get(getAdapterPosition()).getNewsUserOwner()));
                 }
             });
@@ -316,11 +316,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                     if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
                         ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
                     } else {
-                        ((MainActivity)context).addFragment(
+                        ((MainActivity)context).addFragmentRight(
                                 new FragmentMe(((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized()));
                     }
                 } else {
-                    ((MainActivity)context).addFragment(
+                    ((MainActivity)context).addFragmentRight(
                             new FragmentUser(((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized()));
                 }
             });

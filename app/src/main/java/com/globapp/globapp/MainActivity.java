@@ -25,8 +25,9 @@ import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String DATA      = "DATA";
-    public static final String DARK_MODE = "DARK_MODE";
+    public static final String DATA       = "DATA";
+    public static final String DARK_MODE  = "DARK_MODE";
+    public static final String IS_ENGLISH = "IS_ENGLISH";
 
     public FragmentMain  fragmentMain;
     public FragmentLogin fragmentLogin;
@@ -49,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         createData();
         loadData();
         animationContainer = findViewById(R.id.animation_container);
-        isEnglish          = true;
 
         fragmentLogin      = new FragmentLogin();
         fragmentMain       = new FragmentMain();
@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadData(){
         SharedPreferences sharedPreferences = getSharedPreferences(DATA, MODE_PRIVATE);
         isDarkMode = sharedPreferences.getBoolean(DARK_MODE, false);
+        isEnglish  = sharedPreferences.getBoolean(IS_ENGLISH, true);
     }
 
     public void addFragment(Fragment fragment){

@@ -1,8 +1,10 @@
 package com.globapp.globapp.fragmentmain.fragmentnews;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
+import android.content.res.Resources;
+import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -11,10 +13,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +30,9 @@ import com.globapp.globapp.classes.NewsRecognition;
 import com.globapp.globapp.fragmentmain.FragmentMain;
 import com.globapp.globapp.fragmentmain.fragmentme.FragmentMe;
 import com.globapp.globapp.fragmentmain.fragmentuser.FragmentUser;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
@@ -64,12 +70,18 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         holder.newsLikeCounter.setText(String.valueOf(news.getNewsLikes()));
         holder.newsCommentCounter.setText(String.valueOf(news.getNewsComments().size()));
         holder.newsPostImage.setImageURI(news.getNewsImage());
-        holder.newsUserImage.setImageURI(news.getNewsUserOwner().getMeImage());
+        if(news.getNewsUserOwner().getMeImage() != null)
+            holder.newsUserImage.setImageURI(news.getNewsUserOwner().getMeImage());
+        else
+            holder.newsUserImage.setImageResource(R.drawable.user);
 
         if(newsList.get(position) instanceof NewsRecognition){
             holder.newsRecognitionLayout.setVisibility(View.VISIBLE);
             holder.newsUsername.setText(news.getNewsUserOwner().getMeName() + " congratulated " + ((NewsRecognition)newsList.get(position)).getNewsUserRecognized().getMeName());
-            holder.newsRecognitionUserImage.setImageURI(((NewsRecognition) newsList.get(position)).getNewsUserRecognized().getMeImage());
+            if(((NewsRecognition) newsList.get(position)).getNewsUserRecognized().getMeImage() != null)
+                holder.newsRecognitionUserImage.setImageURI(((NewsRecognition) newsList.get(position)).getNewsUserRecognized().getMeImage());
+            else
+                holder.newsRecognitionUserImage.setImageResource(R.drawable.user);
 
         } else {
             holder.newsRecognitionLayout.setVisibility(View.GONE);
@@ -82,25 +94,28 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         return newsList.size();
     }
 
-    public class CommentDialog {
-        private CommentListAdapter commentListAdapter;
-        private TextInputEditText  commentInput;
-        private ImageButton        commentSendButton;
-        private RecyclerView       commentList;
-        private View               view;
-        private News               commentNews;
-        private int                commentNewsPosition;
+    public static class CommentDialog extends BottomSheetDialogFragment {
+        private CommentListAdapter  commentListAdapter;
+        private TextInputEditText   commentInput;
+        private ImageButton         commentSendButton;
+        private RecyclerView        commentList;
+        private News                commentNews;
+        private RelativeLayout      commentRoot;
+        private int                 commentNewsPosition;
+        private BottomSheetBehavior commentBehavior;
+        private View                view;
 
-        public CommentDialog(News commentNews, int commentNewsPosition) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            if(((MainActivity)context).isDarkMode){
-                view = inflater.inflate(R.layout.fragment_news_item_comment_dark, null, false);
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+            setStyle(STYLE_NORMAL, R.style.SheetDialog);
+            if(((MainActivity)getContext()).isDarkMode){
+                view = View.inflate(getContext(), R.layout.fragment_news_item_comment_dark, null);
             } else {
-                view = inflater.inflate(R.layout.fragment_news_item_comment, null, false);
+                view = View.inflate(getContext(), R.layout.fragment_news_item_comment, null);
             }
 
-            this.commentNews         = commentNews;
-            this.commentNewsPosition = commentNewsPosition;
+            commentRoot              = view.findViewById(R.id.comment_root);
             commentInput             = view.findViewById(R.id.comment_input);
             commentSendButton        = view.findViewById(R.id.comment_send_button);
             commentList              = view.findViewById(R.id.comment_list);
@@ -116,24 +131,37 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                 @Override
                 public void onClick(View v) {
                     if(commentInput.getText().toString().length() > 0){
-                        commentNews.addComment(new Comment("0", commentInput.getText().toString(), ((MainActivity)context).me));
+                        commentNews.addComment(new Comment("0", commentInput.getText().toString(), ((MainActivity)getContext()).me));
                         commentInput.setText("");
-                        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(commentInput.getWindowToken(), 0);
                         commentListAdapter.notifyDataSetChanged();
                         commentList.scrollToPosition(commentNews.getNewsComments().size()-1);
-                        (NewsListAdapter.this).notifyItemChanged(commentNewsPosition);
+
+                        if(((MainActivity)getContext()).getSupportFragmentManager().getFragments().get(0) instanceof FragmentNews){
+                            ((FragmentNews)((MainActivity)getContext()).getSupportFragmentManager().getFragments().get(0)).newsListAdapter.notifyItemChanged(commentNewsPosition);
+                        } else if(((MainActivity)getContext()).getSupportFragmentManager().getFragments().get(0) instanceof FragmentMain) {
+                            ((FragmentMain)((MainActivity)getContext()).getSupportFragmentManager().getFragments().get(0)).fragmentNews.newsListAdapter.notifyItemChanged(commentNewsPosition);
+                        }
                     }
                 }
             });
+
+            BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+            dialog.setContentView(view);
+            commentBehavior = BottomSheetBehavior.from((View) view.getParent());
+            return dialog;
         }
 
-        public void show(){
-            AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
-            mBuilder.setView(view);
-            AlertDialog alertDialog = mBuilder.create();
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-            alertDialog.show();
+        public CommentDialog(News commentNews, int commentNewsPosition) {
+            this.commentNews         = commentNews;
+            this.commentNewsPosition = commentNewsPosition;
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            commentBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
 
         private class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.ViewHolder>{
@@ -189,8 +217,14 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                     commentUserImage.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            (CommentDialog.this).dismiss();
                             if(((MainActivity)context).me.equals(newsComments.get(getAdapterPosition()).getCommentUser())){
-                                ((MainActivity)context).addFragment(new FragmentMe((newsComments.get(getAdapterPosition()).getCommentUser())));
+                                if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
+                                    ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
+                                } else {
+                                    ((MainActivity)context).addFragment(
+                                            new FragmentMe(newsComments.get(getAdapterPosition()).getCommentUser()));
+                                }
                             } else {
                                 ((MainActivity)context).addFragment(
                                         new FragmentUser(newsComments.get(getAdapterPosition()).getCommentUser()));
@@ -295,7 +329,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                 if(gestureDetector.onTouchEvent(event)) {
                     newsCommentButton.setAlpha((float) 1);
                     CommentDialog commentDialog = new CommentDialog(newsList.get(getAdapterPosition()), getAdapterPosition());
-                    commentDialog.show();
+                    commentDialog.show(((MainActivity)context).getSupportFragmentManager(), commentDialog.getTag());
                 } else if(event.getAction() == MotionEvent.ACTION_DOWN){
                     newsCommentButton.setAlpha((float) 0.5);
                 } else if (event.getAction() == MotionEvent.ACTION_UP){

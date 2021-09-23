@@ -25,6 +25,8 @@ import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 import com.globapp.globapp.classes.NewsRecognition;
 import com.globapp.globapp.classes.User;
+import com.globapp.globapp.fragmentmain.FragmentMain;
+import com.globapp.globapp.fragmentmain.fragmentnews.FragmentNews;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -114,10 +116,11 @@ public class FragmentGiveStar extends Fragment {
                 ((MainActivity)getContext()).news.add(0,
                         new NewsRecognition(postText.toString(), postText.getText().toString(), imageAddedURI, ((MainActivity)getContext()).me, user)
                 );
-                ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(postText.getWindowToken(), 0);
+                ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
                 ((MainActivity)getContext()).enableAnimation(R.drawable.celebration_animated_1);
+
             } else {
                 if(textLength <= 20){
                     Toast.makeText(getContext(), getString(R.string.minimum_length_text), Toast.LENGTH_LONG).show();

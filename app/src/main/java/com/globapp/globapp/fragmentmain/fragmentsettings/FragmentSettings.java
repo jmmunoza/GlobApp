@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentTransaction;
@@ -23,6 +24,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 import com.globapp.globapp.fragmentmain.FragmentMain;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -32,14 +34,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FragmentSettings extends Fragment {
 
-    private CircleImageView userImage;
-    private TextView        username;
-    private CardView        editProfileButton;
-    private Switch          darkModeSwitch;
-    private CardView        languageButton;
-    private CardView        notificationButton;
-    private CardView        aboutButton;
-    private CardView        logoutButton;
+    private CircleImageView   userImage;
+    private TextView          username;
+    private CardView          editProfileButton;
+    private Switch            darkModeSwitch;
+    private CardView          languageButton;
+    private CardView          notificationButton;
+    private CardView          aboutButton;
+    private CardView          logoutButton;
+    private SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -59,6 +62,8 @@ public class FragmentSettings extends Fragment {
     }
 
     private void loadComponents(){
+        sharedPreferences = ((MainActivity)getContext()).getSharedPreferences(MainActivity.DATA, Context.MODE_PRIVATE);
+
         userImage          = getView().findViewById(R.id.settings_user_image);
         username           = getView().findViewById(R.id.settings_username);
         editProfileButton  = getView().findViewById(R.id.settings_edit_profile_button);
@@ -74,7 +79,7 @@ public class FragmentSettings extends Fragment {
 
 
         // DARK MODE SETTINGS
-        SharedPreferences sharedPreferences = ((MainActivity)getContext()).getSharedPreferences(MainActivity.DATA, Context.MODE_PRIVATE);
+
         if(sharedPreferences.getBoolean(MainActivity.DARK_MODE, false)){
             darkModeSwitch.setChecked(true);
         } else {
@@ -83,12 +88,79 @@ public class FragmentSettings extends Fragment {
 
         darkModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferences sharedPreferences = ((MainActivity)getContext()).getSharedPreferences(MainActivity.DATA, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(MainActivity.DARK_MODE, isChecked);
                 editor.apply();
                 editor.commit();
             }
         });
+
+        // LANGUAGE SETTINGS
+
+        languageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.SheetDialog);
+
+                if(((MainActivity)getContext()).isDarkMode){
+                    bottomSheetDialog.setContentView(R.layout.fragment_settings_language_dark);
+                } else {
+                    bottomSheetDialog.setContentView(R.layout.fragment_settings_language);
+                }
+
+                CardView spanish = bottomSheetDialog.findViewById(R.id.spanish_button);
+                CardView english = bottomSheetDialog.findViewById(R.id.english_button);
+
+                if(sharedPreferences.getBoolean(MainActivity.IS_ENGLISH, true)){
+                    english.setCardBackgroundColor(getResources().getColor(R.color.globant_main_color));
+                } else {
+                    spanish.setCardBackgroundColor(getResources().getColor(R.color.globant_main_color));
+                }
+
+                spanish.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean(MainActivity.IS_ENGLISH, false);
+                        editor.apply();
+                        editor.commit();
+                        Toast.makeText(getContext(), getString(R.string.spanish),Toast.LENGTH_LONG).show();
+                        bottomSheetDialog.cancel();
+                    }
+                });
+
+                english.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean(MainActivity.IS_ENGLISH, true);
+                        editor.apply();
+                        editor.commit();
+                        Toast.makeText(getContext(), getString(R.string.english),Toast.LENGTH_LONG).show();
+                        bottomSheetDialog.cancel();
+                    }
+                });
+
+                bottomSheetDialog.show();
+            }
+        });
+
+        // ABOUT SETTINGS
+
+        aboutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.SheetDialog);
+
+                if(((MainActivity)getContext()).isDarkMode){
+                    bottomSheetDialog.setContentView(R.layout.fragment_settings_about_dark);
+                } else {
+                    bottomSheetDialog.setContentView(R.layout.fragment_settings_about);
+                }
+
+                bottomSheetDialog.show();
+            }
+        });
+
     }
 }

@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class FragmentLogin extends Fragment {
     private TextInputEditText loginUserText;
     private TextInputEditText loginPasswordText;
-    private CardView loginButton;
+    private CardView          loginButton;
 
     @Nullable
     @Override

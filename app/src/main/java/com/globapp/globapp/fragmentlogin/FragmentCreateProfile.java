@@ -117,8 +117,8 @@ public class FragmentCreateProfile extends Fragment {
 
         continueButton.setOnClickListener(v -> {
             int textLength = userDescription.getText().toString().length();
-            if(textLength > 20 && textLength < 500){
-                ((MainActivity)getContext()).me = new User("0", username.getText().toString(), userDescription.getText().toString(), userImageURI, coverImageURI);
+            if(textLength > 20 && textLength < 300){
+                ((MainActivity)getContext()).me = new User("0", username.getText().toString(), userDescription.getText().toString(), userImageURI, coverImageURI, true);
                 ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(userDescription.getWindowToken(), 0);

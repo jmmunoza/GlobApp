@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 
 import com.globapp.globapp.classes.News;
 import com.globapp.globapp.classes.NewsRecognition;
+import com.globapp.globapp.classes.Notification;
 import com.globapp.globapp.classes.Recognition;
 import com.globapp.globapp.classes.User;
 import com.globapp.globapp.fragmentlogin.FragmentLogin;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     public User me;
     public ArrayList<User> users;
     public ArrayList<News> news;
+    public ArrayList<Notification> notifications;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,12 +142,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void createData(){
         users = new ArrayList<>();
-        users.add(new User("1", "Samanta de Jesús Echeverri", "Dirigente encargada del Departamento de Manufactura", getUri(0), null));
-        users.add(new User("2", "José Hernesto Pérez", "Dirigente encargado del Departamento de Tecnología y Software", getUri(1), null));
-        users.add(new User("3", "Cristiano Ronaldo", "Máximo ponente en Relaciones Internacionales", getUri(2), null));
-        users.add(new User("4", "Julián Arboleda Bermudez", "Alto mando de la Unidad de Control de Finanzas", getUri(3), null));
-        users.add(new User("5", "José Castro Peláez", "Director Ejecutivo del Departamento de Logistica", getUri(4), null));
-        users.add(new User("6", "Leonel Álvares Arias", "Dirigente personal del aseo", getUri(6), null));
+        users.add(new User("1", "Samanta de Jesús Echeverri", "Dirigente encargada del Departamento de Manufactura", getUri(0), null, true));
+        users.add(new User("2", "José Hernesto Pérez", "Dirigente encargado del Departamento de Tecnología y Software", getUri(1), null, true));
+        users.add(new User("3", "Cristiano Ronaldo", "Máximo ponente en Relaciones Internacionales", getUri(2), null, true));
+        users.add(new User("4", "Julián Arboleda Bermudez", "Alto mando de la Unidad de Control de Finanzas", getUri(3), null, true));
+        users.add(new User("5", "José Castro Peláez", "Director Ejecutivo del Departamento de Logistica", getUri(4), null,true));
+        users.add(new User("6", "Leonel Álvares Arias", "Dirigente personal del aseo", getUri(6), null,true));
 
         /*
         me.addMeRecognitions(new Recognition("Mejor empleado de la temporada 2020-2021", 1));
@@ -158,16 +160,21 @@ public class MainActivity extends AppCompatActivity {
 
 
         news = new ArrayList<>();
-        news.add(new NewsRecognition("0", "¡Excelente trabajo allá en Ibiza! Muy bien manejada esa conferencia.", null, users.get(1), users.get(0)));
+        news.add(new NewsRecognition("0", "¡Excelente trabajo allá en Ibiza! Muy bien manejada esa conferencia.", getUri(0), users.get(1), users.get(0)));
         news.add(new NewsRecognition("1", "Bienvenido a la empresa compañero, que la pases muy bien.", null, users.get(2), users.get(1)));
         news.add(new NewsRecognition("2", "Gran experiencia la llevada contigo en el evento de la FECODE!!!", null, users.get(3), users.get(2)));
         news.add(new NewsRecognition("0", "Excelente trabajo allá en Cartagena! Muy bien manejada esa conferencia.", null, users.get(1), users.get(4)));
         news.add(new NewsRecognition("0", "Dios te bendiga y muchos exitos.", null, users.get(2), users.get(5)));
-        news.add(new News("0", "Amo trabajar acá :).", null, users.get(3)));
+        news.add(new News("0", "Amo trabajar acá :).", getUri(4), users.get(3)));
         news.add(new News("0", "Espero nunca salir de acá.", null, users.get(1)));
         news.add(new NewsRecognition("0", "Merecido el reconocimiento mi hermano, muy buen desepeño", null, users.get(0), users.get(5)));
         news.add(new NewsRecognition("0", "Nos fuimos a Italia gracias a tu entrega!!!", null, users.get(5), users.get(4)));
-        news.add(new News("0", "Mañana la empresa se expandirá a Italia gente", null, users.get(2)));
+        news.add(new News("0", "Mañana la empresa se expandirá a Italia gente", getUri(5), users.get(2)));
+
+        notifications = new ArrayList<>();
+        for(News n: news){
+            notifications.add(new Notification("0", n));
+        }
 
     }
 

@@ -22,11 +22,8 @@ import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 import com.globapp.globapp.classes.User;
 import com.theartofdev.edmodo.cropper.CropImage;
-
 import java.util.concurrent.TimeUnit;
-
 import de.hdodenhof.circleimageview.CircleImageView;
-
 public class FragmentEditProfile extends Fragment {
 
     private CardView        cancelButton;
@@ -126,7 +123,7 @@ public class FragmentEditProfile extends Fragment {
 
         continueButton.setOnClickListener(v -> {
             int textLength = userDescription.getText().toString().length();
-            if (textLength > 20 && textLength < 500) {
+            if (textLength > 20 && textLength < 300) {
                 me.setMeDescription(userDescription.getText().toString());
                 me.setMeImage(userImageURI);
                 me.setMeCoverImage(coverImageURI);

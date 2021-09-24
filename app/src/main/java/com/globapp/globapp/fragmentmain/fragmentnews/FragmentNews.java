@@ -54,25 +54,13 @@ public class FragmentNews extends Fragment {
                     @Override
                     public void run() {
                         newsListAdapter.notifyDataSetChanged();
+                        newsPagerAdapter.notifyDataSetChanged();
                         newsRefresh.setRefreshing(false);
                     }
                 });
             }
         });
 
-        // Temporal ----------------------
-        ArrayList<String> news = new ArrayList<>();
-        news.add("NOTIFICATION");
-        news.add("NOTIFICATION");
-        news.add("NOTIFICATION");
-        news.add("NOTIFICATION");
-        news.add("NOTIFICATION");
-        news.add("NOTIFICATION");
-        news.add("NOTIFICATION");
-        news.add("NOTIFICATION");
-        news.add("NOTIFICATION");
-        news.add("NOTIFICATION");
-        // -------------------------------------
 
         // News list configuration
         newsList = getView().findViewById(R.id.news_list);
@@ -91,7 +79,7 @@ public class FragmentNews extends Fragment {
                 getContext(),
                 LinearLayoutManager.HORIZONTAL,
                 false);
-        newsPagerAdapter = new NewsPagerAdapter(getContext(), news);
+        newsPagerAdapter = new NewsPagerAdapter(getContext(), ((MainActivity)getContext()).news);
         newsPager.setLayoutManager(horizontalLayoutManager);
         newsPager.setAdapter(newsPagerAdapter);
 

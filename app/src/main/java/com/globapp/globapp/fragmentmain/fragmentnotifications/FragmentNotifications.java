@@ -55,20 +55,6 @@ public class FragmentNotifications extends Fragment {
             }
         });
 
-        // Temporal ----------------------
-        ArrayList<String> notifications = new ArrayList<>();
-        notifications.add("NOTIFICATION");
-        notifications.add("NOTIFICATION");
-        notifications.add("NOTIFICATION");
-        notifications.add("NOTIFICATION");
-        notifications.add("NOTIFICATION");
-        notifications.add("NOTIFICATION");
-        notifications.add("NOTIFICATION");
-        notifications.add("NOTIFICATION");
-        notifications.add("NOTIFICATION");
-        notifications.add("NOTIFICATION");
-        // -------------------------------------
-
         notificationsList = getView().findViewById(R.id.notifications_list);
 
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(
@@ -77,7 +63,7 @@ public class FragmentNotifications extends Fragment {
                 false);
 
         notificationsListAdapter = new NotificationsListAdapter(
-                getContext(), notifications);
+                getContext(), ((MainActivity)getContext()).notifications);
 
         notificationsList.setLayoutManager(verticalLayoutManager);
         notificationsList.setAdapter(notificationsListAdapter);

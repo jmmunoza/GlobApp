@@ -14,10 +14,11 @@ public class User {
     private int                    meStars;
     private ArrayList<News>        meNews;
     private ArrayList<Recognition> meRecognitions;
+    private boolean                meIsAdmin;
 
     public User(String meID,      String meName,          String meDescription,  Uri meImage,
                 Uri meCoverImage, ArrayList<News> meNews, ArrayList<Recognition> meRecognitions,
-                int meCredits,    int meStars){
+                int meCredits,    int meStars,            boolean meIsAdmin){
 
         this.meCredits      = meCredits;
         this.meStars        = meStars;
@@ -28,9 +29,10 @@ public class User {
         this.meCoverImage   = meCoverImage;
         this.meNews         = meNews;
         this.meRecognitions = meRecognitions;
+        this.meIsAdmin      = meIsAdmin;
     }
 
-    public User(String meID, String meName, String meDescription,  Uri meImage, Uri meCoverImage){
+    public User(String meID, String meName, String meDescription,  Uri meImage, Uri meCoverImage, boolean meIsAdmin){
 
         this.meCredits      = 0;
         this.meStars        = 0;
@@ -41,6 +43,15 @@ public class User {
         this.meCoverImage   = meCoverImage;
         this.meNews         = new ArrayList<>();
         this.meRecognitions = new ArrayList<>();
+        this.meIsAdmin      = meIsAdmin;
+    }
+
+    public boolean getMeIsAdmin() {
+        return meIsAdmin;
+    }
+
+    public void setMeIsAdmin(boolean meIsAdmin) {
+        this.meIsAdmin = meIsAdmin;
     }
 
     public void setMeCoverImage(Uri meCoverImage) {

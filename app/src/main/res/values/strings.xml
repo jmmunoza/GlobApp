@@ -3,6 +3,7 @@
     <string name="news_item">News</string>
     <string name="notifications_item">Notifications</string>
     <string name="me_item">Me</string>
+    <string name="admin_pane_item">Admin pane</string>
     <string name="login_message">A different social network</string>
     <string name="login_user_hint">Your username or e-mail</string>
     <string name="login_password_hint">Your password</string>
@@ -38,11 +39,15 @@
     <string name="something_went_wrong">Something went wrong</string>
     <string name="you_havent_picked_image">You haven´t picked Image</string>
     <string name="minimum_length_text">Minimum text length is 20 characters</string>
-    <string name="maximum_length_text">Maximum text length is 500 characters</string>
+    <string name="maximum_length_text">Maximum text length is 300 characters</string>
     <string name="type_your_description">Type your description here</string>
     <string name="select_cover">Select your cover image</string>
     <string name="select_image">Select your profile image</string>
     <string name="edit_profile">Edit profile</string>
     <string name="continue1">Continue</string>
     <string name="select_your_language">Select your language</string>
+    <string name="notification_news_text">just made a post. Comment it!</string>
+    <string name="notification_news_image">just shared an image. Take a minute and see it!</string>
+    <string name="notification_news_recognition_1">congratulated to</string>
+    <string name="notification_news_recognition_2">! Type them a message</string>
 </resources>

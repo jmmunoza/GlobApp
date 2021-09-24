@@ -4,4 +4,5 @@
     <item android:title="@string/news_item" android:id="@+id/action_news" android:icon="@drawable/ic_baseline_home_24"/>
     <item android:title="@string/notifications_item" android:id="@+id/action_notifications" android:icon="@drawable/ic_baseline_notifications_24"/>
     <item android:title="@string/me_item" android:id="@+id/action_me" android:icon="@drawable/ic_baseline_person_pin_24"/>
+    <item android:title="@string/admin_pane_item" android:id="@+id/action_admin_pane" android:icon="@drawable/ic_baseline_admin_panel_settings_24"/>
 </menu>

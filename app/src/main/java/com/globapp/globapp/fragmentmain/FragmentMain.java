@@ -17,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 
+import com.globapp.globapp.fragmentmain.fragmentadminpane.FragmentAdminPane;
 import com.globapp.globapp.fragmentmain.fragmentme.FragmentMe;
 import com.globapp.globapp.fragmentmain.fragmentnews.FragmentNews;
 import com.globapp.globapp.fragmentmain.fragmentnotifications.FragmentNotifications;
@@ -35,11 +36,14 @@ public class FragmentMain extends Fragment {
     public FragmentSearch        fragmentSearch;
     public FragmentSettings      fragmentSettings;
     public FragmentNotifications fragmentNotifications;
+    public FragmentAdminPane     fragmentAdminPane;
 
     // Consonants
     public static final int NEWS = 0;
     public static final int NOTIFICATIONS = 1;
     public static final int ME = 2;
+    public static final int ADMIN_PANE = 3;
+
 
     // Components
     public ViewPager2           mainViewPager;
@@ -71,6 +75,8 @@ public class FragmentMain extends Fragment {
         fragmentNotifications = new FragmentNotifications();
         fragmentSearch        = new FragmentSearch();
         fragmentSettings      = new FragmentSettings();
+        fragmentAdminPane     = new FragmentAdminPane();
+
 
         settings_button = ((MainActivity)getContext()).findViewById(R.id.settings_button);
         settings_button.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +95,8 @@ public class FragmentMain extends Fragment {
         });
 
         bottomNavigationView = ((MainActivity)getContext()).findViewById(R.id.bottom_navigation_bar);
+        if(!((MainActivity)getContext()).me.getMeIsAdmin())
+            bottomNavigationView.getMenu().removeItem(R.id.action_admin_pane);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -101,6 +109,9 @@ public class FragmentMain extends Fragment {
                         break;
                     case R.id.action_me:
                         mainViewPager.setCurrentItem(ME);
+                        break;
+                    case R.id.action_admin_pane:
+                        mainViewPager.setCurrentItem(ADMIN_PANE);
                         break;
                 }
                 return true;
@@ -124,6 +135,10 @@ public class FragmentMain extends Fragment {
                         break;
                     case ME:
                         bottomNavigationView.setSelectedItemId(R.id.action_me);
+                        break;
+                    case ADMIN_PANE:
+                        bottomNavigationView.setSelectedItemId(R.id.action_admin_pane);
+                        break;
                 }
             }
         });
@@ -150,6 +165,8 @@ public class FragmentMain extends Fragment {
                     return  fragmentNotifications;
                 case ME:
                     return  fragmentMe;
+                case ADMIN_PANE:
+                    return  fragmentAdminPane;
                 default:
                     return null;
             }
@@ -157,7 +174,7 @@ public class FragmentMain extends Fragment {
 
         @Override
         public int getItemCount() {
-            return 3;
+            return 4;
         }
     }
 }

@@ -16,17 +16,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 import com.globapp.globapp.classes.News;
+import com.globapp.globapp.fragmentmain.fragmentnotifications.FragmentOnNotification;
 
 import java.util.ArrayList;
 
 
 public class NewsPagerAdapter extends RecyclerView.Adapter<NewsPagerAdapter.ViewHolder> {
 
-    private ArrayList<String> newsPager;
+    private ArrayList<News> newsPager;
     private LayoutInflater inflater;
     private Context context;
 
-    public NewsPagerAdapter(Context context, ArrayList<String> newsPager) {
+    public NewsPagerAdapter(Context context, ArrayList<News> newsPager) {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.newsPager = newsPager;
@@ -43,6 +44,11 @@ public class NewsPagerAdapter extends RecyclerView.Adapter<NewsPagerAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        News news = newsPager.get(position);
+
+    if(news.getNewsImage() != null) holder.pagerImage.setImageURI(news.getNewsImage());
+    else holder.pagerImage.setImageResource(R.drawable.cover);
+    holder.pagerDescription.setText(news.getNewsContent());
 
     }
 
@@ -66,6 +72,13 @@ public class NewsPagerAdapter extends RecyclerView.Adapter<NewsPagerAdapter.View
             pagerImage       = itemView.findViewById(R.id.news_pager_image);
             pagerTitle       = itemView.findViewById(R.id.news_pager_title);
             pagerDescription = itemView.findViewById(R.id.news_pager_description);
+
+            pagerBackground.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((MainActivity)context).addFragmentUp(new FragmentOnNotification(newsPager.get(getAdapterPosition())));
+                }
+            });
         }
     }
 }

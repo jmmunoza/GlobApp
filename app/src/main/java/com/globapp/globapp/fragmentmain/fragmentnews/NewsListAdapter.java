@@ -164,76 +164,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
             commentBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
 
-        private class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.ViewHolder>{
 
-            private ArrayList<Comment> newsComments;
-            private LayoutInflater inflater;
-            Context context;
-
-            public CommentListAdapter(Context context, ArrayList<Comment> newsComments){
-                this.inflater = LayoutInflater.from(context);
-                this.context = context;
-                this.newsComments = newsComments;
-            }
-
-            @NonNull
-            @Override
-            public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                if(((MainActivity)context).isDarkMode){
-                    return new ViewHolder(inflater.inflate(R.layout.fragment_news_item_comment_item_dark, parent, false));
-                } else {
-                    return new ViewHolder(inflater.inflate(R.layout.fragment_news_item_comment_item, parent, false));
-                }
-            }
-
-            @Override
-            public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-                Comment comment = newsComments.get(position);
-
-                holder.commentContent.setText(comment.getCommentContent());
-                holder.commentUsername.setText(comment.getCommentUser().getMeName());
-                holder.commentUserImage.setImageURI(comment.getCommentUser().getMeImage());
-            }
-
-            @Override
-            public int getItemCount() {
-                return newsComments.size();
-            }
-
-            private class ViewHolder extends RecyclerView.ViewHolder {
-                CircleImageView commentUserImage;
-                TextView        commentUsername;
-                TextView        commentContent;
-                TextView        commentTime;
-
-                public ViewHolder(@NonNull View itemView) {
-                    super(itemView);
-
-                    commentUserImage = itemView.findViewById(R.id.comment_item_user_image);
-                    commentUsername  = itemView.findViewById(R.id.comment_item_username);
-                    commentContent   = itemView.findViewById(R.id.comment_item_content);
-                    commentTime      = itemView.findViewById(R.id.comment_item_time);
-
-                    commentUserImage.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            (CommentDialog.this).dismiss();
-                            if(((MainActivity)context).me.equals(newsComments.get(getAdapterPosition()).getCommentUser())){
-                                if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
-                                    ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
-                                } else {
-                                    ((MainActivity)context).addFragmentUp(
-                                            new FragmentMe(newsComments.get(getAdapterPosition()).getCommentUser()));
-                                }
-                            } else {
-                                ((MainActivity)context).addFragmentUp(
-                                        new FragmentUser(newsComments.get(getAdapterPosition()).getCommentUser()));
-                            }
-                        }
-                    });
-                }
-            }
-        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

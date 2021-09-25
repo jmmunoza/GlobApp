@@ -9,21 +9,32 @@ import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.globapp.globapp.classes.News;
 import com.globapp.globapp.classes.NewsRecognition;
 import com.globapp.globapp.classes.Notification;
-import com.globapp.globapp.classes.Recognition;
 import com.globapp.globapp.classes.User;
 import com.globapp.globapp.fragmentlogin.FragmentLogin;
 import com.globapp.globapp.fragmentmain.FragmentMain;
 import com.globapp.globapp.fragmentmain.fragmentnews.FragmentNews;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
+
+import io.realm.Realm;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
+
+import io.realm.mongodb.App;
+import io.realm.mongodb.AppConfiguration;
+import io.realm.mongodb.Credentials;
+import io.realm.mongodb.mongo.MongoClient;
+import io.realm.mongodb.mongo.MongoDatabase;
+import io.realm.mongodb.mongo.MongoCollection;
+import org.bson.Document;
 
 public class MainActivity extends AppCompatActivity {
     public static final String DATA       = "DATA";
@@ -91,6 +102,51 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(DATA, MODE_PRIVATE);
         isDarkMode = sharedPreferences.getBoolean(DARK_MODE, false);
         isEnglish  = sharedPreferences.getBoolean(IS_ENGLISH, true);
+
+
+        // CONEXION A LA BASE DATOS SIUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU
+
+        /*
+        String appID = "globapp-tbbdi"; // replace this with your App ID
+        Realm.init(this);
+        App app = new App(new AppConfiguration.Builder(appID)
+                .build());
+
+        Credentials emailPasswordCredentials = Credentials.emailPassword("demo1@gmail.com", "000000");
+        AtomicReference<io.realm.mongodb.User> user = new AtomicReference<io.realm.mongodb.User>();
+        app.loginAsync(emailPasswordCredentials, it -> {
+            if (it.isSuccess()) {
+                Log.v("AUTH", "Successfully authenticated using an email and password.");
+                user.set(app.currentUser());
+
+
+
+                MongoClient mongoClient = user.get().getMongoClient("mongodb-atlas");
+                MongoDatabase mongoDatabase = mongoClient.getDatabase("GlobAppPrueba1");
+                MongoCollection<Document> mongoCollection = mongoDatabase.getCollection("user");
+
+                Document aaaa = new Document().append("idUSUARIO", "12391239012").
+                        append("nombre", "juanito")
+                        .append("asdsddsad", "aasd");
+
+                mongoCollection.insertOne(aaaa).getAsync(result -> {
+                    if(result.isSuccess())
+                    {
+                        Log.v("Data","Data Inserted Successfully");
+                    }
+                    else
+                    {
+                        Log.v("Data","Error:"+result.getError().toString());
+                    }
+                });
+
+
+            } else {
+                Log.e("AUTH", it.getError().toString());
+            }
+        });
+
+         */
     }
 
     public void addFragmentUp(Fragment fragment){

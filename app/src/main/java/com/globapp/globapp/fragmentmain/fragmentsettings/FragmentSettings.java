@@ -28,6 +28,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -84,6 +85,26 @@ public class FragmentSettings extends Fragment {
             }
         });
 
+        // LOGOUT SETTINGS
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                while (((MainActivity)getContext()).getSupportFragmentManager().getBackStackEntryCount() != 0){
+                    ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
+                }
+
+                for (Fragment fragment : (((MainActivity)getContext()).getSupportFragmentManager().getFragments())) {
+                    ((MainActivity)getContext()).getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+                }
+
+                ((MainActivity)getContext()).addFragmentUp(((MainActivity)getContext()).fragmentLogin);
+                ((MainActivity)getContext()).fragmentMain = new FragmentMain();
+                ((MainActivity)getContext()).me = null;
+                ((MainActivity)getContext()).notifications.clear();
+                ((MainActivity)getContext()).news.clear();
+            }
+        });
 
         // DARK MODE SETTINGS
 

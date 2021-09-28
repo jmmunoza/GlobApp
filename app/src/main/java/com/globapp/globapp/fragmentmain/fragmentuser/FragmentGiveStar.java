@@ -23,17 +23,28 @@ import androidx.fragment.app.Fragment;
 
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
+import com.globapp.globapp.classes.News;
 import com.globapp.globapp.classes.NewsRecognition;
+import com.globapp.globapp.classes.Recognition;
 import com.globapp.globapp.classes.User;
+import com.globapp.globapp.fragmentlogin.FragmentCreateProfile;
 import com.globapp.globapp.fragmentmain.FragmentMain;
 import com.globapp.globapp.fragmentmain.fragmentnews.FragmentNews;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import org.bson.Document;
+import org.bson.types.ObjectId;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+
+import io.realm.mongodb.mongo.MongoClient;
+import io.realm.mongodb.mongo.MongoCollection;
+import io.realm.mongodb.mongo.MongoDatabase;
 
 public class FragmentGiveStar extends Fragment {
     // Data
@@ -113,14 +124,43 @@ public class FragmentGiveStar extends Fragment {
         postButton.setOnClickListener(v -> {
             int textLength = postText.getText().toString().length();
             if(textLength > 20 && textLength < 500){
-                ((MainActivity)getContext()).news.add(0,
-                        new NewsRecognition(postText.toString(), postText.getText().toString(), imageAddedURI, ((MainActivity)getContext()).me, user)
-                );
-                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(postText.getWindowToken(), 0);
-                ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
-                ((MainActivity)getContext()).enableAnimation(R.drawable.celebration_animated_1);
 
+                if(((MainActivity)getContext()).databaseConnection != null){
+                    Document userQuery = new Document().append("_id", user.getMeID());
+
+                    Document newsRecognition = new Document()
+                            .append("content", postText.getText().toString())
+                            .append("user_owner_id", ((MainActivity)getContext()).me.getMeID())
+                            .append("likes", 0)
+                            .append("comments", 0)
+                            .append("user_recognized_id", user.getMeID());
+
+                    ((MainActivity)getContext()).userCollection.findOne(userQuery).getAsync(result -> {
+                        if(result.isSuccess()){
+                            ((MainActivity)getContext()).userCollection.findOneAndUpdate(
+                                    userQuery, result.get().append("stars", result.get().getInteger("stars")+1)).getAsync(result1 -> {
+                            });
+                        }
+                    });
+
+                    ((MainActivity)getContext()).newsCollection.insertOne(newsRecognition).getAsync(result -> {
+                        if (result.isSuccess()) {
+                            Document notification = new Document()
+                                    .append("news_id", result.get().getInsertedId().asObjectId().getValue());
+
+                            ((MainActivity)getContext()).notificationsCollection.insertOne(notification).getAsync(result1 -> {
+                                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(postText.getWindowToken(), 0);
+                                ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
+                                ((MainActivity)getContext()).enableAnimation(R.drawable.celebration_animated_1);
+
+                                Toast.makeText(getContext(), "PUBLICADO", Toast.LENGTH_LONG);
+                            });
+                        }
+                    });
+                } else {
+                    ((MainActivity)getContext()).connectDB();
+                }
             } else {
                 if(textLength <= 20){
                     Toast.makeText(getContext(), getString(R.string.minimum_length_text), Toast.LENGTH_LONG).show();

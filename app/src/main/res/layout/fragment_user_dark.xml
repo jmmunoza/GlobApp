@@ -140,7 +140,7 @@
                             android:layout_height="100dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/star_animated_1"
-                            app:layout_constraintBottom_toTopOf="@+id/me_user_stars"
+                            app:layout_constraintBottom_toTopOf="@+id/user_stars"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent">
@@ -148,7 +148,7 @@
                         </pl.droidsonroids.gif.GifImageView>
 
                         <TextView
-                            android:id="@+id/me_user_stars"
+                            android:id="@+id/user_stars"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/openbold"

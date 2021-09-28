@@ -22,6 +22,9 @@ import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 import com.globapp.globapp.classes.User;
 import com.theartofdev.edmodo.cropper.CropImage;
+
+import org.bson.Document;
+
 import java.util.concurrent.TimeUnit;
 import de.hdodenhof.circleimageview.CircleImageView;
 public class FragmentEditProfile extends Fragment {
@@ -124,13 +127,23 @@ public class FragmentEditProfile extends Fragment {
         continueButton.setOnClickListener(v -> {
             int textLength = userDescription.getText().toString().length();
             if (textLength > 20 && textLength < 300) {
-                me.setMeDescription(userDescription.getText().toString());
-                me.setMeImage(userImageURI);
-                me.setMeCoverImage(coverImageURI);
+                Document userQuery = new Document()
+                        .append("_id", ((MainActivity)getContext()).me.getMeID());
 
-                ((MainActivity) getContext()).getSupportFragmentManager().popBackStackImmediate();
-                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(userDescription.getWindowToken(), 0);
+                ((MainActivity)getContext()).userCollection.findOne(userQuery).getAsync(userData -> {
+                    if(userData.isSuccess()){
+                        Document userDataUpdated = userData.get().append("description", userDescription.getText().toString());
+                        ((MainActivity)getContext()).userCollection.findOneAndUpdate(userQuery,userDataUpdated).getAsync(result -> {
+                            if(result.isSuccess()){
+                                Toast.makeText(getContext(), "DATOS ACTUALIZADOS", Toast.LENGTH_LONG).show();
+                                ((MainActivity) getContext()).getSupportFragmentManager().popBackStackImmediate();
+                                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(userDescription.getWindowToken(), 0);
+                            }
+                        });
+                    }
+                });
+
             } else {
                 if (textLength <= 20) {
                     Toast.makeText(getContext(), getString(R.string.minimum_length_text), Toast.LENGTH_LONG).show();

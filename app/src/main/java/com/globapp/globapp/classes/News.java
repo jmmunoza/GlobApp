@@ -2,34 +2,40 @@ package com.globapp.globapp.classes;
 
 import android.net.Uri;
 
+import org.bson.types.ObjectId;
+
 import java.util.ArrayList;
 
 public class News {
 
-    private String  newsID;
-    private String  newsContent;
-    private Uri     newsImage;
-    private int     newsLikes;
-    private User    newsUserOwner;
-    private boolean newsIsRecognition;
-    private ArrayList<Comment> newsComments;
+    private ObjectId newsID;
+    private String   newsContent;
+    private Uri      newsImage;
+    private int      newsLikes;
+    private int      newsComments;
+    private boolean  newsUserLiked;
+    private User     newsUserOwner;
 
-    public News(String newsID, String newsContent, Uri newsImage, User newsUserOwner){
+    public News(ObjectId newsID, String newsContent, Uri newsImage, int newsLikes, int newsComments, boolean newsUserLiked, User newsUserOwner){
         this.newsID            = newsID;
         this.newsContent       = newsContent;
         this.newsImage         = newsImage;
         this.newsUserOwner     = newsUserOwner;
-        this.newsIsRecognition = false;
-        this.newsLikes         = 0;
-        this.newsComments      = new ArrayList<>();
+        this.newsLikes         = newsLikes;
+        this.newsUserLiked     = newsUserLiked;
+        this.newsComments      = newsComments;
     }
 
-    public ArrayList<Comment> getNewsComments() {
+    public void setNewsUserLiked(boolean newsUserLiked) {
+        this.newsUserLiked = newsUserLiked;
+    }
+
+    public boolean getNewsUserLiked() {
+        return newsUserLiked;
+    }
+
+    public int getNewsComments() {
         return newsComments;
-    }
-
-    public void addComment(Comment comment){
-        newsComments.add(comment);
     }
 
     public void addLike(){
@@ -44,14 +50,6 @@ public class News {
         return newsLikes;
     }
 
-    public boolean isNewsIsRecognition() {
-        return newsIsRecognition;
-    }
-
-    public void setNewsIsRecognition(boolean newsIsRecognition) {
-        this.newsIsRecognition = newsIsRecognition;
-    }
-
     public Uri getNewsImage() {
         return newsImage;
     }
@@ -60,7 +58,7 @@ public class News {
         return newsContent;
     }
 
-    public String getNewsID() {
+    public ObjectId getNewsID() {
         return newsID;
     }
 

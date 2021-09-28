@@ -52,10 +52,16 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
 
         if(notification.getNotificationNews() instanceof NewsRecognition){
             NewsRecognition newsRecognition = (NewsRecognition) notification.getNotificationNews();
-            holder.notificationText.setText(newsRecognition.getNewsUserOwner().getMeName() + " " +
-                                            context.getString(R.string.notification_news_recognition_1) + " " +
-                                            newsRecognition.getNewsUserRecognized().getMeName() + " " +
-                                            context.getString(R.string.notification_news_recognition_2));
+            if(newsRecognition.getNewsUserRecognized().getMeID().equals(((MainActivity)context).me.getMeID())){
+                holder.notificationText.setText(newsRecognition.getNewsUserOwner().getMeName() + " " +
+                        context.getString(R.string.notification_news_recognition_you));
+            } else {
+                holder.notificationText.setText(newsRecognition.getNewsUserOwner().getMeName() + " " +
+                        context.getString(R.string.notification_news_recognition_1) + " " +
+                        newsRecognition.getNewsUserRecognized().getMeName() + " " +
+                        context.getString(R.string.notification_news_recognition_2));
+            }
+
         } else {
             News news = notification.getNotificationNews();
             if(news.getNewsImage() != null){
@@ -79,14 +85,14 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
         ViewHolder(View itemView) {
             super(itemView);
 
-            notificationText       = (TextView) itemView.findViewById(R.id.notification_item_text);
-            notificationUserImage  = (ImageView) itemView.findViewById(R.id.notification_item_user_image);
-            notificationBackground = (ConstraintLayout) itemView.findViewById(R.id.notification_item_background);
+            notificationText       =  itemView.findViewById(R.id.notification_item_text);
+            notificationUserImage  =  itemView.findViewById(R.id.notification_item_user_image);
+            notificationBackground =  itemView.findViewById(R.id.notification_item_background);
 
             notificationBackground.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((MainActivity)context).addFragmentUp(new FragmentOnNotification(notificationsList.get(getAdapterPosition()).getNotificationNews()));
+                    ((MainActivity)context).addFragmentRight(new FragmentOnNotification(notificationsList.get(getAdapterPosition()).getNotificationNews().getNewsID()));
                 }
             });
         }

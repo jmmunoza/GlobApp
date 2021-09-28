@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -14,9 +15,18 @@ import androidx.fragment.app.Fragment;
 
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
+import com.globapp.globapp.classes.Recognition;
+import com.globapp.globapp.classes.User;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.bson.Document;
+
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+
+import io.realm.mongodb.mongo.MongoClient;
+import io.realm.mongodb.mongo.MongoCollection;
+import io.realm.mongodb.mongo.MongoDatabase;
 
 public class FragmentLogin extends Fragment {
     private TextInputEditText loginUserText;
@@ -39,22 +49,53 @@ public class FragmentLogin extends Fragment {
         loginUserText     = ((MainActivity)getContext()).findViewById(R.id.login_user_text);
         loginButton       = ((MainActivity)getContext()).findViewById(R.id.login_button);
 
-        GestureDetector gestureDetector = new GestureDetector(getContext(), new MainActivity.SingleTapConfirm());
-        loginButton.setOnTouchListener(new View.OnTouchListener() {
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(gestureDetector.onTouchEvent(event)) {
-                    loginButton.setAlpha((float) 1);
-                    ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
-                    ((MainActivity)getContext()).addFragmentRight(new FragmentCreateProfile());
-                } else if(event.getAction() == MotionEvent.ACTION_DOWN){
-                    loginButton.setAlpha((float) 0.5);
-                } else if (event.getAction() == MotionEvent.ACTION_UP){
-                    loginButton.setAlpha((float) 1);
-                } else if (event.getAction() == MotionEvent.ACTION_CANCEL){
-                    loginButton.setAlpha((float) 1);
+            public void onClick(View v) {
+                if(!loginPasswordText.getText().toString().equals("") && !loginUserText.getText().toString().equals("")){
+                    if(((MainActivity)getContext()).databaseConnection != null){
+
+                        Document userQuery = new Document()
+                                .append("email", loginUserText.getText().toString());
+
+                        ((MainActivity)getContext()).userCollection.findOne(userQuery).getAsync(result -> {
+                            if (result.isSuccess()){
+                                if(result.get() != null){
+                                    if(result.get().getString("password").equals(loginPasswordText.getText().toString())){
+                                        if(result.get().getString("description") != null){
+                                            ((MainActivity)getContext()).me = new User(
+                                                    result.get().getObjectId("_id"),
+                                                    result.get().getString("name"),
+                                                    result.get().getString("description"),
+                                                    null,
+                                                    null,
+                                                    new ArrayList<Recognition>(),
+                                                    result.get().getInteger("credits",0),
+                                                    result.get().getInteger("stars",0),
+                                                    result.get().getBoolean("admin"));
+                                            ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
+                                            ((MainActivity)getContext()).addFragmentRight(((MainActivity)getContext()).fragmentMain);
+                                        } else {
+                                            ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
+                                            ((MainActivity)getContext()).addFragmentRight(
+                                                    new FragmentCreateProfile(loginUserText.getText().toString(),
+                                                            loginPasswordText.getText().toString(),
+                                                            result.get().getString("name"),
+                                                            result.get().getBoolean("admin"))
+                                            );
+                                        }
+                                    } else {
+                                        Toast.makeText(getContext(), "CONTRASEÑA INCORRECTA", Toast.LENGTH_LONG).show();
+                                    }
+                                } else {
+                                    Toast.makeText(getContext(), "NO ESTAS REGISTRADO EN LA EMPRESA", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+                    } else {
+                        ((MainActivity)getContext()).connectDB();
+                    }
                 }
-                return true;
             }
         });
     }

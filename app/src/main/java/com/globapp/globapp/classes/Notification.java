@@ -1,21 +1,17 @@
 package com.globapp.globapp.classes;
 
+import org.bson.types.ObjectId;
+
 public class Notification {
 
-    private String  notificationID;
-    private News    notificationNews;
+    private News notificationNews;
 
-    public Notification(String notificationID, News notificationNews){
-        this.notificationID      = notificationID;
+    public Notification(News notificationNews){
         this.notificationNews    = notificationNews;
     }
 
     public News getNotificationNews() {
         return notificationNews;
-    }
-
-    public String getNotificationID() {
-        return notificationID;
     }
 
 }

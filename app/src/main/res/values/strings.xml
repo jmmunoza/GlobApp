@@ -50,4 +50,5 @@
     <string name="notification_news_image">just shared an image. Take a minute and see it!</string>
     <string name="notification_news_recognition_1">congratulated to</string>
     <string name="notification_news_recognition_2">! Type them a message</string>
+    <string name="notification_news_recognition_you">congratulated you. Come and look!</string>
 </resources>

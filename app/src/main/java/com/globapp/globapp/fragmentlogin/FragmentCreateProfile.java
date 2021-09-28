@@ -29,22 +29,41 @@ import com.globapp.globapp.classes.User;
 import com.google.android.material.textfield.TextInputEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import org.bson.Document;
+
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.realm.mongodb.mongo.MongoClient;
+import io.realm.mongodb.mongo.MongoCollection;
+import io.realm.mongodb.mongo.MongoDatabase;
 
 public class FragmentCreateProfile extends Fragment {
     private CardView        cancelButton;
     private CardView        continueButton;
     private CircleImageView userImage;
     private ImageView       coverImage;
-    private TextView        username;
+    private TextView        usernameText;
     private ImageButton     userImageButton;
     private ImageButton     coverImageButton;
     private EditText        userDescription;
     private Boolean         buttonClicked = false;
     private Uri             userImageURI;
     private Uri             coverImageURI;
+
+    // DATA
+
+    private boolean admin ;
+    private String  email;
+    private String  password;
+    private String  username;
+
+    public FragmentCreateProfile(String email, String password, String username, boolean admin){
+        this.username = username;
+        this.password = password;
+        this.email    = email;
+        this.admin    = admin;
+    }
 
     @Nullable
     @Override
@@ -90,9 +109,9 @@ public class FragmentCreateProfile extends Fragment {
         userImageButton  = getView().findViewById(R.id.create_profile_user_image_button);
         coverImageButton = getView().findViewById(R.id.create_profile_cover_image_button);
         userDescription  = getView().findViewById(R.id.create_profile_text);
-        username         = getView().findViewById(R.id.create_profile_username);
+        usernameText     = getView().findViewById(R.id.create_profile_username);
 
-        username.setText("Jesus de Nazaret Gutierrez");
+        usernameText.setText(username);
 
         cancelButton.setOnClickListener((View.OnClickListener) v -> {
             ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
@@ -118,11 +137,36 @@ public class FragmentCreateProfile extends Fragment {
         continueButton.setOnClickListener(v -> {
             int textLength = userDescription.getText().toString().length();
             if(textLength > 20 && textLength < 300){
-                ((MainActivity)getContext()).me = new User("0", username.getText().toString(), userDescription.getText().toString(), userImageURI, coverImageURI, true);
-                ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
-                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(userDescription.getWindowToken(), 0);
-                ((MainActivity)getContext()).addFragmentRight(((MainActivity)getContext()).fragmentMain);
+                if(((MainActivity)getContext()).databaseConnection != null){
+                    Document userQuery = new Document()
+                            .append("email", email)
+                            .append("password", password);
+
+                    Document newUserQuery = new Document()
+                            .append("email",       email)
+                            .append("password",    password)
+                            .append("name",        username)
+                            .append("description", userDescription.getText().toString())
+                            .append("admin",       admin)
+                            .append("created",     true)
+                            .append("credits",     0)
+                            .append("stars",       0);
+
+                    ((MainActivity)getContext()).userCollection.findOneAndReplace(userQuery, newUserQuery).getAsync(result -> {
+                        if (result.isSuccess()){
+                            Toast.makeText(getContext(), "PERFIL CREADO EXITOSAMENTE", Toast.LENGTH_LONG).show();
+
+                            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(userDescription.getWindowToken(), 0);
+                            ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
+                            ((MainActivity)getContext()).addFragmentRight(((MainActivity)getContext()).fragmentLogin);
+                        } else {
+                            Toast.makeText(getContext(), "Hubo un error", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } else {
+                    ((MainActivity)getContext()).connectDB();
+                }
             } else {
                 if(textLength <= 20){
                     Toast.makeText(getContext(), getString(R.string.minimum_length_text), Toast.LENGTH_LONG).show();

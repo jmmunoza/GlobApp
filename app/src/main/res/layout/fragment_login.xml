@@ -96,6 +96,8 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.cardview.widget.CardView
+            android:clickable="true"
+            android:foreground="?android:selectableItemBackground"
             android:id="@+id/login_button"
             android:layout_width="match_parent"
             android:layout_height="60dp"

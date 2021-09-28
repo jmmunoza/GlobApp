@@ -36,6 +36,7 @@ public class FragmentUser extends Fragment {
     MePagerAdapter   recognitionPagerAdapter;
     ConstraintLayout userStarButton;
     TextView         userName;
+    TextView         userStars;
     TextView         userDescription;
     ImageView        userCoverImage;
     ImageView        userImage;
@@ -68,7 +69,9 @@ public class FragmentUser extends Fragment {
         userCoverImage   = getView().findViewById(R.id.user_cover_image);
         userImage        = getView().findViewById(R.id.user_image);
         recognitionPager = getView().findViewById(R.id.user_recognitions);
+        userStars        = getView().findViewById(R.id.user_stars);
 
+        userStars.setText(String.valueOf(user.getMeStars()));
         userName.setText(user.getMeName());
         userImage.setImageURI(user.getMeImage());
         userCoverImage.setImageURI(user.getMeCoverImage());

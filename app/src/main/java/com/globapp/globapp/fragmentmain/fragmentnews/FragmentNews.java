@@ -1,12 +1,17 @@
 package com.globapp.globapp.fragmentmain.fragmentnews;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
@@ -15,16 +20,30 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
+import com.globapp.globapp.classes.News;
+import com.globapp.globapp.classes.NewsRecognition;
+import com.globapp.globapp.classes.Notification;
+import com.globapp.globapp.classes.Recognition;
+import com.globapp.globapp.classes.User;
+
+import org.bson.BsonDocument;
+import org.bson.BsonValue;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.realm.Sort;
+import io.realm.mongodb.mongo.iterable.MongoCursor;
+
 public class FragmentNews extends Fragment {
-    public RecyclerView newsList;
-    public NewsListAdapter newsListAdapter;
-    public RecyclerView newsPager;
-    public NewsPagerAdapter newsPagerAdapter;
+    public RecyclerView       newsList;
+    public NewsListAdapter    newsListAdapter;
+    public RecyclerView       newsPager;
+    public NewsPagerAdapter   newsPagerAdapter;
     public SwipeRefreshLayout newsRefresh;
 
     @Nullable
@@ -38,40 +57,31 @@ public class FragmentNews extends Fragment {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loadNews();
         loadComponents();
     }
 
     private void loadComponents(){
-
         newsRefresh = getView().findViewById(R.id.news_refresh);
         newsRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 ((MainActivity)getContext()).runOnUiThread(new Runnable() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void run() {
-                        newsListAdapter.notifyDataSetChanged();
-                        newsPagerAdapter.notifyDataSetChanged();
-                        newsRefresh.setRefreshing(false);
+                        loadNews();
                     }
                 });
             }
         });
 
-
         // News list configuration
-        newsList = getView().findViewById(R.id.news_list);
-        LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(
-                getContext(),
-                LinearLayoutManager.VERTICAL,
-                false);
 
-        newsListAdapter = new NewsListAdapter(getContext(), ((MainActivity)getContext()).news);
-        newsList.setLayoutManager(verticalLayoutManager);
-        newsList.setAdapter(newsListAdapter);
 
         // News pager configuration
         newsPager = getView().findViewById(R.id.news_pager);
@@ -85,5 +95,99 @@ public class FragmentNews extends Fragment {
 
         PagerSnapHelper linearSnapHelper = new PagerSnapHelper();
         linearSnapHelper.attachToRecyclerView(newsPager);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void loadNews(){
+        ((MainActivity)getContext()).news.clear();
+        if(newsListAdapter != null) newsListAdapter.notifyDataSetChanged();
+        newsList = getView().findViewById(R.id.news_list);
+        LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(
+                getContext(),
+                LinearLayoutManager.VERTICAL,
+                false);
+
+        newsListAdapter = new NewsListAdapter(getContext(), ((MainActivity)getContext()).news);
+        newsList.setLayoutManager(verticalLayoutManager);
+        newsList.setAdapter(newsListAdapter);
+
+        ((MainActivity)getContext()).newsCollection.find().sort(
+                new Document().append("likes", MainActivity.DESCENDING)
+        ).limit(50).iterator().getAsync(result -> {
+           if(result.isSuccess()){
+               gettingDataNews(result.get());
+           }
+        });
+    }
+
+    private void gettingDataNews(MongoCursor<Document> data){
+        if(!data.hasNext()){
+            newsRefresh.setRefreshing(false);
+        } else {
+            Document document = data.next();
+            ((MainActivity)getContext()).userCollection.findOne(
+                    new Document().append("_id", document.getObjectId("user_owner_id"))
+            ).getAsync(userData -> {
+                        User userOwner = new User(
+                        userData.get().getObjectId("_id"),
+                        userData.get().getString("name"),
+                        userData.get().getString("description"),
+                        null,
+                        null,
+                        new ArrayList<>(),
+                        userData.get().getInteger("credits",0),
+                        userData.get().getInteger("stars",0),
+                        userData.get().getBoolean("admin"));
+
+                if(document.getObjectId("user_recognized_id") != null){
+                    ((MainActivity)getContext()).userCollection.findOne(
+                            new Document().append("_id", document.getObjectId("user_recognized_id"))
+                    ).getAsync(userRecognizedData -> {
+                        User userRecognized = new User(
+                                userRecognizedData.get().getObjectId("_id"),
+                                userRecognizedData.get().getString("name"),
+                                userRecognizedData.get().getString("description"),
+                                null,
+                                null,
+                                new ArrayList<Recognition>(),
+                                userRecognizedData.get().getInteger("credits",0),
+                                userRecognizedData.get().getInteger("stars",0),
+                                userRecognizedData.get().getBoolean("admin"));
+
+                        NewsRecognition newsRecognition = new NewsRecognition(
+                                document.getObjectId("_id"),
+                                document.getString("content"),
+                                null,
+                                document.getInteger("likes"),
+                                document.getInteger("comments"),
+                                document.getList("users_likes_id", ObjectId.class, new ArrayList<>()).contains(((MainActivity)getContext()).me.getMeID()),
+                                userOwner,
+                                userRecognized);
+
+                        ((MainActivity)getContext()).news.add(newsRecognition);
+                        ((MainActivity)getContext()).notifications.add(new Notification(newsRecognition));
+
+                        newsListAdapter.notifyItemInserted(((MainActivity)getContext()).news.size()-1);
+                        gettingDataNews(data);
+                    });
+
+                } else {
+                    News news = new News(
+                            document.getObjectId("_id"),
+                            document.getString("content"),
+                            null,
+                            document.getInteger("likes"),
+                            document.getInteger("comments"),
+                            document.getList("users_likes_id", ObjectId.class, new ArrayList<>()).contains(((MainActivity)getContext()).me.getMeID()),
+                            userOwner);
+
+                    ((MainActivity)getContext()).news.add(news);
+                    ((MainActivity)getContext()).notifications.add(new Notification(news));
+
+                    newsListAdapter.notifyItemInserted(((MainActivity)getContext()).news.size()-1);
+                    gettingDataNews(data);
+                }
+            });
+        }
     }
 }

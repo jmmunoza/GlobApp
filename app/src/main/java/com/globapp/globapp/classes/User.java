@@ -2,23 +2,24 @@ package com.globapp.globapp.classes;
 
 import android.net.Uri;
 
+import org.bson.types.ObjectId;
+
 import java.util.ArrayList;
 
 public class User {
-    private String                 meID;
+    private ObjectId               meID;
     private String                 meName;
     private String                 meDescription;
     private Uri                    meImage;
     private Uri                    meCoverImage;
     private int                    meCredits;
     private int                    meStars;
-    private ArrayList<News>        meNews;
     private ArrayList<Recognition> meRecognitions;
     private boolean                meIsAdmin;
 
-    public User(String meID,      String meName,          String meDescription,  Uri meImage,
-                Uri meCoverImage, ArrayList<News> meNews, ArrayList<Recognition> meRecognitions,
-                int meCredits,    int meStars,            boolean meIsAdmin){
+    public User(ObjectId meID,      String meName,                         String meDescription,  Uri meImage,
+                Uri meCoverImage, ArrayList<Recognition> meRecognitions, int meCredits,
+                int meStars,      boolean meIsAdmin){
 
         this.meCredits      = meCredits;
         this.meStars        = meStars;
@@ -27,12 +28,11 @@ public class User {
         this.meDescription  = meDescription;
         this.meImage        = meImage;
         this.meCoverImage   = meCoverImage;
-        this.meNews         = meNews;
         this.meRecognitions = meRecognitions;
         this.meIsAdmin      = meIsAdmin;
     }
 
-    public User(String meID, String meName, String meDescription,  Uri meImage, Uri meCoverImage, boolean meIsAdmin){
+    public User(ObjectId meID, String meName, String meDescription,  Uri meImage, Uri meCoverImage, boolean meIsAdmin){
 
         this.meCredits      = 0;
         this.meStars        = 0;
@@ -41,7 +41,6 @@ public class User {
         this.meDescription  = meDescription;
         this.meImage        = meImage;
         this.meCoverImage   = meCoverImage;
-        this.meNews         = new ArrayList<>();
         this.meRecognitions = new ArrayList<>();
         this.meIsAdmin      = meIsAdmin;
     }
@@ -78,16 +77,8 @@ public class User {
         meRecognitions.add(recognition);
     }
 
-    public void addMeNews(News news){
-        meNews.add(news);
-    }
-
-    public String getMeID() {
+    public ObjectId getMeID() {
         return meID;
-    }
-
-    public ArrayList<News> getMeNews() {
-        return meNews;
     }
 
     public ArrayList<Recognition> getMeRecognitions() {

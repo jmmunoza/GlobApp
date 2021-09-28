@@ -13,9 +13,20 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
+import com.globapp.globapp.classes.News;
+import com.globapp.globapp.classes.NewsRecognition;
+import com.globapp.globapp.classes.Notification;
+import com.globapp.globapp.classes.Recognition;
+import com.globapp.globapp.classes.User;
+import com.globapp.globapp.fragmentmain.fragmentnews.NewsListAdapter;
+
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+
+import io.realm.mongodb.mongo.iterable.MongoCursor;
 
 public class FragmentNotifications extends Fragment {
     RecyclerView             notificationsList;
@@ -48,24 +59,26 @@ public class FragmentNotifications extends Fragment {
                 ((MainActivity)getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        notificationsListAdapter.notifyDataSetChanged();
-                        notificationsRefresh.setRefreshing(false);
+                        loadNotifications();
                     }
                 });
             }
         });
 
-        notificationsList = getView().findViewById(R.id.notifications_list);
+        loadNotifications();
+    }
 
+    private void loadNotifications(){
+        if(notificationsListAdapter != null) notificationsListAdapter.notifyDataSetChanged();
+        notificationsList = getView().findViewById(R.id.notifications_list);
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.VERTICAL,
                 false);
 
-        notificationsListAdapter = new NotificationsListAdapter(
-                getContext(), ((MainActivity)getContext()).notifications);
-
+        notificationsListAdapter = new NotificationsListAdapter(getContext(), ((MainActivity)getContext()).notifications);
         notificationsList.setLayoutManager(verticalLayoutManager);
         notificationsList.setAdapter(notificationsListAdapter);
+        notificationsRefresh.setRefreshing(false);
     }
 }

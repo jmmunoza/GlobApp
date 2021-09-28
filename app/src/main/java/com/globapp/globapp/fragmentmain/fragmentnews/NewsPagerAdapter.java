@@ -76,7 +76,7 @@ public class NewsPagerAdapter extends RecyclerView.Adapter<NewsPagerAdapter.View
             pagerBackground.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((MainActivity)context).addFragmentUp(new FragmentOnNotification(newsPager.get(getAdapterPosition())));
+                    ((MainActivity)context).addFragmentUp(new FragmentOnNotification(newsPager.get(getAdapterPosition()).getNewsID()));
                 }
             });
         }

@@ -16,8 +16,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
+import com.globapp.globapp.classes.Recognition;
 import com.globapp.globapp.classes.User;
 
+import org.bson.Document;
+
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -76,18 +80,39 @@ public class FragmentMe extends Fragment {
                 ((MainActivity)getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        meStars.setText(String.valueOf(me.getMeStars()));
-                        meCredits.setText(String.valueOf(me.getMeCredits()));
-                        meDescription.setText(me.getMeDescription());
-                        if(me.getMeImage() != null) meImage.setImageURI(me.getMeImage());
-                        if(me.getMeCoverImage() != null) meCoverImage.setImageURI(me.getMeCoverImage());
-                        if(me.getMeRecognitions().size() == 0){
-                            meRecognitionText.setVisibility(View.GONE);
-                        } else {
-                            meRecognitionText.setVisibility(View.VISIBLE);
-                        }
-                        recognitionPagerAdapter.notifyDataSetChanged();
-                        meRefresh.setRefreshing(false);
+                        Document userQuery = new Document()
+                                .append("_id", ((MainActivity)getContext()).me.getMeID());
+                        ((MainActivity)getContext()).userCollection.findOne(userQuery).getAsync(result -> {
+                            if(result.isSuccess()){
+                                ((MainActivity)getContext()).me = new User(
+                                        result.get().getObjectId("_id"),
+                                        result.get().getString("name"),
+                                        result.get().getString("description"),
+                                        null,
+                                        null,
+                                        new ArrayList<Recognition>(),
+                                        result.get().getInteger("credits",0),
+                                        result.get().getInteger("stars",0),
+                                        result.get().getBoolean("admin"));
+
+                                me = ((MainActivity)getContext()).me;
+
+                                meStars.setText(String.valueOf(me.getMeStars()));
+                                meCredits.setText(String.valueOf(me.getMeCredits()));
+                                meDescription.setText(me.getMeDescription());
+                                if(me.getMeImage() != null) meImage.setImageURI(me.getMeImage());
+                                if(me.getMeCoverImage() != null) meCoverImage.setImageURI(me.getMeCoverImage());
+                                if(me.getMeRecognitions().size() == 0){
+                                    meRecognitionText.setVisibility(View.GONE);
+                                } else {
+                                    meRecognitionText.setVisibility(View.VISIBLE);
+                                }
+                                recognitionPagerAdapter.notifyDataSetChanged();
+                                meRefresh.setRefreshing(false);
+                            } else {
+                                ((MainActivity)getContext()).connectDB();
+                            }
+                        });
                     }
                 });
             }

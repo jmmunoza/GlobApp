@@ -15,6 +15,7 @@ import com.globapp.globapp.classes.Comment;
 import com.globapp.globapp.fragmentmain.FragmentMain;
 import com.globapp.globapp.fragmentmain.fragmentme.FragmentMe;
 import com.globapp.globapp.fragmentmain.fragmentuser.FragmentUser;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
 
@@ -22,14 +23,22 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.ViewHolder>{
 
-    private ArrayList<Comment> newsComments;
-    private LayoutInflater     inflater;
-    Context                    context;
+    private ArrayList<Comment>       newsComments;
+    private LayoutInflater            inflater;
+    Context                           context;
+    private BottomSheetDialogFragment parent;
 
     public CommentListAdapter(Context context, ArrayList<Comment> newsComments){
         this.inflater     = LayoutInflater.from(context);
         this.context      = context;
         this.newsComments = newsComments;
+    }
+
+    public CommentListAdapter(Context context, ArrayList<Comment> newsComments, BottomSheetDialogFragment parent){
+        this.inflater     = LayoutInflater.from(context);
+        this.context      = context;
+        this.newsComments = newsComments;
+        this.parent       = parent;
     }
 
     @NonNull
@@ -73,7 +82,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             commentUserImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(((MainActivity)context).me.equals(newsComments.get(getAdapterPosition()).getCommentUser())){
+                    if(parent != null) parent.dismiss();
+                    if(((MainActivity)context).me.getMeID().equals(newsComments.get(getAdapterPosition()).getCommentUser().getMeID())){
                         if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
                             ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
                         } else {

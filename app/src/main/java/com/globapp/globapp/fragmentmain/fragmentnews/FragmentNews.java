@@ -65,20 +65,10 @@ public class FragmentNews extends Fragment {
         loadComponents();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void loadComponents(){
         newsRefresh = getView().findViewById(R.id.news_refresh);
-        newsRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                ((MainActivity)getContext()).runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
-                    @Override
-                    public void run() {
-                        loadNews();
-                    }
-                });
-            }
-        });
+        newsRefresh.setOnRefreshListener(() -> ((MainActivity)getContext()).runOnUiThread(this::loadNews));
 
         // News list configuration
 
@@ -125,69 +115,39 @@ public class FragmentNews extends Fragment {
             newsRefresh.setRefreshing(false);
         } else {
             Document document = data.next();
-            ((MainActivity)getContext()).userCollection.findOne(
-                    new Document().append("_id", document.getObjectId("user_owner_id"))
-            ).getAsync(userData -> {
-                        User userOwner = new User(
-                        userData.get().getObjectId("_id"),
-                        userData.get().getString("name"),
-                        userData.get().getString("description"),
+            if (document.getObjectId("user_recognized_id") != null) {
+                NewsRecognition newsRecognition = new NewsRecognition(
+                        document.getObjectId("_id"),
+                        document.getString("content"),
+                        document.getDate("date"),
                         null,
+                        document.getInteger("likes"),
+                        document.getInteger("comments"),
+                        document.getList("users_likes_id", ObjectId.class, new ArrayList<>()).contains(((MainActivity) getContext()).me.getUserID()),
+                        document.getObjectId("user_owner_id"),
+                        document.getObjectId("user_recognized_id"));
+
+                ((MainActivity) getContext()).news.add(newsRecognition);
+                ((MainActivity) getContext()).notifications.add(new Notification(newsRecognition.getNewsDate(), newsRecognition.getNewsID()));
+
+
+            } else {
+                News news = new News(
+                        document.getObjectId("_id"),
+                        document.getString("content"),
+                        document.getDate("date"),
                         null,
-                        new ArrayList<>(),
-                        userData.get().getInteger("credits",0),
-                        userData.get().getInteger("stars",0),
-                        userData.get().getBoolean("admin"));
+                        document.getInteger("likes"),
+                        document.getInteger("comments"),
+                        document.getList("users_likes_id", ObjectId.class, new ArrayList<>()).contains(((MainActivity) getContext()).me.getUserID()),
+                        document.getObjectId("user_owner_id"));
 
-                if(document.getObjectId("user_recognized_id") != null){
-                    ((MainActivity)getContext()).userCollection.findOne(
-                            new Document().append("_id", document.getObjectId("user_recognized_id"))
-                    ).getAsync(userRecognizedData -> {
-                        User userRecognized = new User(
-                                userRecognizedData.get().getObjectId("_id"),
-                                userRecognizedData.get().getString("name"),
-                                userRecognizedData.get().getString("description"),
-                                null,
-                                null,
-                                new ArrayList<Recognition>(),
-                                userRecognizedData.get().getInteger("credits",0),
-                                userRecognizedData.get().getInteger("stars",0),
-                                userRecognizedData.get().getBoolean("admin"));
+                ((MainActivity) getContext()).news.add(news);
+                ((MainActivity) getContext()).notifications.add(new Notification(news.getNewsDate(), news.getNewsID()));
 
-                        NewsRecognition newsRecognition = new NewsRecognition(
-                                document.getObjectId("_id"),
-                                document.getString("content"),
-                                null,
-                                document.getInteger("likes"),
-                                document.getInteger("comments"),
-                                document.getList("users_likes_id", ObjectId.class, new ArrayList<>()).contains(((MainActivity)getContext()).me.getMeID()),
-                                userOwner,
-                                userRecognized);
-
-                        ((MainActivity)getContext()).news.add(newsRecognition);
-                        ((MainActivity)getContext()).notifications.add(new Notification(newsRecognition));
-
-                        newsListAdapter.notifyItemInserted(((MainActivity)getContext()).news.size()-1);
-                        gettingDataNews(data);
-                    });
-
-                } else {
-                    News news = new News(
-                            document.getObjectId("_id"),
-                            document.getString("content"),
-                            null,
-                            document.getInteger("likes"),
-                            document.getInteger("comments"),
-                            document.getList("users_likes_id", ObjectId.class, new ArrayList<>()).contains(((MainActivity)getContext()).me.getMeID()),
-                            userOwner);
-
-                    ((MainActivity)getContext()).news.add(news);
-                    ((MainActivity)getContext()).notifications.add(new Notification(news));
-
-                    newsListAdapter.notifyItemInserted(((MainActivity)getContext()).news.size()-1);
-                    gettingDataNews(data);
-                }
-            });
+            }
+            newsListAdapter.notifyItemInserted(((MainActivity) getContext()).news.size() - 1);
+            gettingDataNews(data);
         }
     }
 }

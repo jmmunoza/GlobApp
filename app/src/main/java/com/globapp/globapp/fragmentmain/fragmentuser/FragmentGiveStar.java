@@ -40,6 +40,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import io.realm.mongodb.mongo.MongoClient;
@@ -107,7 +108,7 @@ public class FragmentGiveStar extends Fragment {
         typeTo         = getView().findViewById(R.id.give_star_type_to);
         imageAddedURI  = null;
 
-        typeTo.setText(getString(R.string.type_to) + " " + user.getMeName() + "...");
+        typeTo.setText(getString(R.string.type_to) + " " + user.getUserFirstName() + "...");
 
         cancelButton.setOnClickListener((View.OnClickListener) v -> {
             ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
@@ -126,14 +127,15 @@ public class FragmentGiveStar extends Fragment {
             if(textLength > 20 && textLength < 500){
 
                 if(((MainActivity)getContext()).databaseConnection != null){
-                    Document userQuery = new Document().append("_id", user.getMeID());
+                    Document userQuery = new Document().append("_id", user.getUserID());
 
                     Document newsRecognition = new Document()
                             .append("content", postText.getText().toString())
-                            .append("user_owner_id", ((MainActivity)getContext()).me.getMeID())
+                            .append("user_owner_id", ((MainActivity)getContext()).me.getUserID())
                             .append("likes", 0)
                             .append("comments", 0)
-                            .append("user_recognized_id", user.getMeID());
+                            .append("date", Calendar.getInstance().getTime())
+                            .append("user_recognized_id", user.getUserID());
 
                     ((MainActivity)getContext()).userCollection.findOne(userQuery).getAsync(result -> {
                         if(result.isSuccess()){

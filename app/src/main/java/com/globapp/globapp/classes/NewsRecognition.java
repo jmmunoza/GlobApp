@@ -4,15 +4,21 @@ import android.net.Uri;
 
 import org.bson.types.ObjectId;
 
-public class NewsRecognition extends News {
-    private User newsUserRecognized;
+import java.util.Date;
 
-    public NewsRecognition(ObjectId newsID, String newsContent, Uri newsImage, int newsLikes, int newsComments, boolean newsUserLiked, User newsUserOwner, User newsUserRecognized) {
-        super(newsID, newsContent, newsImage, newsLikes, newsComments, newsUserLiked, newsUserOwner);
+public class NewsRecognition extends News {
+    private ObjectId newsUserRecognized;
+
+    public NewsRecognition(ObjectId newsID,       String newsContent,
+                           Date newsDate,         Uri newsImage,
+                           int newsLikes,         int newsComments,
+                           boolean newsUserLiked, ObjectId newsUserOwner,
+                           ObjectId newsUserRecognized) {
+        super(newsID, newsContent, newsDate, newsImage, newsLikes, newsComments, newsUserLiked, newsUserOwner);
         this.newsUserRecognized = newsUserRecognized;
     }
 
-    public User getNewsUserRecognized() {
+    public ObjectId getNewsUserRecognized() {
         return newsUserRecognized;
     }
 }

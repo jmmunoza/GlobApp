@@ -5,6 +5,7 @@ import android.net.Uri;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class News {
 
@@ -14,9 +15,10 @@ public class News {
     private int      newsLikes;
     private int      newsComments;
     private boolean  newsUserLiked;
-    private User     newsUserOwner;
+    private Date     newsDate;
+    private ObjectId newsUserOwner;
 
-    public News(ObjectId newsID, String newsContent, Uri newsImage, int newsLikes, int newsComments, boolean newsUserLiked, User newsUserOwner){
+    public News(ObjectId newsID, String newsContent, Date newsDate, Uri newsImage, int newsLikes, int newsComments, boolean newsUserLiked, ObjectId newsUserOwner){
         this.newsID            = newsID;
         this.newsContent       = newsContent;
         this.newsImage         = newsImage;
@@ -24,6 +26,11 @@ public class News {
         this.newsLikes         = newsLikes;
         this.newsUserLiked     = newsUserLiked;
         this.newsComments      = newsComments;
+        this.newsDate          = newsDate;
+    }
+
+    public Date getNewsDate() {
+        return newsDate;
     }
 
     public void setNewsUserLiked(boolean newsUserLiked) {
@@ -62,7 +69,7 @@ public class News {
         return newsID;
     }
 
-    public User getNewsUserOwner() {
+    public ObjectId getNewsUserOwner() {
         return newsUserOwner;
     }
 }

@@ -81,6 +81,7 @@ public class FragmentEditProfile extends Fragment {
         loadComponents();
     }
 
+    @SuppressLint("SetTextI18n")
     private void loadComponents() {
         cancelButton     = getView().findViewById(R.id.create_profile_cancel_button);
         continueButton   = getView().findViewById(R.id.create_profile_continue_button);
@@ -93,18 +94,23 @@ public class FragmentEditProfile extends Fragment {
 
         User me = ((MainActivity)getContext()).me;
 
-        username.setText(me.getMeName());
-        userDescription.setText(me.getMeDescription());
-        if(me.getMeImage() != null){
-            userImageURI = me.getMeImage();
-            userImage.setImageURI(me.getMeImage());
-        }
-        if(me.getMeCoverImage() != null){
-            coverImageURI = me.getMeCoverImage();
-            coverImage.setImageURI(me.getMeCoverImage());
+        if(me.getUserSecondName() != null){
+            username.setText(me.getUserFirstName() + " " + me.getUserSecondName() + " " + me.getUserLastName());
+        } else {
+            username.setText(me.getUserFirstName() + " " + me.getUserLastName());
         }
 
-        cancelButton.setOnClickListener((View.OnClickListener) v -> {
+        userDescription.setText(me.getUserDescription());
+        if(me.getUserImage() != null){
+            userImageURI = me.getUserImage();
+            userImage.setImageURI(me.getUserImage());
+        }
+        if(me.getUserCoverImage() != null){
+            coverImageURI = me.getUserCoverImage();
+            coverImage.setImageURI(me.getUserCoverImage());
+        }
+
+        cancelButton.setOnClickListener(v -> {
             ((MainActivity) getContext()).getSupportFragmentManager().popBackStackImmediate();
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(userDescription.getWindowToken(), 0);
@@ -128,7 +134,7 @@ public class FragmentEditProfile extends Fragment {
             int textLength = userDescription.getText().toString().length();
             if (textLength > 20 && textLength < 300) {
                 Document userQuery = new Document()
-                        .append("_id", ((MainActivity)getContext()).me.getMeID());
+                        .append("_id", ((MainActivity)getContext()).me.getUserID());
 
                 ((MainActivity)getContext()).userCollection.findOne(userQuery).getAsync(userData -> {
                     if(userData.isSuccess()){

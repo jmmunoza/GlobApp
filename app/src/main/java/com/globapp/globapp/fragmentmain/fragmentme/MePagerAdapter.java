@@ -43,23 +43,6 @@ public class MePagerAdapter extends RecyclerView.Adapter<MePagerAdapter.ViewHold
         Recognition recognition = recognitionsPager.get(position);
 
         holder.pagerTitle.setText(recognition.getRecognitionTitle());
-        switch (recognition.getRecognitionImage()){
-            case 1:
-                holder.pagerImage.setImageResource(R.drawable.merecognition1);
-                break;
-            case 2:
-                holder.pagerImage.setImageResource(R.drawable.merecognition2);
-                break;
-            case 3:
-                holder.pagerImage.setImageResource(R.drawable.merecognition3);
-                break;
-            case 4:
-                holder.pagerImage.setImageResource(R.drawable.merecognition4);
-                break;
-            case 5:
-                holder.pagerImage.setImageResource(R.drawable.merecognition5);
-                break;
-        }
     }
 
     @Override

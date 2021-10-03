@@ -30,6 +30,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.util.concurrent.TimeUnit;
 
@@ -52,17 +53,11 @@ public class FragmentCreateProfile extends Fragment {
     private Uri             coverImageURI;
 
     // DATA
+    private Document userData;
+    private Document userQuery;
 
-    private boolean admin ;
-    private String  email;
-    private String  password;
-    private String  username;
-
-    public FragmentCreateProfile(String email, String password, String username, boolean admin){
-        this.username = username;
-        this.password = password;
-        this.email    = email;
-        this.admin    = admin;
+    public FragmentCreateProfile(ObjectId userID){
+        this.userQuery = new Document("_id", userID);
     }
 
     @Nullable
@@ -98,9 +93,22 @@ public class FragmentCreateProfile extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadComponents();
+        loadUserData();
     }
 
+    private void loadUserData(){
+        ((MainActivity)getContext()).userCollection.findOne(userQuery).getAsync(result -> {
+            if(result.isSuccess()){
+                userData = result.get();
+                loadComponents();
+            } else {
+                ((MainActivity)getContext()).connectDB();
+                ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
+            }
+        });
+    }
+
+    @SuppressLint("SetTextI18n")
     private void loadComponents(){
         cancelButton     = getView().findViewById(R.id.create_profile_cancel_button);
         continueButton   = getView().findViewById(R.id.create_profile_continue_button);
@@ -111,7 +119,18 @@ public class FragmentCreateProfile extends Fragment {
         userDescription  = getView().findViewById(R.id.create_profile_text);
         usernameText     = getView().findViewById(R.id.create_profile_username);
 
-        usernameText.setText(username);
+        if(userData.getString("secondName") != null){
+            usernameText.setText(
+                    userData.getString("firstName")  + " " +
+                    userData.getString("secondName") + " " +
+                    userData.getString("lastName")
+            );
+        } else {
+            usernameText.setText(
+                    userData.getString("firstName")  + " " +
+                    userData.getString("lastName")
+            );
+        }
 
         cancelButton.setOnClickListener((View.OnClickListener) v -> {
             ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
@@ -137,36 +156,27 @@ public class FragmentCreateProfile extends Fragment {
         continueButton.setOnClickListener(v -> {
             int textLength = userDescription.getText().toString().length();
             if(textLength > 20 && textLength < 300){
-                if(((MainActivity)getContext()).databaseConnection != null){
-                    Document userQuery = new Document()
-                            .append("email", email)
-                            .append("password", password);
+                continueButton.setClickable(false);
 
-                    Document newUserQuery = new Document()
-                            .append("email",       email)
-                            .append("password",    password)
-                            .append("name",        username)
-                            .append("description", userDescription.getText().toString())
-                            .append("admin",       admin)
-                            .append("created",     true)
-                            .append("credits",     0)
-                            .append("stars",       0);
+                Document newUser = userData
+                        .append("description", userDescription.getText().toString())
+                        .append("created",     true)
+                        .append("credits",     0)
+                        .append("stars",       0);
 
-                    ((MainActivity)getContext()).userCollection.findOneAndReplace(userQuery, newUserQuery).getAsync(result -> {
-                        if (result.isSuccess()){
-                            Toast.makeText(getContext(), "PERFIL CREADO EXITOSAMENTE", Toast.LENGTH_LONG).show();
+                ((MainActivity)getContext()).userCollection.findOneAndUpdate(userQuery, newUser).getAsync(result -> {
+                    if(result.isSuccess()){
+                        Toast.makeText(getContext(), "PERFIL CREADO EXITOSAMENTE", Toast.LENGTH_LONG).show();
 
-                            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(userDescription.getWindowToken(), 0);
-                            ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
-                            ((MainActivity)getContext()).addFragmentRight(((MainActivity)getContext()).fragmentLogin);
-                        } else {
-                            Toast.makeText(getContext(), "Hubo un error", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                } else {
-                    ((MainActivity)getContext()).connectDB();
-                }
+                        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(userDescription.getWindowToken(), 0);
+                        ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
+                        ((MainActivity)getContext()).addFragmentRight(((MainActivity)getContext()).fragmentLogin);
+                    } else {
+                        Toast.makeText(getContext(), "Hubo un error", Toast.LENGTH_LONG).show();
+                        continueButton.setClickable(true);
+                    }
+                });
             } else {
                 if(textLength <= 20){
                     Toast.makeText(getContext(), getString(R.string.minimum_length_text), Toast.LENGTH_LONG).show();

@@ -2,28 +2,23 @@ package com.globapp.globapp.fragmentmain.fragmentme;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
-import com.globapp.globapp.classes.Recognition;
 import com.globapp.globapp.classes.User;
-
 import org.bson.Document;
-
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FragmentMe extends Fragment {
@@ -42,10 +37,6 @@ public class FragmentMe extends Fragment {
     TextView           meRecognitionText;
     SwipeRefreshLayout meRefresh;
 
-    public FragmentMe(User me){
-        this.me = me;
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,7 +54,9 @@ public class FragmentMe extends Fragment {
         loadComponents();
     }
 
+    @SuppressLint("SetTextI18n")
     void loadComponents(){
+        me                = ((MainActivity)getContext()).me;
         meName            = getView().findViewById(R.id.me_user_name);
         meDescription     = getView().findViewById(R.id.me_user_description);
         meCredits         = getView().findViewById(R.id.me_user_credits);
@@ -80,29 +73,21 @@ public class FragmentMe extends Fragment {
                 ((MainActivity)getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Document userQuery = new Document()
-                                .append("_id", ((MainActivity)getContext()).me.getMeID());
+                        Document userQuery = new Document("_id", ((MainActivity)getContext()).me.getUserID());
+
                         ((MainActivity)getContext()).userCollection.findOne(userQuery).getAsync(result -> {
                             if(result.isSuccess()){
-                                ((MainActivity)getContext()).me = new User(
-                                        result.get().getObjectId("_id"),
-                                        result.get().getString("name"),
-                                        result.get().getString("description"),
-                                        null,
-                                        null,
-                                        new ArrayList<Recognition>(),
-                                        result.get().getInteger("credits",0),
-                                        result.get().getInteger("stars",0),
-                                        result.get().getBoolean("admin"));
-
+                                ((MainActivity)getContext()).me.setUserStars(result.get().getInteger("stars"));
+                                ((MainActivity)getContext()).me.setUserCredits(result.get().getInteger("credits"));
+                                ((MainActivity)getContext()).me.setUserDescription(result.get().getString("description"));
                                 me = ((MainActivity)getContext()).me;
 
-                                meStars.setText(String.valueOf(me.getMeStars()));
-                                meCredits.setText(String.valueOf(me.getMeCredits()));
-                                meDescription.setText(me.getMeDescription());
-                                if(me.getMeImage() != null) meImage.setImageURI(me.getMeImage());
-                                if(me.getMeCoverImage() != null) meCoverImage.setImageURI(me.getMeCoverImage());
-                                if(me.getMeRecognitions().size() == 0){
+                                meStars.setText(String.valueOf(me.getUserStars()));
+                                meCredits.setText(String.valueOf(me.getUserCredits()));
+                                meDescription.setText(me.getUserDescription());
+                                if(me.getUserImage() != null) meImage.setImageURI(me.getUserImage());
+                                if(me.getUserCoverImage() != null) meCoverImage.setImageURI(me.getUserCoverImage());
+                                if(me.getUserRecognitions().size() == 0){
                                     meRecognitionText.setVisibility(View.GONE);
                                 } else {
                                     meRecognitionText.setVisibility(View.VISIBLE);
@@ -118,20 +103,20 @@ public class FragmentMe extends Fragment {
             }
         });
 
-        meName.setText(me.getMeName());
-        meDescription.setText(me.getMeDescription());
-        meStars.setText(String.valueOf(me.getMeStars()));
-        meCredits.setText(String.valueOf(me.getMeCredits()));
-        meImage.setImageURI(me.getMeImage());
-        meCoverImage.setImageURI(me.getMeCoverImage());
+        meName.setText(me.getUserFirstName() + " " + me.getUserSecondName() + " " +  me.getUserLastName());
+        meDescription.setText(me.getUserDescription());
+        meStars.setText(String.valueOf(me.getUserStars()));
+        meCredits.setText(String.valueOf(me.getUserCredits()));
+        meImage.setImageURI(me.getUserImage());
+        meCoverImage.setImageURI(me.getUserCoverImage());
 
-        if(me.getMeRecognitions().size() == 0){
+        if(me.getUserRecognitions().size() == 0){
             meRecognitionText.setVisibility(View.GONE);
         } else {
             meRecognitionText.setVisibility(View.VISIBLE);
         }
 
-        recognitionPagerAdapter = new MePagerAdapter(getContext(), me.getMeRecognitions());
+        recognitionPagerAdapter = new MePagerAdapter(getContext(), me.getUserRecognitions());
         recognitionPager.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recognitionPager.setAdapter(recognitionPagerAdapter);
     }

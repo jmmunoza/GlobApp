@@ -40,6 +40,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import io.realm.mongodb.mongo.iterable.MongoCursor;
@@ -71,9 +72,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull NewsListAdapter.ViewHolder holder, int position) {
         News news = newsList.get(position);
+
         holder.newsPostContent.setText(news.getNewsContent());
         holder.newsLikeCounter.setText(String.valueOf(news.getNewsLikes()));
         holder.newsCommentCounter.setText(String.valueOf(news.getNewsComments()));
+        holder.newsTime.setText(news.getNewsDate().toString());
 
         if(news.getNewsUserLiked()) {
             holder.newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);
@@ -89,23 +92,70 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         else
             holder.newsPostImage.setVisibility(View.GONE);
 
-        if(news.getNewsUserOwner().getMeImage() != null)
-            holder.newsUserImage.setImageURI(news.getNewsUserOwner().getMeImage());
-        else
-            holder.newsUserImage.setImageResource(R.drawable.user);
-
-        if(newsList.get(position) instanceof NewsRecognition){
+        if(news instanceof NewsRecognition){
             holder.newsRecognitionLayout.setVisibility(View.VISIBLE);
-            holder.newsUsername.setText(news.getNewsUserOwner().getMeName() + " congratulated " + ((NewsRecognition)newsList.get(position)).getNewsUserRecognized().getMeName());
-            if(((NewsRecognition) newsList.get(position)).getNewsUserRecognized().getMeImage() != null)
-                holder.newsRecognitionUserImage.setImageURI(((NewsRecognition) newsList.get(position)).getNewsUserRecognized().getMeImage());
-            else
-                holder.newsRecognitionUserImage.setImageResource(R.drawable.user);
-
         } else {
             holder.newsRecognitionLayout.setVisibility(View.GONE);
-            holder.newsUsername.setText(news.getNewsUserOwner().getMeName());
         }
+
+        // USERS POST DATA
+        Document userOwnerQuery = new Document("_id", news.getNewsUserOwner());
+        ((MainActivity)context).userCollection.findOne(userOwnerQuery).getAsync(userOwnerData -> {
+            if(userOwnerData.isSuccess()){
+                User newsUserOwner = new User(
+                        userOwnerData.get().getObjectId("_id"),
+                        userOwnerData.get().getString("firstName"),
+                        userOwnerData.get().getString("secondName"),
+                        userOwnerData.get().getString("lastName"),
+                        userOwnerData.get().getString("description"),
+                        null,
+                        null,
+                        new ArrayList<>(),
+                        userOwnerData.get().getInteger("credits",0),
+                        userOwnerData.get().getInteger("stars",0));
+
+                if(newsUserOwner.getUserImage() != null)
+                    holder.newsUserImage.setImageURI(newsUserOwner.getUserImage());
+                else
+                    holder.newsUserImage.setImageResource(R.drawable.user);
+
+                if(news instanceof NewsRecognition){
+                    Document userRecognizedQuery = new Document("_id", ((NewsRecognition)news).getNewsUserRecognized());
+                    ((MainActivity)context).userCollection.findOne(userRecognizedQuery).getAsync(userRecognizedData -> {
+                        if(userRecognizedData.isSuccess()){
+                            User newsUserRecognized = new User(
+                                    userRecognizedData.get().getObjectId("_id"),
+                                    userRecognizedData.get().getString("firstName"),
+                                    userRecognizedData.get().getString("secondName"),
+                                    userRecognizedData.get().getString("lastName"),
+                                    userRecognizedData.get().getString("description"),
+                                    null,
+                                    null,
+                                    new ArrayList<>(),
+                                    userRecognizedData.get().getInteger("credits",0),
+                                    userRecognizedData.get().getInteger("stars",0));
+
+
+                            holder.newsUsername.setText(
+                                            newsUserOwner.getUserFirstName()      + " " +
+                                            newsUserOwner.getUserLastName()       + " congratulated " +
+                                            newsUserRecognized.getUserFirstName() + " " +
+                                            newsUserRecognized.getUserLastName());
+
+                            if(newsUserRecognized.getUserImage() != null)
+                                holder.newsRecognitionUserImage.setImageURI(newsUserRecognized.getUserImage());
+                            else
+                                holder.newsRecognitionUserImage.setImageResource(R.drawable.user);
+                        }
+                    });
+                } else {
+                    holder.newsUsername.setText(
+                            newsUserOwner.getUserFirstName()  + " " +
+                            newsUserOwner.getUserSecondName() + " " +
+                            newsUserOwner.getUserLastName());
+                }
+            }
+        });
     }
 
     @Override
@@ -154,20 +204,30 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                         Document commentInsert = new Document()
                                 .append("content", commentInput.getText().toString())
                                 .append("news_id", commentNews.getNewsID())
-                                .append("user_id", ((MainActivity)getContext()).me.getMeID());
+                                .append("date", Calendar.getInstance().getTime())
+                                .append("user_id", ((MainActivity)getContext()).me.getUserID());
+
+                        String commentContent = commentInput.getText().toString();
 
                         ((MainActivity)getContext()).commentsCollection.insertOne(commentInsert).getAsync(result -> {
                             if(result.isSuccess()){
                                 Toast.makeText(getContext(), "COMENTARIO PUBLICADO", Toast.LENGTH_LONG).show();
+                                comments.add(new Comment(
+                                        result.get().getInsertedId().asObjectId().getValue(),
+                                        commentContent,
+                                        Calendar.getInstance().getTime(),
+                                        ((MainActivity)getContext()).me.getUserID())
+                                );
+                                commentListAdapter.notifyItemInserted(comments.size()-1);
+                                commentList.scrollToPosition(comments.size()-1);
                             }
                         });
 
-                        comments.add(new Comment(null, commentInput.getText().toString(), ((MainActivity)getContext()).me));
+
                         commentInput.setText("");
                         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(commentInput.getWindowToken(), 0);
-                        commentListAdapter.notifyItemInserted(comments.size()-1);
-                        commentList.scrollToPosition(comments.size()-1);
+
                     }
                 }
             });
@@ -212,33 +272,19 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                 //newsRefresh.setRefreshing(false);
             } else {
                 Document document = data.next();
-                ((MainActivity)getContext()).userCollection.findOne(
-                        new Document().append("_id", document.getObjectId("user_id"))
-                ).getAsync(userData -> {
-                    User userOwner = new User(
-                            userData.get().getObjectId("_id"),
-                            userData.get().getString("name"),
-                            userData.get().getString("description"),
-                            null,
-                            null,
-                            new ArrayList<Recognition>(),
-                            userData.get().getInteger("credits",0),
-                            userData.get().getInteger("stars",0),
-                            userData.get().getBoolean("admin"));
+                comments.add(new Comment(
+                        document.getObjectId("_id"),
+                        document.getString("content"),
+                        document.getDate("date"),
+                        document.getObjectId("user_id")
+                ));
 
-                    comments.add(new Comment(
-                            document.getObjectId("_id"),
-                            document.getString("content"),
-                            userOwner
-                    ));
+                commentListAdapter.notifyItemInserted(comments.size()-1);
+                try {
+                    gettingDataComments(data);
+                } catch (Exception e){
 
-                    commentListAdapter.notifyItemInserted(comments.size()-1);
-                    try {
-                        gettingDataComments(data);
-                    } catch (Exception e){
-
-                    }
-                });
+                }
             }
         }
 
@@ -262,6 +308,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         ImageView        newsRecognitionUserImage;
         TextView         newsLikeCounter;
         GifImageView     newsStar;
+        TextView         newsTime;
         TextView         newsCommentCounter;
 
         @SuppressLint("ClickableViewAccessibility")
@@ -281,6 +328,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
             newsLikeCounter          = itemView.findViewById(R.id.news_item_like_counter);
             newsCommentCounter       = itemView.findViewById(R.id.news_item_comment_counter);
             newsStar                 = itemView.findViewById(R.id.news_item_star);
+            newsTime                 = itemView.findViewById(R.id.news_item_time);
 
             ((GifDrawable)newsStar.getDrawable()).stop();
             newsStar.setOnClickListener(v -> {
@@ -326,12 +374,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
             });
 
             newsUserImage.setOnClickListener(v -> {
-                if(((MainActivity)context).me.getMeID().equals(newsList.get(getAdapterPosition()).getNewsUserOwner().getMeID())){
+                if(((MainActivity)context).me.getUserID().equals(newsList.get(getAdapterPosition()).getNewsUserOwner())){
                     if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
                         ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
                     } else {
-                        ((MainActivity)context).addFragmentLeft(
-                                new FragmentMe(newsList.get(getAdapterPosition()).getNewsUserOwner()));
+                        ((MainActivity)context).addFragmentLeft(new FragmentMe());
                     }
                 } else {
                     ((MainActivity)context).addFragmentLeft(
@@ -340,12 +387,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
             });
 
             newsRecognitionUserImage.setOnClickListener(v -> {
-                if(((MainActivity)context).me.getMeID().equals(((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized().getMeID())){
+                if(((MainActivity)context).me.getUserID().equals(((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized())){
                     if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
                         ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
                     } else {
-                        ((MainActivity)context).addFragmentRight(
-                                new FragmentMe(((NewsRecognition)newsList.get(getAdapterPosition())).getNewsUserRecognized()));
+                        ((MainActivity)context).addFragmentRight(new FragmentMe());
                     }
                 } else {
                     ((MainActivity)context).addFragmentRight(
@@ -410,14 +456,14 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                     ArrayList<ObjectId> listLiked = new ArrayList<>(result.get().getList("users_likes_id", ObjectId.class, new ArrayList<>()));
 
                     if(newsList.get(position).getNewsUserLiked()){
-                        if(listLiked.contains(((MainActivity)context).me.getMeID())){
-                            listLiked.remove(((MainActivity)context).me.getMeID());
+                        if(listLiked.contains(((MainActivity)context).me.getUserID())){
+                            listLiked.remove(((MainActivity)context).me.getUserID());
                             newsList.get(position).setNewsUserLiked(false);
                             result.get().append("likes", result.get().getInteger("likes")-1);
                         }
                     } else {
-                        if(!listLiked.contains(((MainActivity)context).me.getMeID())){
-                            listLiked.add(((MainActivity)context).me.getMeID());
+                        if(!listLiked.contains(((MainActivity)context).me.getUserID())){
+                            listLiked.add(((MainActivity)context).me.getUserID());
                             newsList.get(position).setNewsUserLiked(true);
                             result.get().append("likes", result.get().getInteger("likes")+1);
                         }

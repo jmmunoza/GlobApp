@@ -4,9 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import androidx.fragment.app.FragmentTransaction;
-import android.content.ContentResolver;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -128,6 +126,18 @@ public class MainActivity extends AppCompatActivity {
                 userCollection              = mongoDatabase.getCollection(DB_USER_COLLECTION);
                 notificationsCollection     = mongoDatabase.getCollection(DB_NOTIFICATIONS_COLLECTION);
                 commentsCollection          = mongoDatabase.getCollection(DB_COMMENTS_COLLECTION);
+
+                /*
+                newsCollection.watchAsync().get(result -> {
+                    if(result.isSuccess()){
+                        System.out.println(result.get().getOperationType());
+                        System.out.println(result.get().getFullDocument());
+                        System.out.println(result.get().getDocumentKey());
+                        System.out.println(result.get().hasUncommittedWrites());
+                    }
+                });
+                
+                 */
             }
         });
     }

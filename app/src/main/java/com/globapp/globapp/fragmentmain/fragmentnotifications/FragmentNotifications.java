@@ -13,12 +13,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
-import com.globapp.globapp.classes.News;
-import com.globapp.globapp.classes.NewsRecognition;
-import com.globapp.globapp.classes.Notification;
-import com.globapp.globapp.classes.Recognition;
-import com.globapp.globapp.classes.User;
-import com.globapp.globapp.fragmentmain.fragmentnews.NewsListAdapter;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -51,19 +45,8 @@ public class FragmentNotifications extends Fragment {
     }
 
     private void loadComponents(){
-
         notificationsRefresh = getView().findViewById(R.id.notification_refresh);
-        notificationsRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                ((MainActivity)getContext()).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadNotifications();
-                    }
-                });
-            }
-        });
+        notificationsRefresh.setOnRefreshListener(() -> ((MainActivity)getContext()).runOnUiThread(this::loadNotifications));
 
         loadNotifications();
     }

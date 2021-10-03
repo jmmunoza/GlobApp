@@ -1,5 +1,6 @@
 package com.globapp.globapp.fragmentmain.fragmentnews;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 import com.globapp.globapp.classes.Comment;
+import com.globapp.globapp.classes.User;
 import com.globapp.globapp.fragmentmain.FragmentMain;
 import com.globapp.globapp.fragmentmain.fragmentme.FragmentMe;
 import com.globapp.globapp.fragmentmain.fragmentuser.FragmentUser;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import org.bson.Document;
 
 import java.util.ArrayList;
 
@@ -51,13 +55,47 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Comment comment = newsComments.get(position);
 
-        holder.commentContent.setText(comment.getCommentContent());
-        holder.commentUsername.setText(comment.getCommentUser().getMeName());
-        holder.commentUserImage.setImageURI(comment.getCommentUser().getMeImage());
+        Document userQuery = new Document("_id", comment.getCommentUser());
+        ((MainActivity)context).userCollection.findOne(userQuery).getAsync(userData -> {
+            if(userData.isSuccess()){
+                User user = new User(
+                        userData.get().getObjectId("_id"),
+                        userData.get().getString("firstName"),
+                        userData.get().getString("secondName"),
+                        userData.get().getString("lastName"),
+                        userData.get().getString("description"),
+                        null,
+                        null,
+                        new ArrayList<>(),
+                        userData.get().getInteger("credits",0),
+                        userData.get().getInteger("stars",0));
+
+                holder.commentContent.setText(comment.getCommentContent());
+                if(user.getUserSecondName() != null){
+                    holder.commentUsername.setText(
+                            user.getUserFirstName()  + " " +
+                            user.getUserSecondName() + " " +
+                            user.getUserLastName());
+                } else {
+                    holder.commentUsername.setText(
+                            user.getUserFirstName() + " " +
+                            user.getUserLastName());
+                }
+
+                if(user.getUserImage() != null) {
+                    holder.commentUserImage.setImageURI(user.getUserImage());
+                } else {
+                    holder.commentUserImage.setImageResource(R.drawable.user);
+                }
+
+                holder.commentTime.setText(comment.getCommentDate().toString());
+            }
+        });
     }
 
     @Override
@@ -83,12 +121,11 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                 @Override
                 public void onClick(View v) {
                     if(parent != null) parent.dismiss();
-                    if(((MainActivity)context).me.getMeID().equals(newsComments.get(getAdapterPosition()).getCommentUser().getMeID())){
+                    if(((MainActivity)context).me.getUserID().equals(newsComments.get(getAdapterPosition()).getCommentUser())){
                         if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
                             ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
                         } else {
-                            ((MainActivity)context).addFragmentUp(
-                                    new FragmentMe(newsComments.get(getAdapterPosition()).getCommentUser()));
+                            ((MainActivity)context).addFragmentUp(new FragmentMe());
                         }
                     } else {
                         ((MainActivity)context).addFragmentUp(

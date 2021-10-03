@@ -17,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 
+import com.globapp.globapp.classes.Admin;
 import com.globapp.globapp.fragmentmain.fragmentadminpane.FragmentAdminPane;
 import com.globapp.globapp.fragmentmain.fragmentme.FragmentMe;
 import com.globapp.globapp.fragmentmain.fragmentnews.FragmentNews;
@@ -70,7 +71,7 @@ public class FragmentMain extends Fragment {
     }
 
     private void loadComponents(){
-        fragmentMe            = new FragmentMe(((MainActivity)getContext()).me);
+        fragmentMe            = new FragmentMe();
         fragmentNews          = new FragmentNews();
         fragmentNotifications = new FragmentNotifications();
         fragmentSearch        = new FragmentSearch();
@@ -79,43 +80,30 @@ public class FragmentMain extends Fragment {
 
 
         settings_button = ((MainActivity)getContext()).findViewById(R.id.settings_button);
-        settings_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainActivity)getContext()).addFragmentRight(fragmentSettings);
-            }
-        });
+        settings_button.setOnClickListener(v -> ((MainActivity)getContext()).addFragmentRight(fragmentSettings));
 
         search_button   = ((MainActivity)getContext()).findViewById(R.id.search_button);
-        search_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainActivity)getContext()).addFragmentLeft(fragmentSearch);
-            }
-        });
+        search_button.setOnClickListener(v -> ((MainActivity)getContext()).addFragmentLeft(fragmentSearch));
 
         bottomNavigationView = ((MainActivity)getContext()).findViewById(R.id.bottom_navigation_bar);
-        if(!((MainActivity)getContext()).me.getMeIsAdmin())
+        if(!(((MainActivity)getContext()).me instanceof Admin))
             bottomNavigationView.getMenu().removeItem(R.id.action_admin_pane);
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.action_news:
-                        mainViewPager.setCurrentItem(NEWS);
-                        break;
-                    case R.id.action_notifications:
-                        mainViewPager.setCurrentItem(NOTIFICATIONS);
-                        break;
-                    case R.id.action_me:
-                        mainViewPager.setCurrentItem(ME);
-                        break;
-                    case R.id.action_admin_pane:
-                        mainViewPager.setCurrentItem(ADMIN_PANE);
-                        break;
-                }
-                return true;
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()){
+                case R.id.action_news:
+                    mainViewPager.setCurrentItem(NEWS);
+                    break;
+                case R.id.action_notifications:
+                    mainViewPager.setCurrentItem(NOTIFICATIONS);
+                    break;
+                case R.id.action_me:
+                    mainViewPager.setCurrentItem(ME);
+                    break;
+                case R.id.action_admin_pane:
+                    mainViewPager.setCurrentItem(ADMIN_PANE);
+                    break;
             }
+            return true;
         });
 
         viewPagerAdapter = new ViewPagerAdapter((MainActivity)getContext());

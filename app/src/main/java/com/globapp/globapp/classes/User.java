@@ -7,97 +7,100 @@ import org.bson.types.ObjectId;
 import java.util.ArrayList;
 
 public class User {
-    private ObjectId               meID;
-    private String                 meName;
-    private String                 meDescription;
-    private Uri                    meImage;
-    private Uri                    meCoverImage;
-    private int                    meCredits;
-    private int                    meStars;
-    private ArrayList<Recognition> meRecognitions;
-    private boolean                meIsAdmin;
+    private ObjectId               userID;
+    private String                 userFirstName;
+    private String                 userSecondName;
+    private String                 userLastName;
+    private String                 userDescription;
+    private Uri                    userImage;
+    private Uri                    userCoverImage;
+    private int                    userCredits;
+    private int                    userStars;
+    private ArrayList<Recognition> userRecognitions;
 
-    public User(ObjectId meID,      String meName,                         String meDescription,  Uri meImage,
-                Uri meCoverImage, ArrayList<Recognition> meRecognitions, int meCredits,
-                int meStars,      boolean meIsAdmin){
+    public User(ObjectId userID,                         String userFirstName,
+                String userSecondName,                   String userLastName,
+                String userDescription,                  Uri userImage, Uri userCoverImage,
+                ArrayList<Recognition> userRecognitions, int userCredits,
+                int userStars){
 
-        this.meCredits      = meCredits;
-        this.meStars        = meStars;
-        this.meID           = meID;
-        this.meName         = meName;
-        this.meDescription  = meDescription;
-        this.meImage        = meImage;
-        this.meCoverImage   = meCoverImage;
-        this.meRecognitions = meRecognitions;
-        this.meIsAdmin      = meIsAdmin;
+        this.userCredits      = userCredits;
+        this.userStars        = userStars;
+        this.userID           = userID;
+        this.userFirstName    = userFirstName;
+        this.userSecondName   = userSecondName;
+        this.userLastName     = userLastName;
+        this.userDescription  = userDescription;
+        this.userImage        = userImage;
+        this.userCoverImage   = userCoverImage;
+        this.userRecognitions = userRecognitions;
     }
 
-    public User(ObjectId meID, String meName, String meDescription,  Uri meImage, Uri meCoverImage, boolean meIsAdmin){
-
-        this.meCredits      = 0;
-        this.meStars        = 0;
-        this.meID           = meID;
-        this.meName         = meName;
-        this.meDescription  = meDescription;
-        this.meImage        = meImage;
-        this.meCoverImage   = meCoverImage;
-        this.meRecognitions = new ArrayList<>();
-        this.meIsAdmin      = meIsAdmin;
+    public Uri getUserImage() {
+        return userImage;
     }
 
-    public boolean getMeIsAdmin() {
-        return meIsAdmin;
+    public Uri getUserCoverImage() {
+        return userCoverImage;
     }
 
-    public void setMeIsAdmin(boolean meIsAdmin) {
-        this.meIsAdmin = meIsAdmin;
+    public String getUserSecondName() {
+        return userSecondName;
     }
 
-    public void setMeCoverImage(Uri meCoverImage) {
-        this.meCoverImage = meCoverImage;
+    public String getUserLastName() {
+        return userLastName;
     }
 
-    public void setMeDescription(String meDescription) {
-        this.meDescription = meDescription;
+    public String getUserFirstName() {
+        return userFirstName;
     }
 
-    public void setMeImage(Uri meImage) {
-        this.meImage = meImage;
+    public String getUserDescription() {
+        return userDescription;
     }
 
-    public int getMeStars() {
-        return meStars;
+    public ObjectId getUserID() {
+        return userID;
     }
 
-    public int getMeCredits() {
-        return meCredits;
+    public int getUserStars() {
+        return userStars;
     }
 
-    public void addMeRecognitions(Recognition recognition){
-        meRecognitions.add(recognition);
+    public int getUserCredits() {
+        return userCredits;
     }
 
-    public ObjectId getMeID() {
-        return meID;
+    public ArrayList<Recognition> getUserRecognitions() {
+        return userRecognitions;
     }
 
-    public ArrayList<Recognition> getMeRecognitions() {
-        return meRecognitions;
+    public void setUserDescription(String userDescription) {
+        this.userDescription = userDescription;
     }
 
-    public Uri getMeCoverImage() {
-        return meCoverImage;
+    public void setUserCredits(int userCredits) {
+        this.userCredits = userCredits;
     }
 
-    public Uri getMeImage() {
-        return meImage;
+    public void setUserCoverImage(Uri userCoverImage) {
+        this.userCoverImage = userCoverImage;
     }
 
-    public String getMeDescription() {
-        return meDescription;
+    public void setUserRecognitions(ArrayList<Recognition> userRecognitions) {
+        this.userRecognitions = userRecognitions;
     }
 
-    public String getMeName() {
-        return meName;
+    public void setUserStars(int userStars) {
+        this.userStars = userStars;
+    }
+
+    public void setUserImage(Uri userImage) {
+        this.userImage = userImage;
+    }
+
+    public void giveLike(ObjectId newsID){
+
     }
 }

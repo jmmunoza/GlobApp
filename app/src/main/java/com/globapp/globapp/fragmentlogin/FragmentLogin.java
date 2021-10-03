@@ -15,8 +15,10 @@ import androidx.fragment.app.Fragment;
 
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
+import com.globapp.globapp.classes.Admin;
 import com.globapp.globapp.classes.Recognition;
 import com.globapp.globapp.classes.User;
+import com.globapp.globapp.fragmentmain.FragmentMain;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.bson.Document;
@@ -49,52 +51,62 @@ public class FragmentLogin extends Fragment {
         loginUserText     = ((MainActivity)getContext()).findViewById(R.id.login_user_text);
         loginButton       = ((MainActivity)getContext()).findViewById(R.id.login_button);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!loginPasswordText.getText().toString().equals("") && !loginUserText.getText().toString().equals("")){
-                    if(((MainActivity)getContext()).databaseConnection != null){
+        loginButton.setOnClickListener(v -> {
+            if(!loginPasswordText.getText().toString().equals("") && !loginUserText.getText().toString().equals("")){
+                if(((MainActivity)getContext()).databaseConnection != null){
 
-                        Document userQuery = new Document()
-                                .append("email", loginUserText.getText().toString());
+                    Document userQuery = new Document()
+                            .append("email", loginUserText.getText().toString());
 
-                        ((MainActivity)getContext()).userCollection.findOne(userQuery).getAsync(result -> {
-                            if (result.isSuccess()){
-                                if(result.get() != null){
-                                    if(result.get().getString("password").equals(loginPasswordText.getText().toString())){
-                                        if(result.get().getString("description") != null){
+                    ((MainActivity)getContext()).userCollection.findOne(userQuery).getAsync(result -> {
+                        if (result.isSuccess()){
+                            if(result.get() != null){
+                                if(result.get().getString("password").equals(loginPasswordText.getText().toString())){
+                                    if(result.get().getString("description") != null){
+                                        if(result.get().getBoolean("admin")){
+                                            ((MainActivity)getContext()).me = new Admin(
+                                                    result.get().getObjectId("_id"),
+                                                    result.get().getString("firstName"),
+                                                    result.get().getString("secondName"),
+                                                    result.get().getString("lastName"),
+                                                    result.get().getString("description"),
+                                                    null,
+                                                    null,
+                                                    new ArrayList<>(),
+                                                    result.get().getInteger("credits",0),
+                                                    result.get().getInteger("stars",0));
+                                        } else {
                                             ((MainActivity)getContext()).me = new User(
                                                     result.get().getObjectId("_id"),
-                                                    result.get().getString("name"),
+                                                    result.get().getString("firstName"),
+                                                    result.get().getString("secondName"),
+                                                    result.get().getString("lastName"),
                                                     result.get().getString("description"),
                                                     null,
                                                     null,
                                                     new ArrayList<Recognition>(),
                                                     result.get().getInteger("credits",0),
-                                                    result.get().getInteger("stars",0),
-                                                    result.get().getBoolean("admin"));
-                                            ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
-                                            ((MainActivity)getContext()).addFragmentRight(((MainActivity)getContext()).fragmentMain);
-                                        } else {
-                                            ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
-                                            ((MainActivity)getContext()).addFragmentRight(
-                                                    new FragmentCreateProfile(loginUserText.getText().toString(),
-                                                            loginPasswordText.getText().toString(),
-                                                            result.get().getString("name"),
-                                                            result.get().getBoolean("admin"))
-                                            );
+                                                    result.get().getInteger("stars",0));
                                         }
+
+                                        ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
+                                        ((MainActivity)getContext()).addFragmentRight(((MainActivity)getContext()).fragmentMain);
                                     } else {
-                                        Toast.makeText(getContext(), "CONTRASEÑA INCORRECTA", Toast.LENGTH_LONG).show();
+                                        ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
+                                        ((MainActivity)getContext()).addFragmentRight(
+                                                new FragmentCreateProfile(result.get().getObjectId("_id"))
+                                        );
                                     }
                                 } else {
-                                    Toast.makeText(getContext(), "NO ESTAS REGISTRADO EN LA EMPRESA", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getContext(), "CONTRASEÑA INCORRECTA", Toast.LENGTH_LONG).show();
                                 }
+                            } else {
+                                Toast.makeText(getContext(), "NO ESTAS REGISTRADO EN LA EMPRESA", Toast.LENGTH_LONG).show();
                             }
-                        });
-                    } else {
-                        ((MainActivity)getContext()).connectDB();
-                    }
+                        }
+                    });
+                } else {
+                    ((MainActivity)getContext()).connectDB();
                 }
             }
         });

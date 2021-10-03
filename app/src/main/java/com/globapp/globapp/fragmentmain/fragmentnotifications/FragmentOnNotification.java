@@ -42,6 +42,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import io.realm.mongodb.mongo.iterable.MongoCursor;
@@ -52,6 +53,8 @@ public class FragmentOnNotification extends Fragment {
     // DATA
     ObjectId notificationNewsID;
     News     notificationNews;
+    User     notificationUserOwner;
+    User     notificationUserRecognized;
     ArrayList<Comment> comments;
 
     // COMPONENTS UI
@@ -74,6 +77,7 @@ public class FragmentOnNotification extends Fragment {
     RecyclerView       notificationCommentList;
     GifImageView       notificationLoading;
     NestedScrollView   notificationNestedScroll;
+    TextView           notificationTime;
 
     public FragmentOnNotification(ObjectId notificationNewsID){
         this.notificationNewsID = notificationNewsID;
@@ -102,62 +106,31 @@ public class FragmentOnNotification extends Fragment {
         Document newsQuery = new Document().append("_id", notificationNewsID);
         ((MainActivity)getContext()).newsCollection.findOne(newsQuery).getAsync(newsData -> {
             if(newsData.isSuccess()){
-                Document userOwnerQuery = new Document().append("_id", newsData.get().getObjectId("user_owner_id"));
-                ((MainActivity)getContext()).userCollection.findOne(userOwnerQuery).getAsync(userOwnerData -> {
-                    if(userOwnerData.isSuccess()){
-                        User userOwner = new User(
-                                userOwnerData.get().getObjectId("_id"),
-                                userOwnerData.get().getString("name"),
-                                userOwnerData.get().getString("description"),
-                                null,
-                                null,
-                                new ArrayList<>(),
-                                userOwnerData.get().getInteger("credits",0),
-                                userOwnerData.get().getInteger("stars",0),
-                                userOwnerData.get().getBoolean("admin"));
+                if(newsData.get().getObjectId("user_recognized_id") != null){
+                    notificationNews = new NewsRecognition(
+                            newsData.get().getObjectId("_id"),
+                            newsData.get().getString("content"),
+                            newsData.get().getDate("date"),
+                            null,
+                            newsData.get().getInteger("likes"),
+                            newsData.get().getInteger("comments"),
+                            newsData.get().getList("users_likes_id", ObjectId.class, new ArrayList<>()).contains(((MainActivity)getContext()).me.getUserID()),
+                            newsData.get().getObjectId("user_owner_id"),
+                            newsData.get().getObjectId("user_recognized_id"));
 
-                        if(newsData.get().getObjectId("user_recognized_id") != null){
-                            Document userRecognizedQuery = new Document().append("_id", newsData.get().getObjectId("user_recognized_id"));
-                            ((MainActivity)getContext()).userCollection.findOne(userRecognizedQuery).getAsync(userRecognizedData -> {
-                                if(userRecognizedData.isSuccess()){
-                                    User userRecognized = new User(
-                                            userRecognizedData.get().getObjectId("_id"),
-                                            userRecognizedData.get().getString("name"),
-                                            userRecognizedData.get().getString("description"),
-                                            null,
-                                            null,
-                                            new ArrayList<>(),
-                                            userRecognizedData.get().getInteger("credits",0),
-                                            userRecognizedData.get().getInteger("stars",0),
-                                            userRecognizedData.get().getBoolean("admin"));
+                } else {
+                    notificationNews = new News(
+                            newsData.get().getObjectId("_id"),
+                            newsData.get().getString("content"),
+                            newsData.get().getDate("date"),
+                            null,
+                            newsData.get().getInteger("likes"),
+                            newsData.get().getInteger("comments"),
+                            newsData.get().getList("users_likes_id", ObjectId.class, new ArrayList<>()).contains(((MainActivity)getContext()).me.getUserID()),
+                            newsData.get().getObjectId("user_owner_id"));
 
-                                    notificationNews = new NewsRecognition(
-                                            newsData.get().getObjectId("_id"),
-                                            newsData.get().getString("content"),
-                                            null,
-                                            newsData.get().getInteger("likes"),
-                                            newsData.get().getInteger("comments"),
-                                            newsData.get().getList("users_likes_id", ObjectId.class, new ArrayList<>()).contains(((MainActivity)getContext()).me.getMeID()),
-                                            userOwner,
-                                            userRecognized);
-
-                                    loadComponents();
-                                }
-                            });
-                        } else {
-                            notificationNews = new News(
-                                    newsData.get().getObjectId("_id"),
-                                    newsData.get().getString("content"),
-                                    null,
-                                    newsData.get().getInteger("likes"),
-                                    newsData.get().getInteger("comments"),
-                                    newsData.get().getList("users_likes_id", ObjectId.class, new ArrayList<>()).contains(((MainActivity)getContext()).me.getMeID()),
-                                    userOwner);
-
-                            loadComponents();
-                        }
-                    }
-                });
+                }
+                loadComponents();
             }
         });
     }
@@ -182,7 +155,9 @@ public class FragmentOnNotification extends Fragment {
         notificationCommentList          = getView().findViewById(R.id.on_notification_comment_list);
         notificationNestedScroll         = getView().findViewById(R.id.on_notification_nested_scroll);
         notificationLoading              = getView().findViewById(R.id.on_notification_loading);
+        notificationTime                 = getView().findViewById(R.id.on_notification_time);
 
+        // POST DATA
         if(notificationNews.getNewsUserLiked()) {
             notificationLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);
         } else {
@@ -192,31 +167,79 @@ public class FragmentOnNotification extends Fragment {
                 notificationLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
         }
 
+        notificationTime.setText(notificationNews.getNewsDate().toString());
         notificationPostContent.setText(notificationNews.getNewsContent());
         notificationLikeCounter.setText(String.valueOf(notificationNews.getNewsLikes()));
         notificationCommentCounter.setText(String.valueOf(notificationNews.getNewsComments()));
         notificationPostImage.setImageURI(notificationNews.getNewsImage());
-        if(notificationNews.getNewsUserOwner().getMeImage() != null)
-            notificationUserImage.setImageURI(notificationNews.getNewsUserOwner().getMeImage());
-        else
-            notificationUserImage.setImageResource(R.drawable.user);
-
         if(notificationNews instanceof NewsRecognition){
             notificationRecognitionLayout.setVisibility(View.VISIBLE);
-            notificationUsername.setText(notificationNews.getNewsUserOwner().getMeName() +
-                    " congratulated " +
-                    ((NewsRecognition)notificationNews).getNewsUserRecognized().getMeName());
-            if(((NewsRecognition) notificationNews).getNewsUserRecognized().getMeImage() != null)
-                notificationRecognitionUserImage.setImageURI(((NewsRecognition) notificationNews).getNewsUserRecognized().getMeImage());
-            else
-                notificationRecognitionUserImage.setImageResource(R.drawable.user);
 
         } else {
             notificationRecognitionLayout.setVisibility(View.GONE);
-            notificationUsername.setText(notificationNews.getNewsUserOwner().getMeName());
         }
 
+        // USERS POST DATA
+        Document userOwnerQuery = new Document("_id", notificationNews.getNewsUserOwner());
+        ((MainActivity)getContext()).userCollection.findOne(userOwnerQuery).getAsync(userOwnerData -> {
+            if(userOwnerData.isSuccess()){
+                notificationUserOwner = new User(
+                        userOwnerData.get().getObjectId("_id"),
+                        userOwnerData.get().getString("firstName"),
+                        userOwnerData.get().getString("secondName"),
+                        userOwnerData.get().getString("lastName"),
+                        userOwnerData.get().getString("description"),
+                        null,
+                        null,
+                        new ArrayList<>(),
+                        userOwnerData.get().getInteger("credits",0),
+                        userOwnerData.get().getInteger("stars",0));
+
+                if(notificationUserOwner.getUserImage() != null)
+                    notificationUserImage.setImageURI(notificationUserOwner.getUserImage());
+                else
+                    notificationUserImage.setImageResource(R.drawable.user);
+
+                if(notificationNews instanceof NewsRecognition){
+                    Document userRecognizedQuery = new Document("_id", ((NewsRecognition)notificationNews).getNewsUserRecognized());
+                    ((MainActivity)getContext()).userCollection.findOne(userRecognizedQuery).getAsync(userRecognizedData -> {
+                        if(userRecognizedData.isSuccess()){
+                            notificationUserRecognized = new User(
+                                    userRecognizedData.get().getObjectId("_id"),
+                                    userRecognizedData.get().getString("firstName"),
+                                    userRecognizedData.get().getString("secondName"),
+                                    userRecognizedData.get().getString("lastName"),
+                                    userRecognizedData.get().getString("description"),
+                                    null,
+                                    null,
+                                    new ArrayList<>(),
+                                    userRecognizedData.get().getInteger("credits",0),
+                                    userRecognizedData.get().getInteger("stars",0));
+
+
+                            notificationUsername.setText(
+                                    notificationUserOwner.getUserFirstName()      + " " +
+                                    notificationUserOwner.getUserLastName()       + " congratulated " +
+                                    notificationUserRecognized.getUserFirstName() + " " +
+                                    notificationUserRecognized.getUserLastName());
+
+                            if(notificationUserRecognized.getUserImage() != null)
+                                notificationRecognitionUserImage.setImageURI(notificationUserRecognized.getUserImage());
+                            else
+                                notificationRecognitionUserImage.setImageResource(R.drawable.user);
+                        }
+                    });
+                } else {
+                    notificationUsername.setText(
+                            notificationUserOwner.getUserFirstName()  + " " +
+                            notificationUserOwner.getUserSecondName() + " " +
+                            notificationUserOwner.getUserLastName());
+                }
+            }
+        });
+
         ((GifDrawable)notificationStar.getDrawable()).stop();
+        ((GifDrawable)notificationStar.getDrawable()).seekTo(0);
         notificationStar.setOnClickListener(v -> {
             ((GifDrawable)notificationStar.getDrawable()).start();
             ((GifDrawable)notificationStar.getDrawable()).addAnimationListener(i ->
@@ -255,12 +278,12 @@ public class FragmentOnNotification extends Fragment {
         });
 
         notificationUserImage.setOnClickListener(v -> {
-            if(((MainActivity)getContext()).me.getMeID().equals(notificationNews.getNewsUserOwner().getMeID())){
+            if(((MainActivity)getContext()).me.getUserID().equals(notificationNews.getNewsUserOwner())){
                 if(((MainActivity)getContext()).getSupportFragmentManager().getBackStackEntryCount() == 1){
                     ((MainActivity)getContext()).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
                 } else {
                     ((MainActivity)getContext()).addFragmentLeft(
-                            new FragmentMe(notificationNews.getNewsUserOwner()));
+                            new FragmentMe());
                 }
             } else {
                 ((MainActivity)getContext()).addFragmentLeft(
@@ -269,12 +292,11 @@ public class FragmentOnNotification extends Fragment {
         });
 
         notificationRecognitionUserImage.setOnClickListener(v -> {
-            if(((MainActivity)getContext()).me.getMeID().equals(((NewsRecognition)notificationNews).getNewsUserRecognized().getMeID())){
+            if(((MainActivity)getContext()).me.getUserID().equals(((NewsRecognition)notificationNews).getNewsUserRecognized())){
                 if(((MainActivity)getContext()).getSupportFragmentManager().getBackStackEntryCount() == 1){
                     ((MainActivity)getContext()).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
                 } else {
-                    ((MainActivity)getContext()).addFragmentRight(
-                            new FragmentMe(((NewsRecognition)notificationNews).getNewsUserRecognized()));
+                    ((MainActivity)getContext()).addFragmentRight(new FragmentMe());
                 }
             } else {
                 ((MainActivity)getContext()).addFragmentRight(
@@ -338,20 +360,29 @@ public class FragmentOnNotification extends Fragment {
                 Document commentInsert = new Document()
                         .append("content", notificationCommentInput.getText().toString())
                         .append("news_id", notificationNews.getNewsID())
-                        .append("user_id", ((MainActivity)getContext()).me.getMeID());
+                        .append("date", Calendar.getInstance().getTime())
+                        .append("user_id", ((MainActivity)getContext()).me.getUserID());
+
+                String commentContent = notificationCommentInput.getText().toString();
 
                 ((MainActivity)getContext()).commentsCollection.insertOne(commentInsert).getAsync(result -> {
                     if(result.isSuccess()){
                         Toast.makeText(getContext(), "COMENTARIO PUBLICADO", Toast.LENGTH_LONG).show();
+                        comments.add(new Comment(
+                                result.get().getInsertedId().asObjectId().getValue(),
+                                commentContent,
+                                Calendar.getInstance().getTime(),
+                                ((MainActivity)getContext()).me.getUserID()));
+                        notificationCommentListAdapter.notifyItemInserted(comments.size()-1);
+                        notificationNestedScroll.post(() -> notificationNestedScroll.fullScroll(RecyclerView.FOCUS_DOWN));
                     }
                 });
 
-                comments.add(new Comment(null, notificationCommentInput.getText().toString(), ((MainActivity)getContext()).me));
+
+
                 notificationCommentInput.setText("");
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(notificationCommentInput.getWindowToken(), 0);
-                notificationCommentListAdapter.notifyItemInserted(comments.size()-1);
-                notificationNestedScroll.post(() -> notificationNestedScroll.fullScroll(RecyclerView.FOCUS_DOWN));
             }
         });
 
@@ -376,14 +407,14 @@ public class FragmentOnNotification extends Fragment {
                     ArrayList<ObjectId> listLiked = new ArrayList<>(result.get().getList("users_likes_id", ObjectId.class, new ArrayList<>()));
 
                     if(notificationNews.getNewsUserLiked()){
-                        if(listLiked.contains(((MainActivity)getContext()).me.getMeID())){
-                            listLiked.remove(((MainActivity)getContext()).me.getMeID());
+                        if(listLiked.contains(((MainActivity)getContext()).me.getUserID())){
+                            listLiked.remove(((MainActivity)getContext()).me.getUserID());
                             notificationNews.setNewsUserLiked(false);
                             result.get().append("likes", result.get().getInteger("likes")-1);
                         }
                     } else {
-                        if(!listLiked.contains(((MainActivity)getContext()).me.getMeID())){
-                            listLiked.add(((MainActivity)getContext()).me.getMeID());
+                        if(!listLiked.contains(((MainActivity)getContext()).me.getUserID())){
+                            listLiked.add(((MainActivity)getContext()).me.getUserID());
                             notificationNews.setNewsUserLiked(true);
                             result.get().append("likes", result.get().getInteger("likes")+1);
                         }
@@ -430,33 +461,19 @@ public class FragmentOnNotification extends Fragment {
             //newsRefresh.setRefreshing(false);
         } else {
             Document document = data.next();
-            ((MainActivity)getContext()).userCollection.findOne(
-                    new Document().append("_id", document.getObjectId("user_id"))
-            ).getAsync(userData -> {
-                User userOwner = new User(
-                        userData.get().getObjectId("_id"),
-                        userData.get().getString("name"),
-                        userData.get().getString("description"),
-                        null,
-                        null,
-                        new ArrayList<>(),
-                        userData.get().getInteger("credits",0),
-                        userData.get().getInteger("stars",0),
-                        userData.get().getBoolean("admin"));
+            comments.add(new Comment(
+                    document.getObjectId("_id"),
+                    document.getString("content"),
+                    document.getDate("date"),
+                    document.getObjectId("user_id")
+            ));
 
-                comments.add(new Comment(
-                        document.getObjectId("_id"),
-                        document.getString("content"),
-                        userOwner
-                ));
+            notificationCommentListAdapter.notifyItemInserted(comments.size()-1);
+            try {
+                gettingDataComments(data);
+            } catch (Exception ignored){
 
-                notificationCommentListAdapter.notifyItemInserted(comments.size()-1);
-                try {
-                    gettingDataComments(data);
-                } catch (Exception ignored){
-
-                }
-            });
+            }
         }
     }
 }

@@ -6,22 +6,21 @@ import java.util.Date;
 
 public class Comment {
     private ObjectId commentID;
-    //private Date     commentDate;
     private String   commentContent;
-    private User     commentUser;
+    private Date     commentDate;
+    private ObjectId commentUser;
 
-    public Comment(ObjectId commentID, String commentContent, User commentUser){
+    public Comment(ObjectId commentID, String commentContent, Date commentDate, ObjectId commentUser){
         this.commentContent = commentContent;
         this.commentID      = commentID;
         this.commentUser    = commentUser;
+        this.commentDate    = commentDate;
     }
 
-    /*
+
     public Date getCommentDate() {
         return commentDate;
     }
-
-     */
 
     public String getCommentContent() {
         return commentContent;
@@ -31,7 +30,7 @@ public class Comment {
         return commentID;
     }
 
-    public User getCommentUser() {
+    public ObjectId getCommentUser() {
         return commentUser;
     }
 }

@@ -74,8 +74,8 @@ public class FragmentSettings extends Fragment {
         aboutButton        = getView().findViewById(R.id.settings_about_button);
         logoutButton       = getView().findViewById(R.id.settings_logout_button);
 
-        if (((MainActivity)getContext()).me.getMeImage() != null) userImage.setImageURI(((MainActivity)getContext()).me.getMeImage());
-        username.setText(((MainActivity)getContext()).me.getMeName());
+        if (((MainActivity)getContext()).me.getUserImage() != null) userImage.setImageURI(((MainActivity)getContext()).me.getUserImage());
+        username.setText(((MainActivity)getContext()).me.getUserFirstName());
 
         // EDIT PROFILE SETTINGS
         editProfileButton.setOnClickListener(new View.OnClickListener() {
@@ -87,23 +87,20 @@ public class FragmentSettings extends Fragment {
 
         // LOGOUT SETTINGS
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                while (((MainActivity)getContext()).getSupportFragmentManager().getBackStackEntryCount() != 0){
-                    ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
-                }
-
-                for (Fragment fragment : (((MainActivity)getContext()).getSupportFragmentManager().getFragments())) {
-                    ((MainActivity)getContext()).getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-                }
-
-                ((MainActivity)getContext()).addFragmentUp(((MainActivity)getContext()).fragmentLogin);
-                ((MainActivity)getContext()).fragmentMain = new FragmentMain();
-                ((MainActivity)getContext()).me = null;
-                ((MainActivity)getContext()).notifications.clear();
-                ((MainActivity)getContext()).news.clear();
+        logoutButton.setOnClickListener(v -> {
+            while (((MainActivity)getContext()).getSupportFragmentManager().getBackStackEntryCount() != 0){
+                ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
             }
+
+            for (Fragment fragment : (((MainActivity)getContext()).getSupportFragmentManager().getFragments())) {
+                ((MainActivity)getContext()).getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+            }
+
+            ((MainActivity)getContext()).addFragmentUp(((MainActivity)getContext()).fragmentLogin);
+            ((MainActivity)getContext()).fragmentMain = new FragmentMain();
+            ((MainActivity)getContext()).me = null;
+            ((MainActivity)getContext()).notifications.clear();
+            ((MainActivity)getContext()).news.clear();
         });
 
         // DARK MODE SETTINGS
@@ -114,80 +111,66 @@ public class FragmentSettings extends Fragment {
             darkModeSwitch.setChecked(false);
         }
 
-        darkModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(MainActivity.DARK_MODE, isChecked);
-                editor.apply();
-                editor.commit();
-            }
+        darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(MainActivity.DARK_MODE, isChecked);
+            editor.apply();
+            editor.commit();
         });
 
         // LANGUAGE SETTINGS
 
-        languageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.SheetDialog);
+        languageButton.setOnClickListener(v -> {
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.SheetDialog);
 
-                if(((MainActivity)getContext()).isDarkMode){
-                    bottomSheetDialog.setContentView(R.layout.fragment_settings_language_dark);
-                } else {
-                    bottomSheetDialog.setContentView(R.layout.fragment_settings_language);
-                }
-
-                CardView spanish = bottomSheetDialog.findViewById(R.id.spanish_button);
-                CardView english = bottomSheetDialog.findViewById(R.id.english_button);
-
-                if(sharedPreferences.getBoolean(MainActivity.IS_ENGLISH, true)){
-                    english.setCardBackgroundColor(getResources().getColor(R.color.globant_main_color));
-                } else {
-                    spanish.setCardBackgroundColor(getResources().getColor(R.color.globant_main_color));
-                }
-
-                spanish.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean(MainActivity.IS_ENGLISH, false);
-                        editor.apply();
-                        editor.commit();
-                        Toast.makeText(getContext(), getString(R.string.spanish),Toast.LENGTH_LONG).show();
-                        bottomSheetDialog.cancel();
-                    }
-                });
-
-                english.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean(MainActivity.IS_ENGLISH, true);
-                        editor.apply();
-                        editor.commit();
-                        Toast.makeText(getContext(), getString(R.string.english),Toast.LENGTH_LONG).show();
-                        bottomSheetDialog.cancel();
-                    }
-                });
-
-                bottomSheetDialog.show();
+            if(((MainActivity)getContext()).isDarkMode){
+                bottomSheetDialog.setContentView(R.layout.fragment_settings_language_dark);
+            } else {
+                bottomSheetDialog.setContentView(R.layout.fragment_settings_language);
             }
+
+            CardView spanish = bottomSheetDialog.findViewById(R.id.spanish_button);
+            CardView english = bottomSheetDialog.findViewById(R.id.english_button);
+
+            if(sharedPreferences.getBoolean(MainActivity.IS_ENGLISH, true)){
+                english.setCardBackgroundColor(getResources().getColor(R.color.globant_main_color));
+            } else {
+                spanish.setCardBackgroundColor(getResources().getColor(R.color.globant_main_color));
+            }
+
+            spanish.setOnClickListener(v1 -> {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(MainActivity.IS_ENGLISH, false);
+                editor.apply();
+                editor.commit();
+                Toast.makeText(getContext(), getString(R.string.spanish),Toast.LENGTH_LONG).show();
+                bottomSheetDialog.cancel();
+            });
+
+            english.setOnClickListener(v12 -> {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(MainActivity.IS_ENGLISH, true);
+                editor.apply();
+                editor.commit();
+                Toast.makeText(getContext(), getString(R.string.english),Toast.LENGTH_LONG).show();
+                bottomSheetDialog.cancel();
+            });
+
+            bottomSheetDialog.show();
         });
 
         // ABOUT SETTINGS
 
-        aboutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.SheetDialog);
+        aboutButton.setOnClickListener(v -> {
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.SheetDialog);
 
-                if(((MainActivity)getContext()).isDarkMode){
-                    bottomSheetDialog.setContentView(R.layout.fragment_settings_about_dark);
-                } else {
-                    bottomSheetDialog.setContentView(R.layout.fragment_settings_about);
-                }
-
-                bottomSheetDialog.show();
+            if(((MainActivity)getContext()).isDarkMode){
+                bottomSheetDialog.setContentView(R.layout.fragment_settings_about_dark);
+            } else {
+                bottomSheetDialog.setContentView(R.layout.fragment_settings_about);
             }
+
+            bottomSheetDialog.show();
         });
 
     }

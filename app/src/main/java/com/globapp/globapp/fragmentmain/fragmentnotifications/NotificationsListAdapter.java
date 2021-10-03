@@ -2,24 +2,22 @@ package com.globapp.globapp.fragmentmain.fragmentnotifications;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
-import com.globapp.globapp.classes.News;
-import com.globapp.globapp.classes.NewsRecognition;
 import com.globapp.globapp.classes.Notification;
+import com.globapp.globapp.classes.User;
+
+import org.bson.Document;
 
 import java.util.ArrayList;
 
@@ -48,28 +46,76 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Notification notification = notificationsList.get(position);
-        holder.notificationUserImage.setImageURI(notification.getNotificationNews().getNewsUserOwner().getMeImage());
+        holder.notificationDate.setText(notification.getNotificationDate().toString());
 
-        if(notification.getNotificationNews() instanceof NewsRecognition){
-            NewsRecognition newsRecognition = (NewsRecognition) notification.getNotificationNews();
-            if(newsRecognition.getNewsUserRecognized().getMeID().equals(((MainActivity)context).me.getMeID())){
-                holder.notificationText.setText(newsRecognition.getNewsUserOwner().getMeName() + " " +
-                        context.getString(R.string.notification_news_recognition_you));
-            } else {
-                holder.notificationText.setText(newsRecognition.getNewsUserOwner().getMeName() + " " +
-                        context.getString(R.string.notification_news_recognition_1) + " " +
-                        newsRecognition.getNewsUserRecognized().getMeName() + " " +
-                        context.getString(R.string.notification_news_recognition_2));
-            }
+        Document newsQuery = new Document("_id", notification.getNotificationNews());
+        ((MainActivity)context).newsCollection.findOne(newsQuery).getAsync(newsData -> {
+            if(newsData.isSuccess()){
+                Document userOwnerQuery = new Document("_id", newsData.get().getObjectId("user_owner_id"));
+                ((MainActivity)context).userCollection.findOne(userOwnerQuery).getAsync(userOwnerData -> {
+                    if (userOwnerData.isSuccess()) {
+                        User userOwner = new User(
+                                userOwnerData.get().getObjectId("_id"),
+                                userOwnerData.get().getString("firstName"),
+                                userOwnerData.get().getString("secondName"),
+                                userOwnerData.get().getString("lastName"),
+                                userOwnerData.get().getString("description"),
+                                null,
+                                null,
+                                new ArrayList<>(),
+                                userOwnerData.get().getInteger("credits", 0),
+                                userOwnerData.get().getInteger("stars", 0));
 
-        } else {
-            News news = notification.getNotificationNews();
-            if(news.getNewsImage() != null){
-                holder.notificationText.setText(news.getNewsUserOwner().getMeName() + " " + context.getString(R.string.notification_news_image));
-            } else {
-                holder.notificationText.setText(news.getNewsUserOwner().getMeName() + " " + context.getString(R.string.notification_news_text));
+                        if(userOwner.getUserImage() != null){
+                            holder.notificationUserImage.setImageURI(userOwner.getUserImage());
+                        } else {
+                            holder.notificationUserImage.setImageResource(R.drawable.user);
+                        }
+
+                        if (newsData.get().getObjectId("user_recognized_id") != null) {
+                            Document userRecognizedQuery = new Document("_id", newsData.get().getObjectId("user_recognized_id"));
+                            ((MainActivity) context).userCollection.findOne(userRecognizedQuery).getAsync(userRecognizedData -> {
+                                if (userOwnerData.isSuccess()) {
+                                    User userRecognized = new User(
+                                            userRecognizedData.get().getObjectId("_id"),
+                                            userRecognizedData.get().getString("firstName"),
+                                            userRecognizedData.get().getString("secondName"),
+                                            userRecognizedData.get().getString("lastName"),
+                                            userRecognizedData.get().getString("description"),
+                                            null,
+                                            null,
+                                            new ArrayList<>(),
+                                            userRecognizedData.get().getInteger("credits", 0),
+                                            userRecognizedData.get().getInteger("stars", 0));
+
+                                    if (userRecognized.getUserID().equals(((MainActivity) context).me.getUserID())) {
+                                        holder.notificationText.setText(userOwner.getUserFirstName() + " " +
+                                                context.getString(R.string.notification_news_recognition_you));
+                                    } else {
+                                        holder.notificationText.setText(userOwner.getUserFirstName() + " " +
+                                                context.getString(R.string.notification_news_recognition_1) + " " +
+                                                userRecognized.getUserFirstName() + " " +
+                                                context.getString(R.string.notification_news_recognition_2));
+                                    }
+                                }
+                            });
+                        } else {
+                            if(userOwner.getUserImage() != null){
+                                holder.notificationText.setText(
+                                        userOwner.getUserFirstName() + " " +
+                                        userOwner.getUserLastName()  + " " +
+                                        context.getString(R.string.notification_news_image));
+                            } else {
+                                holder.notificationText.setText(
+                                        userOwner.getUserFirstName() + " " +
+                                        userOwner.getUserLastName() + " " +
+                                        context.getString(R.string.notification_news_text));
+                            }
+                        }
+                    }
+                });
             }
-        }
+        });
     }
 
     @Override
@@ -78,21 +124,23 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView         notificationText;
-        ImageView        notificationUserImage;
-        ConstraintLayout notificationBackground;
+        TextView           notificationText;
+        ImageView          notificationUserImage;
+        ConstraintLayout   notificationBackground;
+        TextView           notificationDate;
 
         ViewHolder(View itemView) {
             super(itemView);
 
-            notificationText       =  itemView.findViewById(R.id.notification_item_text);
-            notificationUserImage  =  itemView.findViewById(R.id.notification_item_user_image);
-            notificationBackground =  itemView.findViewById(R.id.notification_item_background);
+            notificationText        =  itemView.findViewById(R.id.notification_item_text);
+            notificationUserImage   =  itemView.findViewById(R.id.notification_item_user_image);
+            notificationBackground  =  itemView.findViewById(R.id.notification_item_background);
+            notificationDate        =  itemView.findViewById(R.id.notification_item_time);
 
             notificationBackground.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((MainActivity)context).addFragmentRight(new FragmentOnNotification(notificationsList.get(getAdapterPosition()).getNotificationNews().getNewsID()));
+                    ((MainActivity)context).addFragmentRight(new FragmentOnNotification(notificationsList.get(getAdapterPosition()).getNotificationNews()));
                 }
             });
         }

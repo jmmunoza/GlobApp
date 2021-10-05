@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+
+import com.globapp.globapp.classes.Comment;
 import com.globapp.globapp.classes.News;
 import com.globapp.globapp.classes.Notification;
 import com.globapp.globapp.classes.User;
@@ -19,8 +21,11 @@ import com.globapp.globapp.fragmentmain.fragmentnews.FragmentNews;
 import com.globapp.globapp.fragmentmain.fragmentnotifications.FragmentNotifications;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import io.realm.Realm;
 import io.realm.mongodb.mongo.MongoClient;
 import io.realm.mongodb.mongo.MongoCollection;
@@ -39,8 +44,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String DB_PASSWORD                 = "000000";
     public static final String DB_USER_COLLECTION          = "user";
     public static final String DB_NEWS_COLLECTION          = "news";
-    public static final String DB_COMMENTS_COLLECTION      = "comments";
-    public static final String DB_NOTIFICATIONS_COLLECTION = "notifications";
     public static final String DB_SERVICE                  = "mongodb-atlas";
     public static final String DATABASE_NAME               = "GlobAppPrueba1";
     public static final String DARK_MODE                   = "DARK_MODE";
@@ -60,8 +63,6 @@ public class MainActivity extends AppCompatActivity {
     public io.realm.mongodb.User databaseConnection;
     public MongoCollection<Document> newsCollection;
     public MongoCollection<Document> userCollection;
-    public MongoCollection<Document> commentsCollection;
-    public MongoCollection<Document> notificationsCollection;
 
     // data
     public User me;
@@ -124,8 +125,6 @@ public class MainActivity extends AppCompatActivity {
                 MongoDatabase mongoDatabase = mongoClient.getDatabase(DATABASE_NAME);
                 newsCollection              = mongoDatabase.getCollection(DB_NEWS_COLLECTION);
                 userCollection              = mongoDatabase.getCollection(DB_USER_COLLECTION);
-                notificationsCollection     = mongoDatabase.getCollection(DB_NOTIFICATIONS_COLLECTION);
-                commentsCollection          = mongoDatabase.getCollection(DB_COMMENTS_COLLECTION);
 
                 /*
                 newsCollection.watchAsync().get(result -> {

@@ -103,7 +103,12 @@ public class FragmentMe extends Fragment {
             }
         });
 
-        meName.setText(me.getUserFirstName() + " " + me.getUserSecondName() + " " +  me.getUserLastName());
+        if(me.getUserSecondName() != null){
+            meName.setText(me.getUserFirstName() + " " + me.getUserSecondName() + " " +  me.getUserLastName());
+        } else {
+            meName.setText(me.getUserFirstName() + " " +  me.getUserLastName());
+        }
+
         meDescription.setText(me.getUserDescription());
         meStars.setText(String.valueOf(me.getUserStars()));
         meCredits.setText(String.valueOf(me.getUserCredits()));

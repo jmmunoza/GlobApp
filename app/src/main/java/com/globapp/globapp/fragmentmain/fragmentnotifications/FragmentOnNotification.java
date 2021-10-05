@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
-import com.globapp.globapp.classes.Comment;
 import com.globapp.globapp.classes.News;
 import com.globapp.globapp.classes.NewsRecognition;
 import com.globapp.globapp.classes.User;
@@ -45,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import io.realm.mongodb.mongo.iterable.MongoCursor;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
@@ -55,7 +52,6 @@ public class FragmentOnNotification extends Fragment {
     News     notificationNews;
     User     notificationUserOwner;
     User     notificationUserRecognized;
-    ArrayList<Comment> comments;
 
     // COMPONENTS UI
     TextView           notificationUsername;
@@ -81,7 +77,6 @@ public class FragmentOnNotification extends Fragment {
 
     public FragmentOnNotification(ObjectId notificationNewsID){
         this.notificationNewsID = notificationNewsID;
-        this.comments           = new ArrayList<>();
     }
 
     @SuppressLint("InflateParams")
@@ -113,7 +108,7 @@ public class FragmentOnNotification extends Fragment {
                             newsData.get().getDate("date"),
                             null,
                             newsData.get().getInteger("likes"),
-                            newsData.get().getInteger("comments"),
+                            new ArrayList<>(newsData.get().getList("comments", Document.class, new ArrayList<>())),
                             newsData.get().getList("users_likes_id", ObjectId.class, new ArrayList<>()).contains(((MainActivity)getContext()).me.getUserID()),
                             newsData.get().getObjectId("user_owner_id"),
                             newsData.get().getObjectId("user_recognized_id"));
@@ -125,7 +120,7 @@ public class FragmentOnNotification extends Fragment {
                             newsData.get().getDate("date"),
                             null,
                             newsData.get().getInteger("likes"),
-                            newsData.get().getInteger("comments"),
+                            new ArrayList<>(newsData.get().getList("comments", Document.class, new ArrayList<>())),
                             newsData.get().getList("users_likes_id", ObjectId.class, new ArrayList<>()).contains(((MainActivity)getContext()).me.getUserID()),
                             newsData.get().getObjectId("user_owner_id"));
 
@@ -170,8 +165,10 @@ public class FragmentOnNotification extends Fragment {
         notificationTime.setText(notificationNews.getNewsDate().toString());
         notificationPostContent.setText(notificationNews.getNewsContent());
         notificationLikeCounter.setText(String.valueOf(notificationNews.getNewsLikes()));
-        notificationCommentCounter.setText(String.valueOf(notificationNews.getNewsComments()));
-        notificationPostImage.setImageURI(notificationNews.getNewsImage());
+        notificationCommentCounter.setText(String.valueOf(notificationNews.getNewsComments().size()));
+        if(notificationNews.getNewsImage() != null)
+            notificationPostImage.setImageURI(notificationNews.getNewsImage());
+
         if(notificationNews instanceof NewsRecognition){
             notificationRecognitionLayout.setVisibility(View.VISIBLE);
 
@@ -350,35 +347,35 @@ public class FragmentOnNotification extends Fragment {
 
         notificationCommentSendButton.setOnClickListener(v -> {
             if(notificationCommentInput.getText().toString().length() > 0){
-                ((MainActivity)getContext()).newsCollection.findOne(new Document().append("_id", notificationNews.getNewsID())).getAsync(result -> {
-                    if(result.isSuccess()){
-                        ((MainActivity)getContext()).newsCollection.findOneAndUpdate(new Document().append("_id", notificationNews.getNewsID()), result.get().append("comments", result.get().getInteger("comments")+1)).getAsync(result1 -> {
-                        });
-                    }
-                });
-
-                Document commentInsert = new Document()
-                        .append("content", notificationCommentInput.getText().toString())
-                        .append("news_id", notificationNews.getNewsID())
-                        .append("date", Calendar.getInstance().getTime())
-                        .append("user_id", ((MainActivity)getContext()).me.getUserID());
-
                 String commentContent = notificationCommentInput.getText().toString();
+                Document newsQuery = new Document("_id", notificationNews.getNewsID());
 
-                ((MainActivity)getContext()).commentsCollection.insertOne(commentInsert).getAsync(result -> {
+                ((MainActivity)getContext()).newsCollection.findOne(newsQuery).getAsync(result -> {
                     if(result.isSuccess()){
-                        Toast.makeText(getContext(), "COMENTARIO PUBLICADO", Toast.LENGTH_LONG).show();
-                        comments.add(new Comment(
-                                result.get().getInsertedId().asObjectId().getValue(),
-                                commentContent,
-                                Calendar.getInstance().getTime(),
-                                ((MainActivity)getContext()).me.getUserID()));
-                        notificationCommentListAdapter.notifyItemInserted(comments.size()-1);
-                        notificationNestedScroll.post(() -> notificationNestedScroll.fullScroll(RecyclerView.FOCUS_DOWN));
+                        ArrayList<Document> newsComments = (ArrayList<Document>) result.get().getList("comments", Document.class, new ArrayList<>());
+
+                        Document newCommentDocument = new Document()
+                                .append("content", commentContent)
+                                .append("date", Calendar.getInstance().getTime())
+                                .append("user_id", ((MainActivity)getContext()).me.getUserID());
+
+                        newsComments.add(newCommentDocument);
+                        Document newsInsertion = result.get().append("comments", newsComments);
+
+                        ((MainActivity)getContext()).newsCollection.findOneAndUpdate(newsQuery, newsInsertion).getAsync(inserted -> {
+                            if(inserted.isSuccess()){
+                                Toast.makeText(getContext(), "COMENTARIO PUBLICADO", Toast.LENGTH_LONG).show();
+                                notificationNews.getNewsComments().add(newCommentDocument);
+                                notificationCommentListAdapter.notifyItemInserted(notificationNews.getNewsComments().size()-1);
+                                notificationNestedScroll.post(() -> notificationNestedScroll.fullScroll(RecyclerView.FOCUS_DOWN));
+                            } else {
+                                System.out.println(inserted.getError().toString());
+                            }
+                        });
+                    } else {
+                        System.out.println(result.getError().toString());
                     }
                 });
-
-
 
                 notificationCommentInput.setText("");
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -397,7 +394,6 @@ public class FragmentOnNotification extends Fragment {
     }
 
     private void likeNews(){
-
         if(((MainActivity)getContext()).databaseConnection != null){
             Document newsQuery = new Document().append("_id", notificationNews.getNewsID());
 
@@ -432,48 +428,17 @@ public class FragmentOnNotification extends Fragment {
         }
     }
 
-    private void loadComments(){
-        comments.clear();
-        if(notificationCommentListAdapter != null) notificationCommentListAdapter.notifyDataSetChanged();
+    private void loadComments() {
+        if (notificationCommentListAdapter != null)
+            notificationCommentListAdapter.notifyDataSetChanged();
         notificationCommentList = getView().findViewById(R.id.on_notification_comment_list);
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.VERTICAL,
                 false);
 
-        notificationCommentListAdapter = new CommentListAdapter(getContext(), comments);
+        notificationCommentListAdapter = new CommentListAdapter(getContext(), notificationNews.getNewsComments());
         notificationCommentList.setLayoutManager(verticalLayoutManager);
         notificationCommentList.setAdapter(notificationCommentListAdapter);
-
-        ((MainActivity)getContext()).commentsCollection.find(new Document().append("news_id", notificationNews.getNewsID())).iterator().getAsync(result -> {
-            if(result.isSuccess()){
-                try {
-                    gettingDataComments(result.get());
-                } catch (Exception ignored){
-
-                }
-            }
-        });
-    }
-
-    private void gettingDataComments(MongoCursor<Document> data) throws Exception {
-        if(!data.hasNext()){
-            //newsRefresh.setRefreshing(false);
-        } else {
-            Document document = data.next();
-            comments.add(new Comment(
-                    document.getObjectId("_id"),
-                    document.getString("content"),
-                    document.getDate("date"),
-                    document.getObjectId("user_id")
-            ));
-
-            notificationCommentListAdapter.notifyItemInserted(comments.size()-1);
-            try {
-                gettingDataComments(data);
-            } catch (Exception ignored){
-
-            }
-        }
     }
 }

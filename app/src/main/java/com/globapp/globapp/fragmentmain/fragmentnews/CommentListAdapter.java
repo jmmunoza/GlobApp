@@ -27,18 +27,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.ViewHolder>{
 
-    private ArrayList<Comment>       newsComments;
+    private ArrayList<Document>       newsComments;
     private LayoutInflater            inflater;
     Context                           context;
     private BottomSheetDialogFragment parent;
 
-    public CommentListAdapter(Context context, ArrayList<Comment> newsComments){
+    public CommentListAdapter(Context context, ArrayList<Document> newsComments){
         this.inflater     = LayoutInflater.from(context);
         this.context      = context;
         this.newsComments = newsComments;
     }
 
-    public CommentListAdapter(Context context, ArrayList<Comment> newsComments, BottomSheetDialogFragment parent){
+    public CommentListAdapter(Context context, ArrayList<Document> newsComments, BottomSheetDialogFragment parent){
         this.inflater     = LayoutInflater.from(context);
         this.context      = context;
         this.newsComments = newsComments;
@@ -58,7 +58,11 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Comment comment = newsComments.get(position);
+        Comment comment = new Comment(
+                newsComments.get(position).getString("content"),
+                newsComments.get(position).getDate("date"),
+                newsComments.get(position).getObjectId("user_id")
+        );
 
         Document userQuery = new Document("_id", comment.getCommentUser());
         ((MainActivity)context).userCollection.findOne(userQuery).getAsync(userData -> {
@@ -117,20 +121,17 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             commentContent   = itemView.findViewById(R.id.comment_item_content);
             commentTime      = itemView.findViewById(R.id.comment_item_time);
 
-            commentUserImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(parent != null) parent.dismiss();
-                    if(((MainActivity)context).me.getUserID().equals(newsComments.get(getAdapterPosition()).getCommentUser())){
-                        if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
-                            ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
-                        } else {
-                            ((MainActivity)context).addFragmentUp(new FragmentMe());
-                        }
+            commentUserImage.setOnClickListener(v -> {
+                if(parent != null) parent.dismiss();
+                if(((MainActivity)context).me.getUserID().equals(newsComments.get(getAdapterPosition()).getObjectId("user_id"))){
+                    if(((MainActivity)context).getSupportFragmentManager().getBackStackEntryCount() == 1){
+                        ((MainActivity)context).fragmentMain.mainViewPager.setCurrentItem(FragmentMain.ME);
                     } else {
-                        ((MainActivity)context).addFragmentUp(
-                                new FragmentUser(newsComments.get(getAdapterPosition()).getCommentUser()));
+                        ((MainActivity)context).addFragmentUp(new FragmentMe());
                     }
+                } else {
+                    ((MainActivity)context).addFragmentUp(
+                            new FragmentUser(newsComments.get(getAdapterPosition()).getObjectId("user_id")));
                 }
             });
         }

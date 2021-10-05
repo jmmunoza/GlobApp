@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.facebook.shimmer.Shimmer;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
 
@@ -26,6 +28,7 @@ public class FragmentNotifications extends Fragment {
     RecyclerView             notificationsList;
     NotificationsListAdapter notificationsListAdapter;
     SwipeRefreshLayout       notificationsRefresh;
+    ShimmerFrameLayout       notificationsPlaceHolder;
 
     @Nullable
     @Override
@@ -45,23 +48,39 @@ public class FragmentNotifications extends Fragment {
     }
 
     private void loadComponents(){
-        notificationsRefresh = getView().findViewById(R.id.notification_refresh);
+        notificationsPlaceHolder = getView().findViewById(R.id.notification_placeholder);
+        notificationsRefresh     = getView().findViewById(R.id.notification_refresh);
+        notificationsList        = getView().findViewById(R.id.notifications_list);
+
+
         notificationsRefresh.setOnRefreshListener(() -> ((MainActivity)getContext()).runOnUiThread(this::loadNotifications));
 
         loadNotifications();
     }
 
     private void loadNotifications(){
+        notificationsPlaceHolder.setVisibility(View.VISIBLE);
+        notificationsList.setVisibility(View.INVISIBLE);
+        notificationsPlaceHolder.startShimmer();
+
         if(notificationsListAdapter != null) notificationsListAdapter.notifyDataSetChanged();
-        notificationsList = getView().findViewById(R.id.notifications_list);
+
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.VERTICAL,
                 false);
 
-        notificationsListAdapter = new NotificationsListAdapter(getContext(), ((MainActivity)getContext()).notifications);
         notificationsList.setLayoutManager(verticalLayoutManager);
+        notificationsListAdapter = new NotificationsListAdapter(getContext(), ((MainActivity)getContext()).notifications);
+        notificationsListAdapter.addDataLoadedListener(new NotificationsListAdapter.DataLoadedListener() {
+            @Override
+            public void onDataLoaded() {
+                notificationsList.setVisibility(View.VISIBLE);
+                notificationsPlaceHolder.stopShimmer();
+                notificationsPlaceHolder.setVisibility(View.GONE);
+                notificationsRefresh.setRefreshing(false);
+            }
+        });
         notificationsList.setAdapter(notificationsListAdapter);
-        notificationsRefresh.setRefreshing(false);
     }
 }

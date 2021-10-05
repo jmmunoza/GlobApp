@@ -2,6 +2,7 @@ package com.globapp.globapp.classes;
 
 import android.net.Uri;
 
+import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -13,12 +14,12 @@ public class News {
     private String   newsContent;
     private Uri      newsImage;
     private int      newsLikes;
-    private int      newsComments;
+    private ArrayList<Document>      newsComments;
     private boolean  newsUserLiked;
     private Date     newsDate;
     private ObjectId newsUserOwner;
 
-    public News(ObjectId newsID, String newsContent, Date newsDate, Uri newsImage, int newsLikes, int newsComments, boolean newsUserLiked, ObjectId newsUserOwner){
+    public News(ObjectId newsID, String newsContent, Date newsDate, Uri newsImage, int newsLikes, ArrayList<Document> newsComments, boolean newsUserLiked, ObjectId newsUserOwner){
         this.newsID            = newsID;
         this.newsContent       = newsContent;
         this.newsImage         = newsImage;
@@ -41,7 +42,7 @@ public class News {
         return newsUserLiked;
     }
 
-    public int getNewsComments() {
+    public ArrayList<Document> getNewsComments() {
         return newsComments;
     }
 

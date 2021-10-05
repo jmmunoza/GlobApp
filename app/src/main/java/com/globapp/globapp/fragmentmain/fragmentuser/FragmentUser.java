@@ -98,7 +98,13 @@ public class FragmentUser extends Fragment {
         userStars        = getView().findViewById(R.id.user_stars);
 
         userStars.setText(String.valueOf(user.getUserStars()));
-        userName.setText(user.getUserFirstName() + " " + user.getUserSecondName() + " " +  user.getUserLastName());
+
+        if(user.getUserSecondName() != null){
+            userName.setText(user.getUserFirstName() + " " + user.getUserSecondName() + " " +  user.getUserLastName());
+        } else {
+            userName.setText(user.getUserFirstName() + " " + user.getUserLastName());
+        }
+
         userImage.setImageURI(user.getUserImage());
         userCoverImage.setImageURI(user.getUserCoverImage());
         userDescription.setText(user.getUserDescription());

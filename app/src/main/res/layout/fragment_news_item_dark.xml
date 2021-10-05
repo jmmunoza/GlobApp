@@ -118,6 +118,7 @@
         tools:layout_editor_absoluteX="10dp">
 
         <ImageView
+            android:src="@drawable/cover"
             android:id="@+id/news_item_post_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

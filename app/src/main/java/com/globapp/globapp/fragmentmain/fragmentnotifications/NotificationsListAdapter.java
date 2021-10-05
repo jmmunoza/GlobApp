@@ -24,12 +24,15 @@ import java.util.ArrayList;
 public class NotificationsListAdapter extends RecyclerView.Adapter<NotificationsListAdapter.ViewHolder> {
 
     private ArrayList<Notification> notificationsList;
-    private LayoutInflater inflater;
+    private LayoutInflater          inflater;
+    private int                     loadedNotifications;
+    private DataLoadedListener      dataLoadedListener;
     Context context;
 
     public NotificationsListAdapter(Context context, ArrayList<Notification> notificationsList){
         this.inflater = LayoutInflater.from(context);
         this.context = context;
+        this.loadedNotifications = 0;
         this.notificationsList = notificationsList;
     }
 
@@ -97,6 +100,8 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
                                                 userRecognized.getUserFirstName() + " " +
                                                 context.getString(R.string.notification_news_recognition_2));
                                     }
+                                    loadedNotifications++;
+                                    isDataLoaded();
                                 }
                             });
                         } else {
@@ -111,11 +116,29 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
                                         userOwner.getUserLastName() + " " +
                                         context.getString(R.string.notification_news_text));
                             }
+
+                            loadedNotifications++;
+                            isDataLoaded();
                         }
                     }
                 });
             }
         });
+    }
+
+    public void addDataLoadedListener(DataLoadedListener dataLoadedListener){
+        this.dataLoadedListener = dataLoadedListener;
+    }
+
+    public interface DataLoadedListener {
+        void onDataLoaded();
+    }
+
+    private void isDataLoaded() {
+        if(notificationsList.size() == loadedNotifications){
+            if(dataLoadedListener != null)
+                dataLoadedListener.onDataLoaded();
+        }
     }
 
     @Override

@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
+import com.globapp.globapp.classes.Comment;
 import com.globapp.globapp.classes.News;
 import com.globapp.globapp.classes.NewsRecognition;
 import com.globapp.globapp.classes.Recognition;
@@ -125,7 +126,7 @@ public class FragmentGiveStar extends Fragment {
         postButton.setOnClickListener(v -> {
             int textLength = postText.getText().toString().length();
             if(textLength > 20 && textLength < 500){
-
+                postButton.setEnabled(false);
                 if(((MainActivity)getContext()).databaseConnection != null){
                     Document userQuery = new Document().append("_id", user.getUserID());
 
@@ -135,6 +136,7 @@ public class FragmentGiveStar extends Fragment {
                             .append("likes", 0)
                             .append("comments", 0)
                             .append("date", Calendar.getInstance().getTime())
+                            .append("comments", new ArrayList<Document>())
                             .append("user_recognized_id", user.getUserID());
 
                     ((MainActivity)getContext()).userCollection.findOne(userQuery).getAsync(result -> {
@@ -147,20 +149,16 @@ public class FragmentGiveStar extends Fragment {
 
                     ((MainActivity)getContext()).newsCollection.insertOne(newsRecognition).getAsync(result -> {
                         if (result.isSuccess()) {
-                            Document notification = new Document()
-                                    .append("news_id", result.get().getInsertedId().asObjectId().getValue());
 
-                            ((MainActivity)getContext()).notificationsCollection.insertOne(notification).getAsync(result1 -> {
-                                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.hideSoftInputFromWindow(postText.getWindowToken(), 0);
-                                ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
-                                ((MainActivity)getContext()).enableAnimation(R.drawable.celebration_animated_1);
-
-                                Toast.makeText(getContext(), "PUBLICADO", Toast.LENGTH_LONG);
-                            });
+                            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(postText.getWindowToken(), 0);
+                            ((MainActivity)getContext()).getSupportFragmentManager().popBackStackImmediate();
+                            ((MainActivity)getContext()).enableAnimation(R.drawable.celebration_animated_1);
+                            Toast.makeText(getContext(), "PUBLICADO", Toast.LENGTH_LONG);
                         }
                     });
                 } else {
+                    postButton.setEnabled(true);
                     ((MainActivity)getContext()).connectDB();
                 }
             } else {

@@ -5,14 +5,12 @@ import org.bson.types.ObjectId;
 import java.util.Date;
 
 public class Comment {
-    private ObjectId commentID;
     private String   commentContent;
     private Date     commentDate;
     private ObjectId commentUser;
 
-    public Comment(ObjectId commentID, String commentContent, Date commentDate, ObjectId commentUser){
+    public Comment(String commentContent, Date commentDate, ObjectId commentUser){
         this.commentContent = commentContent;
-        this.commentID      = commentID;
         this.commentUser    = commentUser;
         this.commentDate    = commentDate;
     }
@@ -24,10 +22,6 @@ public class Comment {
 
     public String getCommentContent() {
         return commentContent;
-    }
-
-    public ObjectId getCommentID() {
-        return commentID;
     }
 
     public ObjectId getCommentUser() {

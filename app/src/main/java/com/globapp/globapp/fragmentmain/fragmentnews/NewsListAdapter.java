@@ -31,6 +31,7 @@ import com.globapp.globapp.classes.Recognition;
 import com.globapp.globapp.classes.User;
 import com.globapp.globapp.fragmentmain.FragmentMain;
 import com.globapp.globapp.fragmentmain.fragmentme.FragmentMe;
+import com.globapp.globapp.fragmentmain.fragmentnotifications.NotificationsListAdapter;
 import com.globapp.globapp.fragmentmain.fragmentuser.FragmentUser;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -49,8 +50,10 @@ import pl.droidsonroids.gif.GifImageView;
 
 public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHolder> {
 
-    private ArrayList<News> newsList;
-    private LayoutInflater  inflater;
+    private ArrayList<News>    newsList;
+    private LayoutInflater     inflater;
+    private DataLoadedListener dataLoadedListener;
+    private int                loadedNews;
     Context context;
 
     public NewsListAdapter(Context context, ArrayList<News> newsList){
@@ -75,7 +78,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
 
         holder.newsPostContent.setText(news.getNewsContent());
         holder.newsLikeCounter.setText(String.valueOf(news.getNewsLikes()));
-        holder.newsCommentCounter.setText(String.valueOf(news.getNewsComments()));
+        holder.newsCommentCounter.setText(String.valueOf(news.getNewsComments().size()));
         holder.newsTime.setText(news.getNewsDate().toString());
 
         if(news.getNewsUserLiked()) {
@@ -87,10 +90,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                 holder.newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
         }
 
+
         if(news.getNewsImage() != null)
             holder.newsPostImage.setImageURI(news.getNewsImage());
-        else
-            holder.newsPostImage.setVisibility(View.GONE);
+        //else
+         //   holder.newsPostImage.setVisibility(View.GONE);
 
         if(news instanceof NewsRecognition){
             holder.newsRecognitionLayout.setVisibility(View.VISIBLE);
@@ -135,7 +139,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                                     userRecognizedData.get().getInteger("credits",0),
                                     userRecognizedData.get().getInteger("stars",0));
 
-
                             holder.newsUsername.setText(
                                             newsUserOwner.getUserFirstName()      + " " +
                                             newsUserOwner.getUserLastName()       + " congratulated " +
@@ -146,6 +149,9 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                                 holder.newsRecognitionUserImage.setImageURI(newsUserRecognized.getUserImage());
                             else
                                 holder.newsRecognitionUserImage.setImageResource(R.drawable.user);
+
+                            loadedNews++;
+                            isDataLoaded();
                         }
                     });
                 } else {
@@ -153,9 +159,27 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                             newsUserOwner.getUserFirstName()  + " " +
                             newsUserOwner.getUserSecondName() + " " +
                             newsUserOwner.getUserLastName());
+
+                    loadedNews++;
+                    isDataLoaded();
                 }
             }
         });
+    }
+
+    public void addDataLoadedListener(DataLoadedListener dataLoadedListener){
+        this.dataLoadedListener = dataLoadedListener;
+    }
+
+    public interface DataLoadedListener {
+        void onDataLoaded();
+    }
+
+    private void isDataLoaded() {
+        if(newsList.size() == loadedNews){
+            if(dataLoadedListener != null)
+                dataLoadedListener.onDataLoaded();
+        }
     }
 
     @Override
@@ -172,7 +196,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         private BottomSheetBehavior commentBehavior;
         private View                view;
         private News                commentNews;
-        private ArrayList<Comment>  comments;
 
         @NonNull
         @Override
@@ -190,45 +213,39 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
 
             loadComments();
 
-            commentSendButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(commentInput.getText().toString().length() > 0){
-                        ((MainActivity)getContext()).newsCollection.findOne(new Document().append("_id", commentNews.getNewsID())).getAsync(result -> {
-                            if(result.isSuccess()){
-                                ((MainActivity)getContext()).newsCollection.findOneAndUpdate(new Document().append("_id", commentNews.getNewsID()), result.get().append("comments", result.get().getInteger("comments")+1)).getAsync(result1 -> {
-                                });
-                            }
-                        });
+            commentSendButton.setOnClickListener(v -> {
+                if(commentInput.getText().toString().length() > 0){
 
-                        Document commentInsert = new Document()
-                                .append("content", commentInput.getText().toString())
-                                .append("news_id", commentNews.getNewsID())
-                                .append("date", Calendar.getInstance().getTime())
-                                .append("user_id", ((MainActivity)getContext()).me.getUserID());
+                    String commentContent = commentInput.getText().toString();
+                    Document newsQuery = new Document("_id", commentNews.getNewsID());
 
-                        String commentContent = commentInput.getText().toString();
+                    ((MainActivity)getContext()).newsCollection.findOne(newsQuery).getAsync(result -> {
+                        if(result.isSuccess()){
+                            ArrayList<Document> newsComments = (ArrayList<Document>) result.get().getList("comments", Document.class, new ArrayList<>());
 
-                        ((MainActivity)getContext()).commentsCollection.insertOne(commentInsert).getAsync(result -> {
-                            if(result.isSuccess()){
-                                Toast.makeText(getContext(), "COMENTARIO PUBLICADO", Toast.LENGTH_LONG).show();
-                                comments.add(new Comment(
-                                        result.get().getInsertedId().asObjectId().getValue(),
-                                        commentContent,
-                                        Calendar.getInstance().getTime(),
-                                        ((MainActivity)getContext()).me.getUserID())
-                                );
-                                commentListAdapter.notifyItemInserted(comments.size()-1);
-                                commentList.scrollToPosition(comments.size()-1);
-                            }
-                        });
+                            Document newCommentDocument = new Document()
+                                    .append("content", commentContent)
+                                    .append("date", Calendar.getInstance().getTime())
+                                    .append("user_id", ((MainActivity)getContext()).me.getUserID());
 
+                            newsComments.add(newCommentDocument);
+                            Document newsInsertion = result.get().append("comments", newsComments);
 
-                        commentInput.setText("");
-                        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(commentInput.getWindowToken(), 0);
+                            ((MainActivity)getContext()).newsCollection.findOneAndUpdate(newsQuery, newsInsertion).getAsync(inserted -> {
+                                if(inserted.isSuccess()){
+                                    Toast.makeText(getContext(), "COMENTARIO PUBLICADO", Toast.LENGTH_LONG).show();
 
-                    }
+                                    commentNews.getNewsComments().add(newCommentDocument);
+                                    commentListAdapter.notifyItemInserted(commentNews.getNewsComments().size()-1);
+                                    commentList.scrollToPosition(commentNews.getNewsComments().size()-1);
+                                }
+                            });
+                        }
+                    });
+
+                    commentInput.setText("");
+                    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(commentInput.getWindowToken(), 0);
                 }
             });
 
@@ -240,52 +257,22 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
 
         public CommentDialog(News commentNews) {
             this.commentNews = commentNews;
-            this.comments    = new ArrayList<>();
+            //this.comments    = new ArrayList<>();
         }
 
-        private void loadComments(){
-            comments.clear();
-            if(commentListAdapter != null) commentListAdapter.notifyDataSetChanged();
+        private void loadComments() {
+            //comments.clear();
+            if (commentListAdapter != null) commentListAdapter.notifyDataSetChanged();
             commentList = view.findViewById(R.id.comment_list);
             LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(
                     getContext(),
                     LinearLayoutManager.VERTICAL,
                     false);
 
-            commentListAdapter = new CommentListAdapter(getContext(), comments, this);
+            commentListAdapter = new CommentListAdapter(getContext(), commentNews.getNewsComments(), this);
             commentList.setLayoutManager(verticalLayoutManager);
             commentList.setAdapter(commentListAdapter);
 
-            ((MainActivity)getContext()).commentsCollection.find(new Document().append("news_id", commentNews.getNewsID())).iterator().getAsync(result -> {
-                if(result.isSuccess()){
-                    try {
-                        gettingDataComments(result.get());
-                    } catch (Exception e){
-
-                    }
-                }
-            });
-        }
-
-        private void gettingDataComments(MongoCursor<Document> data) throws Exception {
-            if(!data.hasNext()){
-                //newsRefresh.setRefreshing(false);
-            } else {
-                Document document = data.next();
-                comments.add(new Comment(
-                        document.getObjectId("_id"),
-                        document.getString("content"),
-                        document.getDate("date"),
-                        document.getObjectId("user_id")
-                ));
-
-                commentListAdapter.notifyItemInserted(comments.size()-1);
-                try {
-                    gettingDataComments(data);
-                } catch (Exception e){
-
-                }
-            }
         }
 
         @Override

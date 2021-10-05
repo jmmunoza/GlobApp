@@ -18,13 +18,16 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.globapp.globapp.MainActivity;
 import com.globapp.globapp.R;
+import com.globapp.globapp.classes.Comment;
 import com.globapp.globapp.classes.News;
 import com.globapp.globapp.classes.NewsRecognition;
 import com.globapp.globapp.classes.Notification;
 import com.globapp.globapp.classes.Recognition;
 import com.globapp.globapp.classes.User;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import org.bson.BsonDocument;
 import org.bson.BsonValue;
@@ -45,6 +48,7 @@ public class FragmentNews extends Fragment {
     public RecyclerView       newsPager;
     public NewsPagerAdapter   newsPagerAdapter;
     public SwipeRefreshLayout newsRefresh;
+    public ShimmerFrameLayout newsPlaceholder;
 
     @Nullable
     @Override
@@ -61,20 +65,20 @@ public class FragmentNews extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadNews();
         loadComponents();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void loadComponents(){
-        newsRefresh = getView().findViewById(R.id.news_refresh);
+        newsRefresh     = getView().findViewById(R.id.news_refresh);
+        newsPlaceholder = getView().findViewById(R.id.news_placeholder);
+        newsList        = getView().findViewById(R.id.news_list);
+        newsPager       = getView().findViewById(R.id.news_pager);
         newsRefresh.setOnRefreshListener(() -> ((MainActivity)getContext()).runOnUiThread(this::loadNews));
-
-        // News list configuration
+        loadNews();
 
 
         // News pager configuration
-        newsPager = getView().findViewById(R.id.news_pager);
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.HORIZONTAL,
@@ -89,9 +93,13 @@ public class FragmentNews extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void loadNews(){
+        newsPlaceholder.setVisibility(View.VISIBLE);
+        newsList.setVisibility(View.INVISIBLE);
+        newsPlaceholder.startShimmer();
+
         ((MainActivity)getContext()).news.clear();
         if(newsListAdapter != null) newsListAdapter.notifyDataSetChanged();
-        newsList = getView().findViewById(R.id.news_list);
+
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.VERTICAL,
@@ -101,9 +109,8 @@ public class FragmentNews extends Fragment {
         newsList.setLayoutManager(verticalLayoutManager);
         newsList.setAdapter(newsListAdapter);
 
-        ((MainActivity)getContext()).newsCollection.find().sort(
-                new Document().append("likes", MainActivity.DESCENDING)
-        ).limit(50).iterator().getAsync(result -> {
+        Document descendingDate = new Document().append("date", MainActivity.DESCENDING);
+        ((MainActivity)getContext()).newsCollection.find().sort(descendingDate).limit(50).iterator().getAsync(result -> {
            if(result.isSuccess()){
                gettingDataNews(result.get());
            }
@@ -112,7 +119,15 @@ public class FragmentNews extends Fragment {
 
     private void gettingDataNews(MongoCursor<Document> data){
         if(!data.hasNext()){
-            newsRefresh.setRefreshing(false);
+            newsListAdapter.addDataLoadedListener(new NewsListAdapter.DataLoadedListener() {
+                @Override
+                public void onDataLoaded() {
+                    newsList.setVisibility(View.VISIBLE);
+                    newsPlaceholder.stopShimmer();
+                    newsPlaceholder.setVisibility(View.GONE);
+                    newsRefresh.setRefreshing(false);
+                }
+            });
         } else {
             Document document = data.next();
             if (document.getObjectId("user_recognized_id") != null) {
@@ -122,7 +137,7 @@ public class FragmentNews extends Fragment {
                         document.getDate("date"),
                         null,
                         document.getInteger("likes"),
-                        document.getInteger("comments"),
+                        new ArrayList<>(document.getList("comments", Document.class, new ArrayList<>())),
                         document.getList("users_likes_id", ObjectId.class, new ArrayList<>()).contains(((MainActivity) getContext()).me.getUserID()),
                         document.getObjectId("user_owner_id"),
                         document.getObjectId("user_recognized_id"));
@@ -132,13 +147,14 @@ public class FragmentNews extends Fragment {
 
 
             } else {
+
                 News news = new News(
                         document.getObjectId("_id"),
                         document.getString("content"),
                         document.getDate("date"),
                         null,
                         document.getInteger("likes"),
-                        document.getInteger("comments"),
+                        new ArrayList<>(document.getList("comments", Document.class, new ArrayList<>())),
                         document.getList("users_likes_id", ObjectId.class, new ArrayList<>()).contains(((MainActivity) getContext()).me.getUserID()),
                         document.getObjectId("user_owner_id"));
 

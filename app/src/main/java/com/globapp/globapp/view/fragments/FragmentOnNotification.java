@@ -347,7 +347,7 @@ public class FragmentOnNotification extends Fragment {
                 false);
 
         notificationCommentList.setLayoutManager(verticalLayoutManager);
-        notificationCommentListAdapter = new CommentListAdapter(getContext(), commentList);
+        notificationCommentListAdapter = new CommentListAdapter(getContext(), commentList, onNotificationListener);
         notificationCommentList.setAdapter(notificationCommentListAdapter);
     }
 

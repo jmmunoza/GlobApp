@@ -312,15 +312,4 @@
             </com.google.android.material.textfield.TextInputLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <pl.droidsonroids.gif.GifImageView
-        android:clickable="true"
-        android:id="@+id/on_notification_loading"
-        android:background="@color/white"
-        android:scaleType="center"
-        android:src="@drawable/loading_animation_1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </pl.droidsonroids.gif.GifImageView>
 </androidx.constraintlayout.widget.ConstraintLayout>

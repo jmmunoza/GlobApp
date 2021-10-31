@@ -1,9 +1,5 @@
 package com.globapp.globapp.view.fragments;
 
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,17 +8,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.globapp.globapp.data.local.Preferences;
-import com.globapp.globapp.view.MainActivity;
 import com.globapp.globapp.R;
+import com.globapp.globapp.data.local.Preferences;
+import com.globapp.globapp.data.manager.UserDataManager;
+import com.globapp.globapp.data.remote.UserGetterMongo;
+import com.globapp.globapp.data.remote.UserInserterMongo;
 import com.globapp.globapp.model.User;
+import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.adapters.MePagerAdapter;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -30,7 +31,8 @@ import java.util.concurrent.TimeUnit;
 
 public class FragmentUser extends Fragment {
     // Data
-    private ObjectId userID;
+    private final ObjectId userID;
+    private User     user;
 
     // UI Components
     private RecyclerView     recognitionPager;
@@ -52,8 +54,12 @@ public class FragmentUser extends Fragment {
     @SuppressLint("InflateParams")
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
         postponeEnterTransition(1, TimeUnit.MILLISECONDS);
+
         if(Preferences.getDarkMode()){
             return inflater.inflate(R.layout.fragment_user_dark, null);
         } else {
@@ -68,27 +74,17 @@ public class FragmentUser extends Fragment {
     }
 
     private void loadUserData(){
-        Document userQuery = new Document("_id", userID);
-        ((MainActivity)getContext()).userCollection.findOne(userQuery).getAsync(userData -> {
-            if(userData.isSuccess()){
-                User user = new User(
-                        userData.get().getObjectId("_id"),
-                        userData.get().getString("firstName"),
-                        userData.get().getString("secondName"),
-                        userData.get().getString("lastName"),
-                        userData.get().getString("description"),
-                        null,
-                        null,
-                        new ArrayList<>(),
-                        userData.get().getInteger("credits",0),
-                        userData.get().getInteger("stars",0));
-                loadComponents(user);
-            }
+        new UserDataManager(
+                new UserInserterMongo(),
+                new UserGetterMongo()).getUser(userID, user -> {
+
+            FragmentUser.this.user = user;
+            loadComponents();
         });
     }
 
-    @SuppressLint("SetTextI18n")
-    private void loadComponents(User user){
+
+    private void loadComponents(){
         userStarButton   = requireView().findViewById(R.id.user_star_button);
         userName         = requireView().findViewById(R.id.user_name);
         userDescription  = requireView().findViewById(R.id.user_description);
@@ -97,47 +93,27 @@ public class FragmentUser extends Fragment {
         recognitionPager = requireView().findViewById(R.id.user_recognitions);
         userStars        = requireView().findViewById(R.id.user_stars);
 
-        descriptionFunction();
+        updateUserData();
         starButtonFunction();
-        starTextFunction();
-        usernameFunction();
-        userImageFunction();
-        userCoverFunction();
         recognitionListFunction();
     }
 
-    private void usernameFunction(){
-        if(user.getUserSecondName() != null){
-            userName.setText(user.getUserFirstName() + " " + user.getUserSecondName() + " " +  user.getUserLastName());
-        } else {
-            userName.setText(user.getUserFirstName() + " " + user.getUserLastName());
-        }
-    }
-
-    private void starTextFunction(){
-        userStars.setText(String.valueOf(user.getUserStars()));
-    }
-
     private void recognitionListFunction(){
-        recognitionPagerAdapter = new MePagerAdapter(getContext(), user.getUserRecognitions());
+        recognitionPagerAdapter = new MePagerAdapter(getContext(), new ArrayList<>());
         recognitionPager.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recognitionPager.setAdapter(recognitionPagerAdapter);
     }
 
-    private void userImageFunction(){
+    private void updateUserData(){
+        userStars.setText(String.valueOf(user.getUserStars()));
+        userName.setText(UserNameGetter.getUserName(user));
         userImage.setImageURI(user.getUserImage());
-    }
-
-    private void userCoverFunction(){
         userCoverImage.setImageURI(user.getUserCoverImage());
-    }
-
-    private void descriptionFunction(){
         userDescription.setText(user.getUserDescription());
     }
 
     private void starButtonFunction(){
-        userStarButton.setOnClickListener(v -> ((MainActivity)getContext()).addFragmentUp(new FragmentGiveStar(user)));
+        userStarButton.setOnClickListener(v -> onUserListener.giveStar(userID));
     }
 
     public interface OnUserListener {

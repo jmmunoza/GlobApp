@@ -32,7 +32,6 @@ public class CommentInserterMongo implements ICommentInserter {
                 comments.add(commentDoc);
 
                 Document newsInsertion = result.get().append("comments", comments);
-
                 newsCollection.findOneAndUpdate(newsQuery, newsInsertion).getAsync(inserted -> {
                     if(inserted.isSuccess()){
                         onNewsCommentedListener.onNewsCommented(comments.size());

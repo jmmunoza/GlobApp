@@ -22,6 +22,7 @@ import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.remote.CreateProfile;
 import com.globapp.globapp.data.services.ICreateProfile;
 import com.globapp.globapp.model.User;
+import com.globapp.globapp.util.KeyboardManager;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.MainActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -149,6 +150,7 @@ public class FragmentCreateProfile extends Fragment {
             int textLength = userDescription.getText().toString().length();
             if(textLength > 20 && textLength < 300){
                 continueButton.setClickable(false);
+                KeyboardManager.hide(getContext(), userDescription.getWindowToken());
                 ICreateProfile iCreateProfile = new CreateProfile(onCreateProfileListener);
                 iCreateProfile.create(userID, userDescription.getText().toString());
             } else {

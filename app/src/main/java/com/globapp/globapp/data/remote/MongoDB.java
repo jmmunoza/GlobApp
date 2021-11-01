@@ -27,10 +27,11 @@ public class MongoDB {
     private static MongoDatabase databaseInstance;
 
     private MongoDB(){
-        Realm.init(GlobAppApplication.getAppContext());
+
     }
 
     public static void initDB(OnDatabaseConnectedListener onDatabaseConnectedListener){
+        Realm.init(GlobAppApplication.getAppContext());
         App app = new App(new AppConfiguration.Builder(APP_ID).build());
         Credentials emailPasswordCredentials = Credentials.emailPassword(DB_EMAIL, DB_PASSWORD);
         app.loginAsync(emailPasswordCredentials, it -> {

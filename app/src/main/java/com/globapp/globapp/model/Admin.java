@@ -10,11 +10,11 @@ import java.util.ArrayList;
 
 public class Admin extends User {
     public Admin(String userID,       String userFirstName,   String userSecondName,
-                 String userLastName, String userDescription, Uri userImage,
+                 String userLastName, String userDescription,/* Uri userImage,*/
                  Uri userCoverImage,  int userCredits,        int userStars) {
 
         super(userID,         userFirstName,   userSecondName,
-              userLastName,   userDescription, userImage,
-              userCoverImage, userCredits,     userStars);
+              userLastName,   userDescription, /*userImage,*/
+             /* userCoverImage,*/ userCredits,     userStars);
     }
 }

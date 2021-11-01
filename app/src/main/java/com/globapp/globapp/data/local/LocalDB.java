@@ -3,6 +3,7 @@ package com.globapp.globapp.data.local;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverter;
 
 import com.globapp.globapp.GlobAppApplication;
 import com.globapp.globapp.data.local.dao.CommentDAO;
@@ -10,8 +11,10 @@ import com.globapp.globapp.data.local.dao.NewsDAO;
 import com.globapp.globapp.data.local.dao.UserDAO;
 import com.globapp.globapp.model.News;
 import com.globapp.globapp.model.User;
+import com.globapp.globapp.util.ArrayStringConverter;
 
 @Database(entities = {User.class,     News.class}, version = 1)
+
 public abstract class LocalDB extends RoomDatabase {
     private final static String DATABASE_NAME = "GlobappLocalDB";
     private static LocalDB localDB;
@@ -19,10 +22,6 @@ public abstract class LocalDB extends RoomDatabase {
     public abstract NewsDAO    newsDAO();
     public abstract UserDAO    userDAO();
     public abstract CommentDAO commentDAO();
-
-    private LocalDB(){
-
-    }
 
     public static void initDB(){
         localDB = Room.databaseBuilder(

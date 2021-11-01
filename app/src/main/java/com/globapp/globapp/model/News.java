@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import org.bson.Document;
@@ -14,23 +15,23 @@ import java.util.Date;
 
 @Entity
 public class News {
+    @PrimaryKey(autoGenerate = true)
+    private long roomID;
 
-    @PrimaryKey(autoGenerate = false)
+    @ColumnInfo(name = "newsID")
     private String   newsID;
 
     @ColumnInfo(name = "title")
-    private String   newsTitle;
+    private String newsTitle;
 
     @ColumnInfo(name = "content")
-    private String   newsContent;
+    private String newsContent;
 
-    private Uri      newsImage;
+    @ColumnInfo(name = "date")
+    private String newsDate;
 
     @ColumnInfo(name = "likes")
     private String newsLikes;
-
-    @ColumnInfo(name = "date")
-    private Date     newsDate;
 
     @ColumnInfo(name = "ownerID")
     private String newsUserOwner;
@@ -38,13 +39,13 @@ public class News {
     @ColumnInfo(name = "recognizedID")
     private String newsUserRecognized;
 
-    public News(String newsID,        String newsTitle,
-                String newsContent,   Date newsDate,
-                Uri newsImage,        String newsLikes,
-                String newsUserOwner, String newsUserRecognized){
+    @Ignore
+    private Uri      newsImage;
+
+    public News(String newsID, String newsTitle, String newsContent, String newsDate, /*Uri newsImage,*/ String newsLikes, String newsUserOwner, String newsUserRecognized){
         this.newsID             = newsID;
         this.newsContent        = newsContent;
-        this.newsImage          = newsImage;
+        //this.newsImage          = newsImage;
         this.newsUserOwner      = newsUserOwner;
         this.newsLikes          = newsLikes;
         this.newsDate           = newsDate;
@@ -52,7 +53,15 @@ public class News {
         this.newsUserRecognized = newsUserRecognized;
     }
 
-    public Date getNewsDate() {
+    public long getRoomID() {
+        return roomID;
+    }
+
+    public void setRoomID(long roomID) {
+        this.roomID = roomID;
+    }
+
+    public String getNewsDate() {
         return newsDate;
     }
 
@@ -89,7 +98,7 @@ public class News {
         this.newsContent = newsContent;
     }
 
-    public void setNewsDate(Date newsDate) {
+    public void setNewsDate(String newsDate) {
         this.newsDate = newsDate;
     }
 

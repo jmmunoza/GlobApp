@@ -4,15 +4,18 @@ import android.net.Uri;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
-
 @Entity
 public class User {
-    @PrimaryKey(autoGenerate = false)
+
+    @PrimaryKey(autoGenerate = true)
+    private long   roomID;
+
+    @ColumnInfo(name = "userID")
     private String userID;
 
     @ColumnInfo(name = "first_name")
@@ -27,8 +30,6 @@ public class User {
     @ColumnInfo(name = "description")
     private String userDescription;
 
-    private Uri    userImage;
-    private Uri    userCoverImage;
 
     @ColumnInfo(name = "credits")
     private int    userCredits;
@@ -36,9 +37,15 @@ public class User {
     @ColumnInfo(name = "stars")
     private int    userStars;
 
+    @Ignore
+    private Uri    userImage;
+
+    @Ignore
+    private Uri    userCoverImage;
+
     public User(String userID,          String userFirstName,
                 String userSecondName,  String userLastName,
-                String userDescription, Uri userImage, Uri userCoverImage,
+                String userDescription,// Uri userImage, Uri userCoverImage,
                 int userCredits,        int userStars){
 
         this.userCredits      = userCredits;
@@ -50,6 +57,14 @@ public class User {
         this.userDescription  = userDescription;
         this.userImage        = userImage;
         this.userCoverImage   = userCoverImage;
+    }
+
+    public long getRoomID() {
+        return roomID;
+    }
+
+    public void setRoomID(long roomID) {
+        this.roomID = roomID;
     }
 
     public Uri getUserImage() {

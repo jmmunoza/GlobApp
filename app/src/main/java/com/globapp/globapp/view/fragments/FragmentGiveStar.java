@@ -23,6 +23,7 @@ import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.remote.GiveStarMongo;
 import com.globapp.globapp.data.services.IGiveStar;
 import com.globapp.globapp.model.User;
+import com.globapp.globapp.util.KeyboardManager;
 import com.globapp.globapp.view.MainActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -111,6 +112,7 @@ public class FragmentGiveStar extends Fragment {
             int textLength = postText.getText().toString().length();
             if(textLength > 20 && textLength < 500){
                 postButton.setEnabled(false);
+                KeyboardManager.hide(getContext(), postText.getWindowToken());
                 IGiveStar iGiveStar = new GiveStarMongo(onGiveStarListener);
                 iGiveStar.giveStar(userID, postText.getText().toString());
 

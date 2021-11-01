@@ -3,16 +3,20 @@ package com.globapp.globapp.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
 @Entity
 public class Comment {
+    @PrimaryKey(autoGenerate = true)
+    private long     roomID;
+
     @ColumnInfo(name = "content")
     private String   commentContent;
 
     @ColumnInfo(name = "date")
-    private Date     commentDate;
+    private String   commentDate;
 
     @ColumnInfo(name = "userID")
     private String   commentUser;
@@ -20,18 +24,26 @@ public class Comment {
     @ColumnInfo(name = "newsID")
     private String   commentNews;
 
-    public Comment(String commentContent, Date commentDate, String commentUser, String commentNews){
+    public Comment(String commentContent, String commentDate, String commentUser, String commentNews){
         this.commentContent = commentContent;
         this.commentUser    = commentUser;
         this.commentDate    = commentDate;
         this.commentNews    = commentNews;
     }
 
+    public long getRoomID() {
+        return roomID;
+    }
+
+    public void setRoomID(long roomID) {
+        this.roomID = roomID;
+    }
+
     public String getCommentNews() {
         return commentNews;
     }
 
-    public Date getCommentDate() {
+    public String getCommentDate() {
         return commentDate;
     }
 
@@ -47,7 +59,7 @@ public class Comment {
         this.commentContent = commentContent;
     }
 
-    public void setCommentDate(Date commentDate) {
+    public void setCommentDate(String commentDate) {
         this.commentDate = commentDate;
     }
 

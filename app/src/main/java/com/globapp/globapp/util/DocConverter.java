@@ -26,16 +26,20 @@ public class DocConverter {
     }
 
     public static News DocumentToNews(Document document){
+        String recognizedID = null;
+        if(document.getObjectId("recognizedID") != null)
+            recognizedID = document.getObjectId("recognizedID").toString();
+        
         return new News(
                 document.getObjectId("_id").toString(),
                 document.getString("title"),
                 document.getString("content"),
-                document.getDate("date"),
-                null,
+                document.getDate("date").toString(),
+                //null,
                 ArrayStringConverter.fromArrayList(new ArrayList<>(document.getList(
                         "likes", ObjectId.class, new ArrayList<>()))),
                 document.getObjectId("ownerID").toString(),
-                document.getObjectId("recognizedID").toString());
+                recognizedID);
     }
 
     public static Document userToDocument(User user){
@@ -56,8 +60,8 @@ public class DocConverter {
                 document.getString("secondName"),
                 document.getString("lastName"),
                 document.getString("description"),
-                null,
-                null,
+            //    null,
+             //   null,
                 document.getInteger("credits", 0),
                 document.getInteger("stars", 0));
     }
@@ -65,7 +69,7 @@ public class DocConverter {
     public static Comment documentToComment(Document document){
         return new Comment(
                 document.getString("content"),
-                document.getDate("date"),
+                document.getDate("date").toString(),
                 document.getObjectId("user_id").toString(),
                 document.getObjectId("news_id").toString()
         );

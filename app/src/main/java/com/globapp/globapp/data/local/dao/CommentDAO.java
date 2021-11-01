@@ -10,9 +10,9 @@ import java.util.List;
 
 @Dao
 public interface CommentDAO {
-    @Query("SELECT * FROM comment WHERE newsID = :newsID")
-    List<Comment> getNewsComments(String newsID);
+   // @Query("SELECT * FROM comment WHERE newsID = :newsID")
+   // List<Comment> getNewsComments(String newsID);
 
-    @Insert
-    void insert (Comment comment);
+   // @Insert
+   // void insert (Comment comment);
 }

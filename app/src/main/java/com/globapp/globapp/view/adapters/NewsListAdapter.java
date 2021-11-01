@@ -33,6 +33,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
     private final OnUserImageClickedListener onUserImageClickedListener;
 
     public NewsListAdapter(Context context, ArrayList<News> newsList, OnUserImageClickedListener onUserImageClickedListener){
+        System.out.println("a");
         this.inflater = LayoutInflater.from(context);
         this.context = context;
         this.newsList = newsList;
@@ -58,7 +59,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
     public void onBindViewHolder(@NonNull NewsListViewHolder holder, int position) {
         News news = newsList.get(position);
         holder.setNewsID(new ObjectId(news.getNewsID()));
-
         DataRepository.getUser(new ObjectId(news.getNewsID()), userOwner -> {
             holder.setUserOwnerID(new ObjectId(news.getNewsUserOwner()));
             holder.newsPostContent.setText(news.getNewsContent());
@@ -119,6 +119,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
 
     private void isDataLoaded() {
         if(newsList.size() == loadedNews){
+            System.out.println(newsList.size() + "   " + loadedNews );
             if(dataLoadedListener != null)
                 dataLoadedListener.onDataLoaded();
         }

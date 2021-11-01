@@ -67,8 +67,7 @@ public class CommentDialog extends BottomSheetDialogFragment {
             String commentContent = commentInput.getText().toString();
             if(commentContent.length() > 0){
                 commentInput.setText("");
-                KeyboardManager.hide();
-
+                KeyboardManager.hide(getContext(), commentInput.getWindowToken());
                 DataRepository.insertComment(newsID, commentContent, commentsCount -> {
                     //Toast.makeText(getContext(), "COMENTARIO PUBLICADO", Toast.LENGTH_LONG).show();
 

@@ -26,6 +26,7 @@ import com.globapp.globapp.data.remote.EditUserMongo;
 import com.globapp.globapp.data.services.IEditUser;
 import com.globapp.globapp.data.services.IUserSessionController;
 import com.globapp.globapp.model.User;
+import com.globapp.globapp.util.KeyboardManager;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.MainActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -151,6 +152,7 @@ public class FragmentEditProfile extends Fragment {
             int textLength = userDescription.getText().toString().length();
             if (textLength > 20 && textLength < 300) {
 
+                KeyboardManager.hide(getContext(), userDescription.getWindowToken());
                 IEditUser iEditUser = new EditUserMongo(onEditProfileListener);
                 iEditUser.edit(userDescription.getText().toString());
 

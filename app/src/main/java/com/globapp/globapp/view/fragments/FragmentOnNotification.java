@@ -301,7 +301,7 @@ public class FragmentOnNotification extends Fragment {
             String commentContent = notificationCommentInput.getText().toString();
             if(commentContent.length() > 0){
                 notificationCommentInput.setText("");
-                KeyboardManager.hide();
+                KeyboardManager.hide(getContext(), notificationCommentInput.getWindowToken());
                 DataRepository.insertComment(newsID, commentContent, new OnNewsCommentedListener() {
                     @Override
                     public void onNewsCommented(int commentsCount) {

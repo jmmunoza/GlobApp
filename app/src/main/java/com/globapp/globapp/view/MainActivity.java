@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.data.services.IUserSessionController;
-import com.globapp.globapp.util.KeyboardManager;
 import com.globapp.globapp.view.fragments.FragmentCreateProfile;
 import com.globapp.globapp.view.fragments.FragmentEditProfile;
 import com.globapp.globapp.view.fragments.FragmentGiveStar;
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         animationContainer = findViewById(R.id.animation_container);
-
+        setFragmentLogin();
     }
 
     private void setFragmentLogin(){
@@ -54,20 +53,20 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onWrongPassword() {
-
+                Toast.makeText(MainActivity.this,"Mala contra", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onWrongEmail() {
-
+                Toast.makeText(MainActivity.this, "Mal correo", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onError() {
-
+                Toast.makeText(MainActivity.this, "Errorrrrr", Toast.LENGTH_LONG).show();
             }
         });
-        addFragmentRight(new FragmentLogin());
+        addFragmentRight(fragmentLogin);
     }
 
     private void setFragmentCreateProfile(ObjectId userID){
@@ -75,13 +74,11 @@ public class MainActivity extends AppCompatActivity {
         fragmentCreateProfile.OnCreateProfileListener(new FragmentCreateProfile.OnCreateProfileListener() {
             @Override
             public void onCancel() {
-                KeyboardManager.hide();
                 getSupportFragmentManager().popBackStackImmediate();
             }
 
             @Override
             public void onSuccess() {
-                KeyboardManager.hide();
                 getSupportFragmentManager().popBackStackImmediate();
                 getSupportFragmentManager().popBackStackImmediate();
                 setFragmentLogin();
@@ -152,13 +149,11 @@ public class MainActivity extends AppCompatActivity {
         fragmentEditProfile.addOnEditProfileListener(new FragmentEditProfile.OnEditProfileListener() {
             @Override
             public void onSuccess() {
-                KeyboardManager.hide();
                 getSupportFragmentManager().popBackStackImmediate();
             }
 
             @Override
             public void onCancel() {
-                KeyboardManager.hide();
                 getSupportFragmentManager().popBackStackImmediate();
             }
         });
@@ -170,14 +165,12 @@ public class MainActivity extends AppCompatActivity {
         fragmentGiveStar.addOnGiveStarListener(new FragmentGiveStar.OnGiveStarListener() {
             @Override
             public void onSuccess() {
-                KeyboardManager.hide();
                 getSupportFragmentManager().popBackStackImmediate();
                 enableAnimation(R.drawable.celebration_animated_1);
             }
 
             @Override
             public void onCancel() {
-                KeyboardManager.hide();
                 getSupportFragmentManager().popBackStackImmediate();
             }
 

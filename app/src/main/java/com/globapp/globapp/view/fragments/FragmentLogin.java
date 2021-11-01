@@ -12,7 +12,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.globapp.globapp.R;
-import com.globapp.globapp.data.remote.LoginUser;
+import com.globapp.globapp.data.remote.LoginUserMongo;
 import com.globapp.globapp.data.services.ILoginUser;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -53,7 +53,7 @@ public class FragmentLogin extends Fragment {
             String password = loginPasswordText.getText().toString();
             if(!email.equals("") && !password.equals("")){
 
-                ILoginUser loginUser = new LoginUser(onLoginReadyListener);
+                ILoginUser loginUser = new LoginUserMongo(onLoginReadyListener);
                 loginUser.login(email, password);
             }
         });
@@ -62,6 +62,8 @@ public class FragmentLogin extends Fragment {
     public interface OnLoginReadyListener {
         void onNewUser(ObjectId userID);
         void onUserCreated();
+        void onWrongPassword();
+        void onWrongEmail();
         void onError();
     }
 

@@ -16,11 +16,11 @@ import org.bson.Document;
 
 import io.realm.mongodb.mongo.MongoCollection;
 
-public class LoginUser implements ILoginUser {
+public class LoginUserMongo implements ILoginUser {
     private final MongoCollection<Document> userCollection;
     private final FragmentLogin.OnLoginReadyListener onLoginReadyListener;
 
-    public LoginUser(FragmentLogin.OnLoginReadyListener onLoginReadyListener){
+    public LoginUserMongo(FragmentLogin.OnLoginReadyListener onLoginReadyListener){
         this.onLoginReadyListener = onLoginReadyListener;
         this.userCollection = MongoDB.getInstance().getCollection("user");
     }
@@ -30,25 +30,28 @@ public class LoginUser implements ILoginUser {
         Document userQuery = new Document("email", email);
 
         userCollection.findOne(userQuery).getAsync(result -> {
-            if (result.isSuccess() && result.get() != null) {
+            if (result.isSuccess()) {
+                if (result.get() != null){
+                    Document userLogin = result.get();
 
-                Document userLogin = result.get();
+                    if (userLogin.getString("password").equals(password)) {
 
-                if (userLogin.getString("password").equals(password)) {
+                        String userSessionID = userLogin.getObjectId("_id").toString();
+                        IUserSessionController iUserSessionController = new UserSessionController();
+                        iUserSessionController.setUserSessionID(userSessionID);
+                        iUserSessionController.setUserAdmin(userLogin.getBoolean("admin"));
 
-                    String userSessionID = userLogin.getObjectId("_id").toString();
-                    IUserSessionController iUserSessionController = new UserSessionController();
-                    iUserSessionController.setUserSession(userSessionID);
-                    iUserSessionController.setUserAdmin(userLogin.getBoolean("admin"));
+                        if (userLogin.getString("description") != null) {
+                            onLoginReadyListener.onUserCreated();
+                        } else {
+                            onLoginReadyListener.onNewUser(userLogin.getObjectId("_id"));
+                        }
 
-                    if (userLogin.getString("description") != null) {
-                        onLoginReadyListener.onUserCreated();
                     } else {
-                        onLoginReadyListener.onNewUser(userLogin.getObjectId("_id"));
+                        onLoginReadyListener.onWrongPassword();
                     }
-                    
                 } else {
-                    onLoginReadyListener.onError();
+                    onLoginReadyListener.onWrongEmail();
                 }
             } else {
                 onLoginReadyListener.onError();

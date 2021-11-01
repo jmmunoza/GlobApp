@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.data.services.IUserSessionController;
-import com.globapp.globapp.model.User;
 import com.globapp.globapp.util.KeyboardManager;
 import com.globapp.globapp.view.fragments.FragmentCreateProfile;
 import com.globapp.globapp.view.fragments.FragmentEditProfile;
@@ -51,6 +50,16 @@ public class MainActivity extends AppCompatActivity {
             public void onUserCreated() {
                 getSupportFragmentManager().popBackStackImmediate();
                 setFragmentMain();
+            }
+
+            @Override
+            public void onWrongPassword() {
+
+            }
+
+            @Override
+            public void onWrongEmail() {
+
             }
 
             @Override

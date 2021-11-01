@@ -17,7 +17,7 @@ public class CommentGetterMongo implements ICommentGetter {
     private final MongoCollection<Document> newsCollection;
 
     public CommentGetterMongo(){
-        this.newsCollection = MongoDB.getInstance().getCollection("news");
+        this.newsCollection = MongoDB.getNewsCollection();
     }
 
     @Override

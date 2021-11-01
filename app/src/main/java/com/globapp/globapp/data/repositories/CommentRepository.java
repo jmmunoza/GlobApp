@@ -1,4 +1,4 @@
-package com.globapp.globapp.data.manager;
+package com.globapp.globapp.data.repositories;
 
 import com.globapp.globapp.data.listeners.OnCommentListLoadedListener;
 import com.globapp.globapp.data.listeners.OnNewsCommentedListener;
@@ -7,11 +7,11 @@ import com.globapp.globapp.data.services.ICommentInserter;
 
 import org.bson.types.ObjectId;
 
-public class CommentDataManager {
+public class CommentRepository {
     private final ICommentInserter iCommentInserter;
     private final ICommentGetter   iCommentGetter;
 
-    public CommentDataManager(ICommentInserter iCommentInserter, ICommentGetter iCommentGetter){
+    public CommentRepository(ICommentInserter iCommentInserter, ICommentGetter iCommentGetter){
         this.iCommentInserter = iCommentInserter;
         this.iCommentGetter   = iCommentGetter;
     }

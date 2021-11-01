@@ -15,7 +15,7 @@ public class CommentInserterMongo implements ICommentInserter {
     private final MongoCollection<Document> newsCollection;
 
     public CommentInserterMongo(){
-        this.newsCollection = MongoDB.getInstance().getCollection("news");
+        this.newsCollection = MongoDB.getNewsCollection();
     }
 
     @Override

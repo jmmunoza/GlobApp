@@ -16,7 +16,7 @@ public class NewsLikerMongo implements INewsLiker {
     private final MongoCollection<Document> newsCollection;
 
     public NewsLikerMongo(){
-        this.newsCollection = MongoDB.getInstance().getCollection("news");
+        this.newsCollection = MongoDB.getNewsCollection();
     }
 
     @Override

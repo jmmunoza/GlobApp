@@ -16,7 +16,7 @@ public class EditUserMongo implements IEditUser {
 
     public EditUserMongo(FragmentEditProfile.OnEditProfileListener onEditProfileListener){
         this.onEditProfileListener = onEditProfileListener;
-        this.userCollection = MongoDB.getInstance().getCollection("user");
+        this.userCollection = MongoDB.getUserCollection();
     }
 
     @Override

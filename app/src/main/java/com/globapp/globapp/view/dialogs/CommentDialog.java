@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.local.Preferences;
-import com.globapp.globapp.data.manager.CommentDataManager;
-import com.globapp.globapp.data.manager.UserDataManager;
+import com.globapp.globapp.data.repositories.CommentDataManager;
+import com.globapp.globapp.data.repositories.UserDataManager;
 import com.globapp.globapp.data.remote.CommentGetterMongo;
 import com.globapp.globapp.data.remote.CommentInserterMongo;
 import com.globapp.globapp.data.remote.UserGetterMongo;

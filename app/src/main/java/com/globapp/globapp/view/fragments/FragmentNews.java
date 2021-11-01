@@ -20,7 +20,7 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.listeners.OnUserImageClickedListener;
 import com.globapp.globapp.data.local.Preferences;
-import com.globapp.globapp.data.manager.NewsDataManager;
+import com.globapp.globapp.data.repositories.NewsDataManager;
 import com.globapp.globapp.data.remote.NewsGetterMongo;
 import com.globapp.globapp.data.remote.NewsInserterMongo;
 import com.globapp.globapp.data.remote.NewsLikerMongo;

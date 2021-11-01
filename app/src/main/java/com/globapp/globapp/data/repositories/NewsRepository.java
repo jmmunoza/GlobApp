@@ -1,4 +1,4 @@
-package com.globapp.globapp.data.manager;
+package com.globapp.globapp.data.repositories;
 
 import com.globapp.globapp.data.listeners.OnNewsLikedListener;
 import com.globapp.globapp.data.listeners.OnNewsListLoadedListener;
@@ -10,12 +10,12 @@ import com.globapp.globapp.model.News;
 
 import org.bson.types.ObjectId;
 
-public class NewsDataManager {
+public class NewsRepository {
     private final INewsInserter iNewsInserter;
     private final INewsGetter   iNewsGetter;
     private final INewsLiker    iNewsLiker;
 
-    public NewsDataManager(INewsInserter iNewsInserter, INewsGetter iNewsGetter, INewsLiker iNewsLiker){
+    public NewsRepository(INewsInserter iNewsInserter, INewsGetter iNewsGetter, INewsLiker iNewsLiker){
         this.iNewsGetter   = iNewsGetter;
         this.iNewsInserter = iNewsInserter;
         this.iNewsLiker    = iNewsLiker;

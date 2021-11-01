@@ -1,4 +1,4 @@
-package com.globapp.globapp.data.manager;
+package com.globapp.globapp.data.repositories;
 
 import com.globapp.globapp.data.listeners.OnUserLoadedListener;
 import com.globapp.globapp.data.services.IUserGetter;
@@ -7,11 +7,11 @@ import com.globapp.globapp.model.User;
 
 import org.bson.types.ObjectId;
 
-public class UserDataManager {
+public class UserRepository {
     private final IUserGetter   iUserGetter;
     private final IUserInserter iUserInserter;
 
-    public UserDataManager(IUserInserter iUserInserter, IUserGetter iUserGetter){
+    public UserRepository(IUserInserter iUserInserter, IUserGetter iUserGetter){
         this.iUserGetter = iUserGetter;
         this.iUserInserter = iUserInserter;
     }

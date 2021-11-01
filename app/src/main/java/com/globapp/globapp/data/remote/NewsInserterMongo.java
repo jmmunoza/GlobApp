@@ -12,7 +12,7 @@ public class NewsInserterMongo implements INewsInserter {
     private final MongoCollection<Document> newsCollection;
 
     public NewsInserterMongo(){
-        newsCollection = MongoDB.getInstance().getCollection("news");
+        newsCollection = MongoDB.getNewsCollection();
     }
 
     @Override

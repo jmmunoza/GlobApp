@@ -14,7 +14,7 @@ public class UserGetterMongo implements IUserGetter {
     private final MongoCollection<Document> userCollection;
 
     public UserGetterMongo(){
-        userCollection = MongoDB.getInstance().getCollection("user");
+        userCollection = MongoDB.getUserCollection();
     }
 
     public void getUser(ObjectId userID, OnUserLoadedListener onUserLoadedListener){

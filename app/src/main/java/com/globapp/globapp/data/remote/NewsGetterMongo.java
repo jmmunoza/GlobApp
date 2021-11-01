@@ -22,7 +22,7 @@ public class NewsGetterMongo implements INewsGetter {
     private final MongoCollection<Document> newsCollection;
 
     public NewsGetterMongo(){
-        newsCollection = MongoDB.getInstance().getCollection("news");
+        newsCollection = MongoDB.getNewsCollection();
     }
 
     @Override

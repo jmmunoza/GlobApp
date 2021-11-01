@@ -11,7 +11,7 @@ public class UserInserterMongo implements IUserInserter {
     private final MongoCollection<Document> userCollection;
 
     public UserInserterMongo(){
-        userCollection = MongoDB.getInstance().getCollection("user");
+        userCollection = MongoDB.getUserCollection();
     }
 
     @Override

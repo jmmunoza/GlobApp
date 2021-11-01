@@ -11,13 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.local.UserSessionController;
-import com.globapp.globapp.data.manager.UserDataManager;
+import com.globapp.globapp.data.repositories.UserDataManager;
 import com.globapp.globapp.data.remote.UserGetterMongo;
 import com.globapp.globapp.data.remote.UserInserterMongo;
 import com.globapp.globapp.data.services.IUserSessionController;

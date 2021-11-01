@@ -21,7 +21,7 @@ import androidx.fragment.app.Fragment;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.local.UserSessionController;
-import com.globapp.globapp.data.manager.UserDataManager;
+import com.globapp.globapp.data.repositories.UserDataManager;
 import com.globapp.globapp.data.remote.EditUserMongo;
 import com.globapp.globapp.data.remote.UserGetterMongo;
 import com.globapp.globapp.data.remote.UserInserterMongo;

@@ -14,7 +14,7 @@ public class CreateProfile implements ICreateProfile {
 
     public CreateProfile(FragmentCreateProfile.OnCreateProfileListener onCreateProfileListener){
         this.onCreateProfileListener = onCreateProfileListener;
-        this.userCollection          = MongoDB.getInstance().getCollection("user");
+        this.userCollection          = MongoDB.getUserCollection();
     }
 
     @Override

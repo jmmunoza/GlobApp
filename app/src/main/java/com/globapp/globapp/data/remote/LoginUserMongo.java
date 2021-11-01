@@ -22,7 +22,7 @@ public class LoginUserMongo implements ILoginUser {
 
     public LoginUserMongo(FragmentLogin.OnLoginReadyListener onLoginReadyListener){
         this.onLoginReadyListener = onLoginReadyListener;
-        this.userCollection = MongoDB.getInstance().getCollection("user");
+        this.userCollection = MongoDB.getUserCollection();
     }
 
     @Override

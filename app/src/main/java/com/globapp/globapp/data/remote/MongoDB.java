@@ -2,12 +2,16 @@ package com.globapp.globapp.data.remote;
 
 import com.globapp.globapp.GlobAppApplication;
 
+
+import org.bson.Document;
+
 import io.realm.Realm;
 import io.realm.mongodb.App;
 import io.realm.mongodb.AppConfiguration;
 import io.realm.mongodb.Credentials;
 import io.realm.mongodb.User;
 import io.realm.mongodb.mongo.MongoClient;
+import io.realm.mongodb.mongo.MongoCollection;
 import io.realm.mongodb.mongo.MongoDatabase;
 
 public class MongoDB {
@@ -16,6 +20,9 @@ public class MongoDB {
     private static final String DB_PASSWORD   = "000000";
     private static final String DB_SERVICE    = "mongodb-atlas";
     private static final String DATABASE_NAME = "GlobAppPrueba1";
+
+    private static MongoCollection<org.bson.Document> userCollection;
+    private static MongoCollection<org.bson.Document> newsCollection;
     private static MongoDatabase databaseInstance;
 
     private MongoDB(){
@@ -36,11 +43,27 @@ public class MongoDB {
         });
     }
 
-    public static MongoDatabase getInstance(){
+    private static MongoDatabase getDatabaseInstance(){
         if(databaseInstance == null){
             initDB();
         }
 
         return databaseInstance;
+    }
+
+    public static MongoCollection<Document> getUserCollection(){
+        if(userCollection == null){
+            userCollection = getDatabaseInstance().getCollection("user");
+        }
+
+        return userCollection;
+    }
+
+    public static MongoCollection<Document> getNewsCollection(){
+        if(newsCollection == null){
+            newsCollection = getDatabaseInstance().getCollection("news");
+        }
+
+        return newsCollection;
     }
 }

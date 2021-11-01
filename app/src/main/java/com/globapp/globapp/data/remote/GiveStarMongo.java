@@ -15,8 +15,8 @@ public class GiveStarMongo implements IGiveStar {
 
     public GiveStarMongo(FragmentGiveStar.OnGiveStarListener onGiveStarListener){
         this.onGiveStarListener = onGiveStarListener;
-        this.userCollection = MongoDB.getInstance().getCollection("user");
-        this.newsCollection = MongoDB.getInstance().getCollection("news");
+        this.userCollection = MongoDB.getUserCollection();
+        this.newsCollection = MongoDB.getNewsCollection();
     }
 
     @Override

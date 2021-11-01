@@ -66,8 +66,8 @@ public class DocConverter {
         return new Comment(
                 document.getString("content"),
                 document.getDate("date"),
-                document.getObjectId("user_id").toString()
-
+                document.getObjectId("user_id").toString(),
+                document.getObjectId("news_id").toString()
         );
     }
 }

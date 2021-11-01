@@ -54,7 +54,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
     private final NewsDataManager    newsDataManager;
 
     // LISTENERS
-    private OnUserImageClickedListener onUserImageClickedListener;
+    private final OnUserImageClickedListener onUserImageClickedListener;
 
     public NewsListAdapter(Context context, ArrayList<News> newsList, OnUserImageClickedListener onUserImageClickedListener){
         this.inflater = LayoutInflater.from(context);
@@ -88,7 +88,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         }
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         News news = newsList.get(position);
@@ -107,11 +106,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
             if(news.getNewsUserRecognized() != null){
                 holder.newsRecognitionLayout.setVisibility(View.VISIBLE);
                 userDataManager.getUser(new ObjectId(news.getNewsUserRecognized()), userRecognized -> {
-                    holder.newsUsername.setText(
-                            userOwner.getUserFirstName()      + " " +
-                                    userOwner.getUserLastName()       + " congratulated " +
-                                    userRecognized.getUserFirstName() + " " +
-                                    userRecognized.getUserLastName());
+                    holder.newsUsername.setText(UserNameGetter.getUserNameRecognition(userOwner, userRecognized));
 
                     if(userRecognized.getUserImage() != null)
                         holder.newsRecognitionUserImage.setImageURI(userRecognized.getUserImage());

@@ -28,7 +28,7 @@ public class CommentInserterMongo implements ICommentInserter {
                         Document.class,
                         new ArrayList<>());
 
-                Document commentDoc = DocCreator.createComment(commentContent);
+                Document commentDoc = DocCreator.createComment(commentContent, newsID);
                 comments.add(commentDoc);
 
                 Document newsInsertion = result.get().append("comments", comments);

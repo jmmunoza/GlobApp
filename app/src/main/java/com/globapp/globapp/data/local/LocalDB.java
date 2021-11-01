@@ -5,6 +5,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.globapp.globapp.GlobAppApplication;
+import com.globapp.globapp.data.local.dao.CommentDAO;
 import com.globapp.globapp.data.local.dao.NewsDAO;
 import com.globapp.globapp.data.local.dao.UserDAO;
 import com.globapp.globapp.model.News;
@@ -15,8 +16,9 @@ public abstract class LocalDB extends RoomDatabase {
     private final static String DATABASE_NAME = "GlobappLocalDB";
     private static LocalDB localDB;
 
-    public abstract NewsDAO newsDAO();
-    public abstract UserDAO userDAO();
+    public abstract NewsDAO    newsDAO();
+    public abstract UserDAO    userDAO();
+    public abstract CommentDAO commentDAO();
 
     private LocalDB(){
 

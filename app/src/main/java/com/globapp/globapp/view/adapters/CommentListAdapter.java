@@ -30,14 +30,13 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
 
     private final ArrayList<Comment> newsComments;
     private final LayoutInflater      inflater;
-    Context                           context;
+
     private BottomSheetDialogFragment parent;
     private final UserDataManager     userDataManager ;
     private final FragmentOnNotification.OnNotificationListener onNotificationListener;
 
     public CommentListAdapter(Context context, ArrayList<Comment> newsComments, FragmentOnNotification.OnNotificationListener onNotificationListener){
         this.inflater     = LayoutInflater.from(context);
-        this.context      = context;
         this.newsComments = newsComments;
         this.onNotificationListener = onNotificationListener;
         this.userDataManager = new UserDataManager(
@@ -48,7 +47,6 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
 
     public CommentListAdapter(Context context, ArrayList<Comment> newsComments, FragmentOnNotification.OnNotificationListener onNotificationListener, BottomSheetDialogFragment parent){
         this.inflater     = LayoutInflater.from(context);
-        this.context      = context;
         this.newsComments = newsComments;
         this.parent       = parent;
         this.onNotificationListener = onNotificationListener;

@@ -10,4 +10,11 @@ public class UserNameGetter {
             return user.getUserFirstName() + " " + user.getUserLastName();
         }
     }
+
+    public static String getUserNameRecognition(User userOwner, User userRecognized){
+        return  userOwner.getUserFirstName()      + " " +
+                userOwner.getUserLastName()       + " congratulated " +
+                userRecognized.getUserFirstName() + " " +
+                userRecognized.getUserLastName();
+    }
 }

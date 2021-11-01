@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,13 +25,13 @@ import com.google.android.material.textfield.TextInputEditText;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CommentDialog extends BottomSheetDialogFragment {
     private CommentListAdapter  commentListAdapter;
     private TextInputEditText   commentInput;
     private ImageButton         commentSendButton;
     private RecyclerView        commentList;
-    private RelativeLayout      commentRoot;
     private BottomSheetBehavior commentBehavior;
 
     // DATA
@@ -52,7 +51,6 @@ public class CommentDialog extends BottomSheetDialogFragment {
             view = View.inflate(getContext(), R.layout.fragment_news_item_comment, null);
         }
 
-        commentRoot       = view.findViewById(R.id.comment_root);
         commentInput      = view.findViewById(R.id.comment_input);
         commentSendButton = view.findViewById(R.id.comment_send_button);
         commentList       = view.findViewById(R.id.comment_list);
@@ -70,7 +68,7 @@ public class CommentDialog extends BottomSheetDialogFragment {
     private void sendButtonFunction(){
         commentSendButton.setOnClickListener(v -> {
             KeyboardManager.hide(requireContext(), commentInput.getWindowToken());
-            String commentContent = commentInput.getText().toString();
+            String commentContent = Objects.requireNonNull(commentInput.getText()).toString();
             if(commentContent.length() > 0){
                 commentInput.setText("");
                 DataRepository.insertComment(newsID, commentContent, (commentsCount, newComment) -> {

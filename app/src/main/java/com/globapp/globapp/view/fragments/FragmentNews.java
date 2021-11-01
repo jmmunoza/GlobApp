@@ -18,12 +18,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.globapp.globapp.R;
+import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.listeners.OnUserImageClickedListener;
 import com.globapp.globapp.data.local.Preferences;
-import com.globapp.globapp.data.repositories.NewsDataManager;
-import com.globapp.globapp.data.remote.NewsGetterMongo;
-import com.globapp.globapp.data.remote.NewsInserterMongo;
-import com.globapp.globapp.data.remote.NewsLikerMongo;
 import com.globapp.globapp.view.adapters.NewsListAdapter;
 import com.globapp.globapp.view.adapters.NewsPagerAdapter;
 
@@ -40,19 +37,8 @@ public class FragmentNews extends Fragment {
     private SwipeRefreshLayout newsRefresh;
     private ShimmerFrameLayout newsPlaceholder;
 
-    // News data manager
-    private final NewsDataManager newsDataManager;
-
     // Listeners
     private OnUserImageClickedListener onUserImageClickedListener;
-
-    public FragmentNews(){
-        newsDataManager = new NewsDataManager(
-                new NewsInserterMongo(),
-                new NewsGetterMongo(),
-                new NewsLikerMongo()
-        );
-    }
 
     @SuppressLint("InflateParams")
     @Nullable @Override
@@ -120,7 +106,7 @@ public class FragmentNews extends Fragment {
         newsList.setVisibility(View.INVISIBLE);
         newsPlaceholder.startShimmer();
 
-        newsDataManager.getLatestNews(newsList -> {
+        DataRepository.getLatestNews(newsList -> {
             newsPlaceholder.stopShimmer();
             newsPlaceholder.setVisibility(View.GONE);
             FragmentNews.this.newsList.setVisibility(View.VISIBLE);

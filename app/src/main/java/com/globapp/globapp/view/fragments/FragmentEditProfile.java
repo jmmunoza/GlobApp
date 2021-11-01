@@ -19,12 +19,10 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.globapp.globapp.R;
+import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.local.UserSessionController;
-import com.globapp.globapp.data.repositories.UserDataManager;
 import com.globapp.globapp.data.remote.EditUserMongo;
-import com.globapp.globapp.data.remote.UserGetterMongo;
-import com.globapp.globapp.data.remote.UserInserterMongo;
 import com.globapp.globapp.data.services.IEditUser;
 import com.globapp.globapp.data.services.IUserSessionController;
 import com.globapp.globapp.model.User;
@@ -102,14 +100,9 @@ public class FragmentEditProfile extends Fragment {
     private void loadUserData(){
         IUserSessionController iUserSessionController = new UserSessionController();
         ObjectId userSessionID = new ObjectId(iUserSessionController.getUserSessionID());
-
-        new UserDataManager(
-                new UserInserterMongo(),
-                new UserGetterMongo()).getUser(userSessionID, user -> {
-
+        DataRepository.getUser(userSessionID, user -> {
             me = user;
             loadComponents();
-
         });
     }
 

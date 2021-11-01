@@ -20,19 +20,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.globapp.globapp.R;
+import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.listeners.OnNewsCommentedListener;
 import com.globapp.globapp.data.listeners.OnNewsLikedListener;
 import com.globapp.globapp.data.local.Preferences;
-import com.globapp.globapp.data.repositories.CommentDataManager;
-import com.globapp.globapp.data.repositories.NewsDataManager;
-import com.globapp.globapp.data.repositories.UserDataManager;
-import com.globapp.globapp.data.remote.CommentGetterMongo;
-import com.globapp.globapp.data.remote.CommentInserterMongo;
-import com.globapp.globapp.data.remote.NewsGetterMongo;
-import com.globapp.globapp.data.remote.NewsInserterMongo;
-import com.globapp.globapp.data.remote.NewsLikerMongo;
-import com.globapp.globapp.data.remote.UserGetterMongo;
-import com.globapp.globapp.data.remote.UserInserterMongo;
 import com.globapp.globapp.model.Comment;
 import com.globapp.globapp.model.News;
 import com.globapp.globapp.model.User;
@@ -52,9 +43,6 @@ import pl.droidsonroids.gif.GifImageView;
 public class FragmentOnNotification extends Fragment {
     // DATA
     private final ObjectId           newsID;
-    private final NewsDataManager    newsDataManager;
-    private final UserDataManager    userDataManager;
-    private final CommentDataManager commentDataManager;
     private News                     news;
     private User                     userOwner;
     private User                     userRecognized;
@@ -87,22 +75,6 @@ public class FragmentOnNotification extends Fragment {
 
     public FragmentOnNotification(ObjectId newsID){
         this.newsID = newsID;
-
-        newsDataManager = new NewsDataManager(
-                new NewsInserterMongo(),
-                new NewsGetterMongo(),
-                new NewsLikerMongo()
-        );
-
-        userDataManager = new UserDataManager(
-                new UserInserterMongo(),
-                new UserGetterMongo()
-        );
-
-        commentDataManager = new CommentDataManager(
-                new CommentInserterMongo(),
-                new CommentGetterMongo()
-        );
     }
 
     @SuppressLint("InflateParams") @Nullable @Override
@@ -122,9 +94,9 @@ public class FragmentOnNotification extends Fragment {
     }
 
     private void loadNewsData(){
-        newsDataManager.getNews(newsID, news -> {
+        DataRepository.getNews(newsID, news -> {
             FragmentOnNotification.this.news = news;
-            newsDataManager.getIsLiked(newsID, new OnNewsLikedListener() {
+            DataRepository.getIsLiked(newsID, new OnNewsLikedListener() {
                 @Override
                 public void liked(int likesCount) {
                     isUserLiked = true;
@@ -141,10 +113,10 @@ public class FragmentOnNotification extends Fragment {
     }
 
     private void loadUsersData(String userOwnerID, String userRecognizedID){
-        userDataManager.getUser(new ObjectId(userOwnerID), userOwner -> {
+        DataRepository.getUser(new ObjectId(userOwnerID), userOwner -> {
             this.userOwner = userOwner;
             if(userRecognizedID != null){
-                userDataManager.getUser(new ObjectId(userRecognizedID), userRecognized -> {
+                DataRepository.getUser(new ObjectId(userRecognizedID), userRecognized -> {
                     this.userRecognized = userRecognized;
                     loadComments();
                 });
@@ -153,7 +125,7 @@ public class FragmentOnNotification extends Fragment {
     }
 
     private void loadComments() {
-        commentDataManager.getComments(newsID, commentList -> {
+        DataRepository.getNewsComments(newsID, commentList -> {
             FragmentOnNotification.this.commentList = commentList;
             loadComponents();
         });
@@ -232,7 +204,7 @@ public class FragmentOnNotification extends Fragment {
             private final GestureDetector gestureDetectorDouble = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
                 @Override
                 public boolean onDoubleTap(MotionEvent e) {
-                    newsDataManager.likeNews(newsID, new OnNewsLikedListener() {
+                    DataRepository.likeNews(newsID, new OnNewsLikedListener() {
                         @Override
                         public void liked(int likesCount) {
                             likeNews(likesCount);
@@ -301,7 +273,7 @@ public class FragmentOnNotification extends Fragment {
 
             if(gestureDetector.onTouchEvent(event)) {
                 notificationLikeButton.setAlpha((float) 1);
-                newsDataManager.likeNews(newsID, new OnNewsLikedListener() {
+                DataRepository.likeNews(newsID, new OnNewsLikedListener() {
                     @Override
                     public void liked(int likesCount) {
                         likeNews(likesCount);
@@ -330,7 +302,7 @@ public class FragmentOnNotification extends Fragment {
             if(commentContent.length() > 0){
                 notificationCommentInput.setText("");
                 KeyboardManager.hide();
-                commentDataManager.insertComment(newsID, commentContent, new OnNewsCommentedListener() {
+                DataRepository.insertComment(newsID, commentContent, new OnNewsCommentedListener() {
                     @Override
                     public void onNewsCommented(int commentsCount) {
 

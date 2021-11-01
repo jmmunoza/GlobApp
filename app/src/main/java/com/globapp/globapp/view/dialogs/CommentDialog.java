@@ -12,13 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.globapp.globapp.R;
+import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.local.Preferences;
-import com.globapp.globapp.data.repositories.CommentDataManager;
-import com.globapp.globapp.data.repositories.UserDataManager;
-import com.globapp.globapp.data.remote.CommentGetterMongo;
-import com.globapp.globapp.data.remote.CommentInserterMongo;
-import com.globapp.globapp.data.remote.UserGetterMongo;
-import com.globapp.globapp.data.remote.UserInserterMongo;
 import com.globapp.globapp.util.KeyboardManager;
 import com.globapp.globapp.view.adapters.CommentListAdapter;
 import com.globapp.globapp.view.fragments.FragmentOnNotification;
@@ -39,8 +34,6 @@ public class CommentDialog extends BottomSheetDialogFragment {
     private RelativeLayout      commentRoot;
     private BottomSheetBehavior commentBehavior;
     private ObjectId            newsID;
-    private CommentDataManager  commentDataManager;
-    private UserDataManager     userDataManager;
 
     @NonNull
     @Override
@@ -76,7 +69,7 @@ public class CommentDialog extends BottomSheetDialogFragment {
                 commentInput.setText("");
                 KeyboardManager.hide();
 
-                commentDataManager.insertComment(newsID, commentContent, commentsCount -> {
+                DataRepository.insertComment(newsID, commentContent, commentsCount -> {
                     //Toast.makeText(getContext(), "COMENTARIO PUBLICADO", Toast.LENGTH_LONG).show();
 
                     //commentNews.getNewsComments().add(newCommentDocument);
@@ -105,16 +98,6 @@ public class CommentDialog extends BottomSheetDialogFragment {
 
     public CommentDialog(ObjectId newsID) {
         this.newsID = newsID;
-
-        this.commentDataManager = new CommentDataManager(
-                new CommentInserterMongo(),
-                new CommentGetterMongo()
-        );
-
-        this.userDataManager = new UserDataManager(
-                new UserInserterMongo(),
-                new UserGetterMongo()
-        );
     }
 
     private void loadComments() {

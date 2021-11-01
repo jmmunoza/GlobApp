@@ -16,19 +16,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.globapp.globapp.R;
+import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.listeners.OnNewsLikedListener;
 import com.globapp.globapp.data.listeners.OnUserImageClickedListener;
 import com.globapp.globapp.data.local.Preferences;
-import com.globapp.globapp.data.repositories.CommentDataManager;
-import com.globapp.globapp.data.repositories.NewsDataManager;
-import com.globapp.globapp.data.repositories.UserDataManager;
-import com.globapp.globapp.data.remote.CommentGetterMongo;
-import com.globapp.globapp.data.remote.CommentInserterMongo;
-import com.globapp.globapp.data.remote.NewsGetterMongo;
-import com.globapp.globapp.data.remote.NewsInserterMongo;
-import com.globapp.globapp.data.remote.NewsLikerMongo;
-import com.globapp.globapp.data.remote.UserGetterMongo;
-import com.globapp.globapp.data.remote.UserInserterMongo;
 import com.globapp.globapp.model.News;
 import com.globapp.globapp.util.SingleTapConfirm;
 import com.globapp.globapp.util.UserNameGetter;
@@ -49,9 +40,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
     private DataLoadedListener       dataLoadedListener;
     private int                      loadedNews;
     Context context;
-    private final UserDataManager    userDataManager;
-    private final CommentDataManager commentDataManager;
-    private final NewsDataManager    newsDataManager;
 
     // LISTENERS
     private final OnUserImageClickedListener onUserImageClickedListener;
@@ -61,22 +49,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         this.context = context;
         this.newsList = newsList;
         this.onUserImageClickedListener = onUserImageClickedListener;
-
-        this.commentDataManager = new CommentDataManager(
-                new CommentInserterMongo(),
-                new CommentGetterMongo()
-        );
-
-        this.userDataManager = new UserDataManager(
-                new UserInserterMongo(),
-                new UserGetterMongo()
-        );
-
-        this.newsDataManager = new NewsDataManager(
-                new NewsInserterMongo(),
-                new NewsGetterMongo(),
-                new NewsLikerMongo()
-        );
     }
 
     @NonNull @Override
@@ -92,7 +64,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         News news = newsList.get(position);
 
-        userDataManager.getUser(new ObjectId(news.getNewsID()), userOwner -> {
+        DataRepository.getUser(new ObjectId(news.getNewsID()), userOwner -> {
             holder.newsPostContent.setText(news.getNewsContent());
             holder.newsLikeCounter.setText(String.valueOf(news.getNewsLikes()));
            // holder.newsCommentCounter.setText(String.valueOf(news.getNewsComments().size()));
@@ -105,7 +77,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
 
             if(news.getNewsUserRecognized() != null){
                 holder.newsRecognitionLayout.setVisibility(View.VISIBLE);
-                userDataManager.getUser(new ObjectId(news.getNewsUserRecognized()), userRecognized -> {
+                DataRepository.getUser(new ObjectId(news.getNewsUserRecognized()), userRecognized -> {
                     holder.newsUsername.setText(UserNameGetter.getUserNameRecognition(userOwner, userRecognized));
 
                     if(userRecognized.getUserImage() != null)
@@ -124,7 +96,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
             }
         });
 
-        newsDataManager.getIsLiked(new ObjectId(news.getNewsID()), new OnNewsLikedListener() {
+        DataRepository.getIsLiked(new ObjectId(news.getNewsID()), new OnNewsLikedListener() {
             @Override
             public void liked(int likesCount) {
                 holder.newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);
@@ -231,7 +203,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
                     @SuppressLint("ClickableViewAccessibility")
                     @Override
                     public boolean onDoubleTap(MotionEvent e) {
-                        newsDataManager.likeNews(new ObjectId(newsList.get(getAdapterPosition()).getNewsID()), new OnNewsLikedListener() {
+                        DataRepository.likeNews(new ObjectId(newsList.get(getAdapterPosition()).getNewsID()), new OnNewsLikedListener() {
                             @Override
                             public void liked(int likesCount) {
                                 newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);
@@ -268,7 +240,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
             newsLikeButton.setOnTouchListener((v, event) -> {
                 if(gestureDetector.onTouchEvent(event)) {
                     newsLikeButton.setAlpha((float) 1);
-                    newsDataManager.likeNews(new ObjectId(newsList.get(getAdapterPosition()).getNewsID()), new OnNewsLikedListener() {
+                    DataRepository.likeNews(new ObjectId(newsList.get(getAdapterPosition()).getNewsID()), new OnNewsLikedListener() {
                         @Override
                         public void liked(int likesCount) {
                             newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);

@@ -60,7 +60,10 @@ public class FragmentNotifications extends Fragment {
                 false);
 
         notificationsList.setLayoutManager(verticalLayoutManager);
-        notificationsListAdapter = new NotificationsListAdapter(getContext(), new ArrayList<>());
+        notificationsListAdapter = new NotificationsListAdapter(
+                getContext(),
+                new ArrayList<>(),
+                newsID -> onNotificationsListListener.onNewsClicked(newsID));
         notificationsList.setAdapter(notificationsListAdapter);
     }
 

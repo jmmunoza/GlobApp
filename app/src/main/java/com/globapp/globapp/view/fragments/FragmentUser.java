@@ -16,10 +16,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.globapp.globapp.R;
+import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.local.Preferences;
-import com.globapp.globapp.data.repositories.UserDataManager;
-import com.globapp.globapp.data.remote.UserGetterMongo;
-import com.globapp.globapp.data.remote.UserInserterMongo;
 import com.globapp.globapp.model.User;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.adapters.MePagerAdapter;
@@ -74,10 +72,7 @@ public class FragmentUser extends Fragment {
     }
 
     private void loadUserData(){
-        new UserDataManager(
-                new UserInserterMongo(),
-                new UserGetterMongo()).getUser(userID, user -> {
-
+        DataRepository.getUser(userID, user -> {
             FragmentUser.this.user = user;
             loadComponents();
         });

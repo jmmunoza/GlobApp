@@ -1,8 +1,5 @@
 package com.globapp.globapp.view.fragments;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,23 +7,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.globapp.globapp.R;
+import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.local.UserSessionController;
-import com.globapp.globapp.data.repositories.UserDataManager;
-import com.globapp.globapp.data.remote.UserGetterMongo;
-import com.globapp.globapp.data.remote.UserInserterMongo;
 import com.globapp.globapp.data.services.IUserSessionController;
+import com.globapp.globapp.model.User;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.adapters.MePagerAdapter;
-import com.globapp.globapp.R;
-import com.globapp.globapp.model.User;
+
 import org.bson.types.ObjectId;
 
 import java.util.concurrent.TimeUnit;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FragmentMe extends Fragment {
@@ -67,14 +67,9 @@ public class FragmentMe extends Fragment {
     private void loadUserData(){
         IUserSessionController iUserSessionController = new UserSessionController();
         ObjectId userSessionID = new ObjectId(iUserSessionController.getUserSessionID());
-
-        new UserDataManager(
-                new UserInserterMongo(),
-                new UserGetterMongo()).getUser(userSessionID, user -> {
-
+        DataRepository.getUser(userSessionID, user -> {
             me = user;
             loadComponents();
-
         });
     }
 

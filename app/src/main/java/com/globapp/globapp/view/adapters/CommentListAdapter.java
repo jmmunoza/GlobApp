@@ -11,10 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.globapp.globapp.R;
+import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.local.Preferences;
-import com.globapp.globapp.data.repositories.UserDataManager;
-import com.globapp.globapp.data.remote.UserGetterMongo;
-import com.globapp.globapp.data.remote.UserInserterMongo;
 import com.globapp.globapp.model.Comment;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.fragments.FragmentOnNotification;
@@ -32,17 +30,12 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
     private final LayoutInflater      inflater;
 
     private BottomSheetDialogFragment parent;
-    private final UserDataManager     userDataManager ;
     private final FragmentOnNotification.OnNotificationListener onNotificationListener;
 
     public CommentListAdapter(Context context, ArrayList<Comment> newsComments, FragmentOnNotification.OnNotificationListener onNotificationListener){
         this.inflater     = LayoutInflater.from(context);
         this.newsComments = newsComments;
         this.onNotificationListener = onNotificationListener;
-        this.userDataManager = new UserDataManager(
-                new UserInserterMongo(),
-                new UserGetterMongo()
-        );
     }
 
     public CommentListAdapter(Context context, ArrayList<Comment> newsComments, FragmentOnNotification.OnNotificationListener onNotificationListener, BottomSheetDialogFragment parent){
@@ -50,10 +43,6 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         this.newsComments = newsComments;
         this.parent       = parent;
         this.onNotificationListener = onNotificationListener;
-        this.userDataManager = new UserDataManager(
-                new UserInserterMongo(),
-                new UserGetterMongo()
-        );
     }
 
     @NonNull @Override
@@ -69,7 +58,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Comment comment = newsComments.get(position);
-        userDataManager.getUser(new ObjectId(comment.getCommentUser()), user -> {
+        DataRepository.getUser(new ObjectId(comment.getCommentUser()), user -> {
             holder.commentContent.setText(comment.getCommentContent());
             holder.commentTime.setText(comment.getCommentDate().toString());
             holder.commentUsername.setText(UserNameGetter.getUserName(user));

@@ -52,7 +52,6 @@ public class FragmentLogin extends Fragment {
             String email    = loginUserText.getText().toString();
             String password = loginPasswordText.getText().toString();
             if(!email.equals("") && !password.equals("")){
-
                 ILoginUser loginUser = new LoginUserMongo(onLoginReadyListener);
                 loginUser.login(email, password);
             }

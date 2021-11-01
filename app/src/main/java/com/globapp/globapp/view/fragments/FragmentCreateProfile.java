@@ -18,10 +18,8 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.globapp.globapp.R;
-import com.globapp.globapp.data.repositories.UserDataManager;
+import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.remote.CreateProfile;
-import com.globapp.globapp.data.remote.UserGetterMongo;
-import com.globapp.globapp.data.remote.UserInserterMongo;
 import com.globapp.globapp.data.services.ICreateProfile;
 import com.globapp.globapp.model.User;
 import com.globapp.globapp.util.UserNameGetter;
@@ -71,13 +69,9 @@ public class FragmentCreateProfile extends Fragment {
     }
 
     private void loadUserData(){
-        new UserDataManager(
-                new UserInserterMongo(),
-                new UserGetterMongo()).getUser(userID, user -> {
-
+        DataRepository.getUser(userID, user -> {
             userInstance = user;
             loadComponents();
-
         });
     }
 

@@ -18,11 +18,9 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.globapp.globapp.R;
+import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.local.Preferences;
-import com.globapp.globapp.data.repositories.UserDataManager;
 import com.globapp.globapp.data.remote.GiveStarMongo;
-import com.globapp.globapp.data.remote.UserGetterMongo;
-import com.globapp.globapp.data.remote.UserInserterMongo;
 import com.globapp.globapp.data.services.IGiveStar;
 import com.globapp.globapp.model.User;
 import com.globapp.globapp.view.MainActivity;
@@ -89,9 +87,7 @@ public class FragmentGiveStar extends Fragment {
     }
 
     private void loadUserData(){
-        new UserDataManager(
-                new UserInserterMongo(),
-                new UserGetterMongo()).getUser(userID, user -> {
+        DataRepository.getUser(userID, user -> {
 
             this.user = user;
             loadComponents();

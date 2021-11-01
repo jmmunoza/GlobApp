@@ -3,6 +3,7 @@ package com.globapp.globapp.data;
 import com.globapp.globapp.data.listeners.OnCommentListLoadedListener;
 import com.globapp.globapp.data.listeners.OnDatabaseConnectedListener;
 import com.globapp.globapp.data.listeners.OnNewsCommentedListener;
+import com.globapp.globapp.data.listeners.OnNewsLikedListener;
 import com.globapp.globapp.data.listeners.OnNewsListLoadedListener;
 import com.globapp.globapp.data.listeners.OnNewsLoadedListener;
 import com.globapp.globapp.data.listeners.OnUserLoadedListener;
@@ -75,6 +76,14 @@ public class DataRepository {
 
     public static void insertNews(News news){
         mongoNews.insertNews(news);
+    }
+
+    public static void getIsLiked(ObjectId newsID, OnNewsLikedListener onNewsLikedListener){
+        mongoNews.getIsLiked(newsID, onNewsLikedListener);
+    }
+
+    public static void likeNews(ObjectId newsID, OnNewsLikedListener onNewsLikedListener){
+        mongoNews.likeNews(newsID, onNewsLikedListener);
     }
 
     public static void  getNewsComments(ObjectId newsID, OnCommentListLoadedListener onCommentListLoadedListener){

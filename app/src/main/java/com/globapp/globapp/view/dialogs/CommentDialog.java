@@ -13,10 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.DataRepository;
+import com.globapp.globapp.data.listeners.OnUserImageClickedListener;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.util.KeyboardManager;
+import com.globapp.globapp.util.ToastMaker;
 import com.globapp.globapp.view.adapters.CommentListAdapter;
-import com.globapp.globapp.view.fragments.FragmentOnNotification;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -33,7 +34,12 @@ public class CommentDialog extends BottomSheetDialogFragment {
     private RecyclerView        commentList;
     private RelativeLayout      commentRoot;
     private BottomSheetBehavior commentBehavior;
-    private ObjectId            newsID;
+
+    // DATA
+    private final ObjectId            newsID;
+
+    // LISTENER
+    private OnUserImageClickedListener onUserImageClickedListener;
 
     @NonNull
     @Override
@@ -55,25 +61,22 @@ public class CommentDialog extends BottomSheetDialogFragment {
         commentListFunction();
         loadComments();
 
-
-        BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-        dialog.setContentView(view);
+        BottomSheetDialog parent = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+        parent.setContentView(view);
         commentBehavior = BottomSheetBehavior.from((View) view.getParent());
-        return dialog;
+        return parent;
     }
 
     private void sendButtonFunction(){
         commentSendButton.setOnClickListener(v -> {
+            KeyboardManager.hide(requireContext(), commentInput.getWindowToken());
             String commentContent = commentInput.getText().toString();
             if(commentContent.length() > 0){
                 commentInput.setText("");
-                KeyboardManager.hide(getContext(), commentInput.getWindowToken());
-                DataRepository.insertComment(newsID, commentContent, commentsCount -> {
-                    //Toast.makeText(getContext(), "COMENTARIO PUBLICADO", Toast.LENGTH_LONG).show();
-
-                    //commentNews.getNewsComments().add(newCommentDocument);
-                    //commentListAdapter.notifyItemInserted(commentNews.getNewsComments().size()-1);
-                    //commentList.scrollToPosition(commentNews.getNewsComments().size()-1);
+                DataRepository.insertComment(newsID, commentContent, (commentsCount, newComment) -> {
+                    ToastMaker.show("comentario publicado");
+                    commentListAdapter.insertComment(newComment);
+                    commentList.scrollToPosition(commentListAdapter.getItemCount()-1);
                 });
             }
         });
@@ -85,12 +88,7 @@ public class CommentDialog extends BottomSheetDialogFragment {
                 LinearLayoutManager.VERTICAL,
                 false);
 
-        commentListAdapter = new CommentListAdapter(getContext(), new ArrayList<>(), new FragmentOnNotification.OnNotificationListener() {
-            @Override
-            public void onUserImageClicked(ObjectId userID) {
-
-            }
-        });
+        commentListAdapter = new CommentListAdapter(getContext(), new ArrayList<>(), onUserImageClickedListener, this);
         commentList.setLayoutManager(verticalLayoutManager);
         commentList.setAdapter(commentListAdapter);
     }
@@ -100,8 +98,14 @@ public class CommentDialog extends BottomSheetDialogFragment {
     }
 
     private void loadComments() {
-        //commentListAdapter = new CommentListAdapter(getContext(), commentNews.getNewsComments(), this);
-        //commentList.setAdapter(commentListAdapter);
+        DataRepository.getNewsComments(newsID, commentList -> {
+            commentListAdapter = new CommentListAdapter(getContext(), commentList, onUserImageClickedListener, this);
+            CommentDialog.this.commentList.setAdapter(commentListAdapter);
+        });
+    }
+
+    public void addOnUserImageClickedListener(OnUserImageClickedListener onUserImageClickedListener){
+        this.onUserImageClickedListener = onUserImageClickedListener;
     }
 
     @Override

@@ -1,9 +1,12 @@
 package com.globapp.globapp.data.remote;
 
+import androidx.annotation.NonNull;
+
 import com.globapp.globapp.data.listeners.OnCommentListLoadedListener;
 import com.globapp.globapp.data.services.ICommentGetter;
 import com.globapp.globapp.model.Comment;
 import com.globapp.globapp.util.DocConverter;
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import org.bson.Document;
@@ -30,8 +33,7 @@ public class CommentGetterMongo implements ICommentGetter {
                         Document.class,
                         new ArrayList<>());
 
-                ArrayList<Comment> comments = (ArrayList<Comment>) Lists.transform(docComments, DocConverter::documentToComment);
-
+                ArrayList<Comment> comments = new ArrayList<>(Lists.transform(docComments, DocConverter::documentToComment));
                 onCommentListLoadedListener.onCommentListLoaded(comments);
             }
         });

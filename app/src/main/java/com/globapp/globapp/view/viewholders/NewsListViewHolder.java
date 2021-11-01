@@ -44,11 +44,11 @@ public class NewsListViewHolder extends RecyclerView.ViewHolder {
     public TextView         newsCommentCounter;
 
     // data
-    private ObjectId newsID;
-    private ObjectId userOwnerID;
-    private ObjectId userRecognizedID;
+    private ObjectId              newsID;
+    private ObjectId              userOwnerID;
+    private ObjectId              userRecognizedID;
     private final GestureDetector gestureDetector;
-    private final Context   context;
+    private final Context         context;
 
     // Listeners
     private final OnUserImageClickedListener onUserImageClickedListener;
@@ -188,6 +188,7 @@ public class NewsListViewHolder extends RecyclerView.ViewHolder {
             if(gestureDetector.onTouchEvent(event)) {
                 newsCommentButton.setAlpha((float) 1);
                 CommentDialog commentDialog = new CommentDialog(newsID);
+                commentDialog.addOnUserImageClickedListener(onUserImageClickedListener);
                 commentDialog.show(((MainActivity)context).getSupportFragmentManager(), commentDialog.getTag());
             } else if(event.getAction() == MotionEvent.ACTION_DOWN){
                 newsCommentButton.setAlpha((float) 0.5);

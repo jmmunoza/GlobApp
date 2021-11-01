@@ -2,6 +2,8 @@ package com.globapp.globapp.data.remote;
 
 import com.globapp.globapp.data.listeners.OnNewsCommentedListener;
 import com.globapp.globapp.data.services.ICommentInserter;
+import com.globapp.globapp.model.Comment;
+import com.globapp.globapp.util.DocConverter;
 import com.globapp.globapp.util.DocCreator;
 
 import org.bson.Document;
@@ -34,13 +36,8 @@ public class CommentInserterMongo implements ICommentInserter {
                 Document newsInsertion = result.get().append("comments", comments);
                 newsCollection.findOneAndUpdate(newsQuery, newsInsertion).getAsync(inserted -> {
                     if(inserted.isSuccess()){
-                        onNewsCommentedListener.onNewsCommented(comments.size());
-                       /* Toast.makeText(getContext(), "COMENTARIO PUBLICADO", Toast.LENGTH_LONG).show();
-                        notificationNews.getNewsComments().add(newCommentDocument);
-                        notificationCommentListAdapter.notifyItemInserted(notificationNews.getNewsComments().size()-1);
-                        notificationNestedScroll.post(() -> notificationNestedScroll.fullScroll(RecyclerView.FOCUS_DOWN));
-
-                        */
+                        Comment newComment = DocConverter.documentToComment(commentDoc);
+                        onNewsCommentedListener.onNewsCommented(comments.size(), newComment);
                     }
                 });
             }

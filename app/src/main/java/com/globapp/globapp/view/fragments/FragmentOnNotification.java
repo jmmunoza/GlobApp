@@ -21,14 +21,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.DataRepository;
-import com.globapp.globapp.data.listeners.OnNewsCommentedListener;
 import com.globapp.globapp.data.listeners.OnNewsLikedListener;
+import com.globapp.globapp.data.listeners.OnUserImageClickedListener;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.model.Comment;
 import com.globapp.globapp.model.News;
 import com.globapp.globapp.model.User;
 import com.globapp.globapp.util.KeyboardManager;
 import com.globapp.globapp.util.SingleTapConfirm;
+import com.globapp.globapp.util.ToastMaker;
 import com.globapp.globapp.view.adapters.CommentListAdapter;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -50,7 +51,7 @@ public class FragmentOnNotification extends Fragment {
     private boolean                  isUserLiked;
 
     // LISTENERS
-    private OnNotificationListener      onNotificationListener;
+    private OnUserImageClickedListener onUserImageClickedListener;
 
     // UI COMPONENTS
     private TextView           notificationUsername;
@@ -223,12 +224,12 @@ public class FragmentOnNotification extends Fragment {
 
     private void userImageFunction(){
         notificationUserImage.setOnClickListener(v ->
-                onNotificationListener.onUserImageClicked(new ObjectId(userOwner.getUserID())));
+                onUserImageClickedListener.onUserImageClicked(new ObjectId(userOwner.getUserID())));
     }
 
     private void userRecognizedImageFunction(){
         notificationRecognitionUserImage.setOnClickListener(v ->
-                onNotificationListener.onUserImageClicked(new ObjectId(userRecognized.getUserID())));
+                onUserImageClickedListener.onUserImageClicked(new ObjectId(userRecognized.getUserID())));
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -302,11 +303,10 @@ public class FragmentOnNotification extends Fragment {
             if(commentContent.length() > 0){
                 notificationCommentInput.setText("");
                 KeyboardManager.hide(requireContext(), notificationCommentInput.getWindowToken());
-                DataRepository.insertComment(newsID, commentContent, new OnNewsCommentedListener() {
-                    @Override
-                    public void onNewsCommented(int commentsCount) {
-
-                    }
+                DataRepository.insertComment(newsID, commentContent, (commentsCount, newComment) -> {
+                    ToastMaker.show("comentario publicado");
+                    notificationCommentListAdapter.insertComment(newComment);
+                    notificationNestedScroll.post(() -> notificationNestedScroll.fullScroll(RecyclerView.FOCUS_DOWN));
                 });
             }
         });
@@ -319,7 +319,7 @@ public class FragmentOnNotification extends Fragment {
                 false);
 
         notificationCommentList.setLayoutManager(verticalLayoutManager);
-        notificationCommentListAdapter = new CommentListAdapter(getContext(), commentList, onNotificationListener);
+        notificationCommentListAdapter = new CommentListAdapter(getContext(), commentList, onUserImageClickedListener);
         notificationCommentList.setAdapter(notificationCommentListAdapter);
     }
 
@@ -354,11 +354,7 @@ public class FragmentOnNotification extends Fragment {
         commentListFunction();
     }
 
-    public interface OnNotificationListener {
-        void onUserImageClicked(ObjectId userID);
-    }
-
-     public void addOnNotificationListener(OnNotificationListener onNotificationListener){
-        this.onNotificationListener = onNotificationListener;
+     public void addOnUserImageClickedListener(OnUserImageClickedListener onUserImageClickedListener){
+        this.onUserImageClickedListener = onUserImageClickedListener;
      }
 }

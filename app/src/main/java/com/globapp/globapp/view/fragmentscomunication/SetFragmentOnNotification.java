@@ -7,7 +7,7 @@ import org.bson.types.ObjectId;
 public class SetFragmentOnNotification {
     public static void set(ObjectId newsID){
         FragmentOnNotification fragmentOnNotification = new FragmentOnNotification(newsID);
-        fragmentOnNotification.addOnNotificationListener(SetFragmentUser::set);
+        fragmentOnNotification.addOnUserImageClickedListener(SetFragmentUser::set);
         FragmentAdderManager.addFragmentRight(fragmentOnNotification);
     }
 }

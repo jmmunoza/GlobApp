@@ -64,7 +64,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
             holder.setUserOwnerID(new ObjectId(news.getNewsUserOwner()));
             holder.newsPostContent.setText(news.getNewsContent());
             holder.newsLikeCounter.setText(String.valueOf(ArrayStringConverter.fromString(news.getNewsLikes()).size()));
-            holder.newsTime.setText(news.getNewsDate().toString());
+            holder.newsTime.setText(news.getNewsDate());
             if(news.getNewsImage() != null) holder.newsPostImage.setImageURI(news.getNewsImage());
             if(userOwner.getUserImage() != null)
                 holder.newsUserImage.setImageURI(userOwner.getUserImage());

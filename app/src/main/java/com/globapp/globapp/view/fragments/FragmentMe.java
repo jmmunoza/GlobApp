@@ -18,7 +18,6 @@ import com.globapp.globapp.R;
 import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.local.UserSessionController;
-import com.globapp.globapp.data.services.IUserSessionController;
 import com.globapp.globapp.model.User;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.adapters.MePagerAdapter;
@@ -65,8 +64,7 @@ public class FragmentMe extends Fragment {
     }
 
     private void loadUserData(){
-        IUserSessionController iUserSessionController = new UserSessionController();
-        ObjectId userSessionID = new ObjectId(iUserSessionController.getUserSessionID());
+        ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
         DataRepository.getUser(userSessionID, user -> {
             me = user;
             loadComponents();

@@ -24,7 +24,6 @@ import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.data.remote.EditUserMongo;
 import com.globapp.globapp.data.services.IEditUser;
-import com.globapp.globapp.data.services.IUserSessionController;
 import com.globapp.globapp.model.User;
 import com.globapp.globapp.util.KeyboardManager;
 import com.globapp.globapp.util.UserNameGetter;
@@ -99,8 +98,7 @@ public class FragmentEditProfile extends Fragment {
     }
 
     private void loadUserData(){
-        IUserSessionController iUserSessionController = new UserSessionController();
-        ObjectId userSessionID = new ObjectId(iUserSessionController.getUserSessionID());
+        ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
         DataRepository.getUser(userSessionID, user -> {
             me = user;
             loadComponents();

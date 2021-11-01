@@ -141,7 +141,7 @@ public class FragmentOnNotification extends Fragment {
                 notificationLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
         }
 
-        notificationTime.setText(news.getNewsDate().toString());
+        notificationTime.setText(news.getNewsDate());
         notificationPostContent.setText(news.getNewsContent());
         notificationLikeCounter.setText(String.valueOf(news.getNewsLikes()));
         notificationCommentCounter.setText(String.valueOf(commentList.size()));
@@ -301,7 +301,7 @@ public class FragmentOnNotification extends Fragment {
             String commentContent = notificationCommentInput.getText().toString();
             if(commentContent.length() > 0){
                 notificationCommentInput.setText("");
-                KeyboardManager.hide(getContext(), notificationCommentInput.getWindowToken());
+                KeyboardManager.hide(requireContext(), notificationCommentInput.getWindowToken());
                 DataRepository.insertComment(newsID, commentContent, new OnNewsCommentedListener() {
                     @Override
                     public void onNewsCommented(int commentsCount) {

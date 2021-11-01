@@ -3,7 +3,6 @@ package com.globapp.globapp.data.remote;
 import com.globapp.globapp.data.listeners.OnNewsLikedListener;
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.data.services.INewsLiker;
-import com.globapp.globapp.data.services.IUserSessionController;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -30,8 +29,7 @@ public class NewsLikerMongo implements INewsLiker {
                                 ObjectId.class,
                                 new ArrayList<>()));
 
-                IUserSessionController iUserSessionController = new UserSessionController();
-                ObjectId userSessionID = new ObjectId(iUserSessionController.getUserSessionID());
+                ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
 
                 boolean isLiked = listLikes.contains(userSessionID);
                 if(isLiked){
@@ -65,8 +63,7 @@ public class NewsLikerMongo implements INewsLiker {
                                 ObjectId.class,
                                 new ArrayList<>()));
 
-                IUserSessionController iUserSessionController = new UserSessionController();
-                ObjectId userSessionID = new ObjectId(iUserSessionController.getUserSessionID());
+                ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
 
                 boolean isLiked = listLikes.contains(userSessionID);
                 if(isLiked){

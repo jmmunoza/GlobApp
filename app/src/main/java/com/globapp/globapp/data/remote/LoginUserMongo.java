@@ -1,15 +1,7 @@
 package com.globapp.globapp.data.remote;
 
-import android.widget.Toast;
-
-import com.globapp.globapp.GlobAppApplication;
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.data.services.ILoginUser;
-import com.globapp.globapp.data.services.IUserSessionController;
-import com.globapp.globapp.model.User;
-import com.globapp.globapp.util.DocConverter;
-import com.globapp.globapp.view.MainActivity;
-import com.globapp.globapp.view.fragments.FragmentCreateProfile;
 import com.globapp.globapp.view.fragments.FragmentLogin;
 
 import org.bson.Document;
@@ -37,9 +29,8 @@ public class LoginUserMongo implements ILoginUser {
                     if (userLogin.getString("password").equals(password)) {
 
                         String userSessionID = userLogin.getObjectId("_id").toString();
-                        IUserSessionController iUserSessionController = new UserSessionController();
-                        iUserSessionController.setUserSessionID(userSessionID);
-                        iUserSessionController.setUserAdmin(userLogin.getBoolean("admin"));
+                        UserSessionController.setUserSessionID(userSessionID);
+                        UserSessionController.setUserAdmin(userLogin.getBoolean("admin"));
 
                         if (userLogin.getString("description") != null) {
                             onLoginReadyListener.onUserCreated();

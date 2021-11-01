@@ -70,8 +70,8 @@ public class DocConverter {
         return new Comment(
                 document.getString("content"),
                 document.getDate("date").toString(),
-                document.getObjectId("user_id").toString(),
-                document.getObjectId("news_id").toString()
+                document.getObjectId("userID").toString(),
+                document.getObjectId("newsID").toString()
         );
     }
 }

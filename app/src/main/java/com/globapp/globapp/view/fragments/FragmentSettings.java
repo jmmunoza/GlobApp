@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,8 +14,14 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.globapp.globapp.R;
+import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.local.Preferences;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.globapp.globapp.data.local.UserSessionController;
+import com.globapp.globapp.model.User;
+import com.globapp.globapp.view.dialogs.AboutSettingsDialog;
+import com.globapp.globapp.view.dialogs.LanguageSettingsDialog;
+
+import org.bson.types.ObjectId;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +39,9 @@ public class FragmentSettings extends Fragment {
     private CardView          aboutButton;
     private CardView          logoutButton;
 
+    // Data
+    private User me;
+
     // Listener
     private OnSettingsListener onSettingsListener;
 
@@ -42,7 +50,6 @@ public class FragmentSettings extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         postponeEnterTransition(1, TimeUnit.MILLISECONDS);
-
         if(Preferences.getDarkMode()){
             return inflater.inflate(R.layout.fragment_settings_dark, null);
         } else {
@@ -53,7 +60,7 @@ public class FragmentSettings extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadComponents();
+        loadUserData();
     }
 
     private void logoutButtonFunction(){
@@ -70,47 +77,17 @@ public class FragmentSettings extends Fragment {
     }
 
     private void languageButtonFunction(){
-        languageButton.setOnClickListener(v -> createLanguageDialog().show());
-    }
-
-    private BottomSheetDialog createLanguageDialog(){
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.SheetDialog);
-        if(Preferences.getDarkMode()){
-            bottomSheetDialog.setContentView(R.layout.fragment_settings_language_dark);
-        } else {
-            bottomSheetDialog.setContentView(R.layout.fragment_settings_language);
-        }
-
-        CardView spanish = bottomSheetDialog.findViewById(R.id.spanish_button);
-        CardView english = bottomSheetDialog.findViewById(R.id.english_button);
-
-        if(Preferences.getEnglish()){
-            assert english != null;
-            english.setCardBackgroundColor(getResources().getColor(R.color.globant_main_color));
-        } else {
-            assert spanish != null;
-            spanish.setCardBackgroundColor(getResources().getColor(R.color.globant_main_color));
-        }
-
-        assert spanish != null;
-        spanish.setOnClickListener(v1 -> {
-            Preferences.setIsEnglish(false);
-            Toast.makeText(getContext(), getString(R.string.spanish),Toast.LENGTH_LONG).show();
-            bottomSheetDialog.cancel();
+        languageButton.setOnClickListener(v -> {
+            LanguageSettingsDialog languageSettingsDialog = new LanguageSettingsDialog(requireContext());
+            languageSettingsDialog.createDialog().show();
         });
-
-        assert english != null;
-        english.setOnClickListener(v1 -> {
-            Preferences.setIsEnglish(true);
-            Toast.makeText(getContext(), getString(R.string.english),Toast.LENGTH_LONG).show();
-            bottomSheetDialog.cancel();
-        });
-
-        return bottomSheetDialog;
     }
 
     private void aboutButtonFunction(){
-        aboutButton.setOnClickListener(v -> createAboutDialog().show());
+        aboutButton.setOnClickListener(v -> {
+            AboutSettingsDialog aboutSettingsDialog = new AboutSettingsDialog(requireContext());
+            aboutSettingsDialog.createDialog().show();
+        });
     }
 
     private void notificationButtonFunction(){
@@ -119,23 +96,20 @@ public class FragmentSettings extends Fragment {
         });
     }
 
+    private void loadUserData(){
+        ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
+        DataRepository.getUser(userSessionID, user -> {
+            me = user;
+            loadComponents();
+        });
+    }
+
     private void userImageFunction(){
-        //if (((MainActivity)getContext()).me.getUserImage() != null) userImage.setImageURI(((MainActivity)getContext()).me.getUserImage());
+        if(me.getUserImage() != null) userImage.setImageURI(me.getUserImage());
     }
 
     private void usernameFunction(){
-        //username.setText(((MainActivity)getContext()).me.getUserFirstName());
-    }
-
-    private BottomSheetDialog createAboutDialog(){
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.SheetDialog);
-        if(Preferences.getDarkMode()){
-            bottomSheetDialog.setContentView(R.layout.fragment_settings_about_dark);
-        } else {
-            bottomSheetDialog.setContentView(R.layout.fragment_settings_about);
-        }
-
-        return bottomSheetDialog;
+        username.setText(me.getUserFirstName());
     }
 
     private void loadComponents(){

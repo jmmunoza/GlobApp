@@ -2,7 +2,6 @@ package com.globapp.globapp.data.remote;
 
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.data.services.IEditUser;
-import com.globapp.globapp.data.services.IUserSessionController;
 import com.globapp.globapp.view.fragments.FragmentEditProfile;
 
 import org.bson.Document;
@@ -21,8 +20,7 @@ public class EditUserMongo implements IEditUser {
 
     @Override
     public void edit(String newDescription) {
-        IUserSessionController iUserSessionController = new UserSessionController();
-        ObjectId userSessionID = new ObjectId(iUserSessionController.getUserSessionID());
+        ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
         Document userQuery = new Document().append("_id", userSessionID);
 
         userCollection.findOne(userQuery).getAsync(userData -> {

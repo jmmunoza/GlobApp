@@ -1,5 +1,6 @@
 package com.globapp.globapp.data;
 
+import com.globapp.globapp.GlobAppApplication;
 import com.globapp.globapp.data.listeners.OnCommentListLoadedListener;
 import com.globapp.globapp.data.listeners.OnDatabaseConnectedListener;
 import com.globapp.globapp.data.listeners.OnNewsCommentedListener;

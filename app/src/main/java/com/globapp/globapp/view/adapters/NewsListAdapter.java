@@ -14,6 +14,7 @@ import com.globapp.globapp.data.listeners.OnNewsLikedListener;
 import com.globapp.globapp.data.listeners.OnUserImageClickedListener;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.model.News;
+import com.globapp.globapp.util.ArrayStringConverter;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.viewholders.NewsListViewHolder;
 
@@ -33,7 +34,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
     private final OnUserImageClickedListener onUserImageClickedListener;
 
     public NewsListAdapter(Context context, ArrayList<News> newsList, OnUserImageClickedListener onUserImageClickedListener){
-        System.out.println("a");
         this.inflater = LayoutInflater.from(context);
         this.context = context;
         this.newsList = newsList;
@@ -42,6 +42,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
 
     @NonNull @Override
     public NewsListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        System.out.println(parent);
         if(Preferences.getDarkMode()){
             return new NewsListViewHolder(
                     inflater.inflate(R.layout.fragment_news_item_dark, parent, false),
@@ -59,11 +60,10 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
     public void onBindViewHolder(@NonNull NewsListViewHolder holder, int position) {
         News news = newsList.get(position);
         holder.setNewsID(new ObjectId(news.getNewsID()));
-        DataRepository.getUser(new ObjectId(news.getNewsID()), userOwner -> {
+        DataRepository.getUser(new ObjectId(news.getNewsUserOwner()), userOwner -> {
             holder.setUserOwnerID(new ObjectId(news.getNewsUserOwner()));
             holder.newsPostContent.setText(news.getNewsContent());
-            holder.newsLikeCounter.setText(String.valueOf(news.getNewsLikes()));
-           // holder.newsCommentCounter.setText(String.valueOf(news.getNewsComments().size()));
+            holder.newsLikeCounter.setText(String.valueOf(ArrayStringConverter.fromString(news.getNewsLikes()).size()));
             holder.newsTime.setText(news.getNewsDate().toString());
             if(news.getNewsImage() != null) holder.newsPostImage.setImageURI(news.getNewsImage());
             if(userOwner.getUserImage() != null)

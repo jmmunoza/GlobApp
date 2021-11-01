@@ -123,6 +123,7 @@ public class NewsListViewHolder extends RecyclerView.ViewHolder {
                         @Override
                         public void liked(int likesCount) {
                             newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);
+                            newsLikeCounter.setText(String.valueOf(likesCount));
                         }
 
                         @Override
@@ -131,6 +132,7 @@ public class NewsListViewHolder extends RecyclerView.ViewHolder {
                                 newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_white_24);
                             else
                                 newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                            newsLikeCounter.setText(String.valueOf(likesCount));
                         }
                     });
                     return super.onDoubleTap(e);
@@ -156,6 +158,7 @@ public class NewsListViewHolder extends RecyclerView.ViewHolder {
                     @Override
                     public void liked(int likesCount) {
                         newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);
+                        newsLikeCounter.setText(String.valueOf(likesCount));
                     }
 
                     @Override
@@ -164,6 +167,7 @@ public class NewsListViewHolder extends RecyclerView.ViewHolder {
                             newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_white_24);
                         else
                             newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                        newsLikeCounter.setText(String.valueOf(likesCount));
                     }
                 });
 

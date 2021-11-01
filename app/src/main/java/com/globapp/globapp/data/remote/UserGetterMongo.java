@@ -19,6 +19,7 @@ public class UserGetterMongo implements IUserGetter {
 
     public void getUser(ObjectId userID, OnUserLoadedListener onUserLoadedListener){
         Document userQuery = new Document("_id", userID);
+        System.out.println(userID);
         userCollection.findOne(userQuery).getAsync(userData -> {
             if(userData.isSuccess()) {
                 User user = DocConverter.documentToUser(userData.get());

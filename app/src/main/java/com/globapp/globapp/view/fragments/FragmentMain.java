@@ -17,7 +17,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.local.UserSessionController;
-import com.globapp.globapp.data.services.IUserSessionController;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.bson.types.ObjectId;
@@ -33,10 +32,10 @@ public class FragmentMain extends Fragment {
     private FragmentAdminPane     fragmentAdminPane;
 
     // Consonants
-    private static final int NEWS          = 0;
-    private static final int NOTIFICATIONS = 1;
-    private static final int ME            = 2;
-    private static final int ADMIN_PANE    = 3;
+    public static final int NEWS          = 0;
+    public static final int NOTIFICATIONS = 1;
+    public static final int ME            = 2;
+    public static final int ADMIN_PANE    = 3;
 
     // Components
     private ViewPager2           mainViewPager;
@@ -101,8 +100,7 @@ public class FragmentMain extends Fragment {
 
     @SuppressLint("NonConstantResourceId")
     private void bottomNavigationViewFunction(){
-        IUserSessionController iUserSessionController = new UserSessionController();
-        if(!iUserSessionController.isUserAdmin())
+        if(!UserSessionController.isUserAdmin())
             bottomNavigationView.getMenu().removeItem(R.id.action_admin_pane);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -122,6 +120,14 @@ public class FragmentMain extends Fragment {
             }
             return true;
         });
+    }
+
+    public int getPagePosition(){
+        return mainViewPager.getCurrentItem();
+    }
+
+    public void setPagePosition(int position){
+        mainViewPager.setCurrentItem(position);
     }
 
     private void loadComponents(){

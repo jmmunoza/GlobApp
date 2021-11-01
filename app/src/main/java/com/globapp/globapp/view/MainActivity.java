@@ -98,6 +98,11 @@ public class MainActivity extends AppCompatActivity {
             public void onNewsClicked(ObjectId newsID) {
                 setFragmentOnNotification(newsID);
             }
+
+            @Override
+            public void onUserImageClicked(ObjectId userID) {
+                setFragmentUser(userID);
+            }
         });
         addFragmentRight(fragmentMain);
     }

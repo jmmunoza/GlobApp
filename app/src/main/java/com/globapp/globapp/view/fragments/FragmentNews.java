@@ -18,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.globapp.globapp.R;
+import com.globapp.globapp.data.listeners.OnUserImageClickedListener;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.manager.NewsDataManager;
 import com.globapp.globapp.data.remote.NewsGetterMongo;
@@ -41,6 +42,9 @@ public class FragmentNews extends Fragment {
 
     // News data manager
     private final NewsDataManager newsDataManager;
+
+    // Listeners
+    private OnUserImageClickedListener onUserImageClickedListener;
 
     public FragmentNews(){
         newsDataManager = new NewsDataManager(
@@ -83,7 +87,7 @@ public class FragmentNews extends Fragment {
                 false);
 
         newsList.setLayoutManager(verticalLayoutManager);
-        newsListAdapter = new NewsListAdapter(getContext(), new ArrayList<>());
+        newsListAdapter = new NewsListAdapter(getContext(), new ArrayList<>(), onUserImageClickedListener);
         newsList.setAdapter(newsListAdapter);
     }
 
@@ -120,9 +124,13 @@ public class FragmentNews extends Fragment {
             newsPlaceholder.stopShimmer();
             newsPlaceholder.setVisibility(View.GONE);
             FragmentNews.this.newsList.setVisibility(View.VISIBLE);
-            newsListAdapter = new NewsListAdapter(getContext(), newsList);
+            newsListAdapter = new NewsListAdapter(getContext(), newsList, onUserImageClickedListener);
             FragmentNews.this.newsList.setAdapter(newsListAdapter);
             newsRefresh.setRefreshing(false);
         });
+    }
+
+    public void addOnUserImageClickedListener(OnUserImageClickedListener onUserImageClickedListener){
+        this.onUserImageClickedListener = onUserImageClickedListener;
     }
 }

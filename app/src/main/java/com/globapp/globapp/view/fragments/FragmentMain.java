@@ -15,6 +15,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.globapp.globapp.R;
+import com.globapp.globapp.data.listeners.OnUserImageClickedListener;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.data.services.IUserSessionController;
@@ -130,6 +131,7 @@ public class FragmentMain extends Fragment {
         fragmentNotifications = new FragmentNotifications();
         fragmentAdminPane     = new FragmentAdminPane();
 
+        fragmentNews.addOnUserImageClickedListener(userID -> onMainListener.onUserImageClicked(userID));
         fragmentNotifications.addOnNotificationsListListener(newsID -> onMainListener.onNewsClicked(newsID));
 
         settingsButton        = requireView().findViewById(R.id.settings_button);
@@ -180,6 +182,7 @@ public class FragmentMain extends Fragment {
         void search();
         void settings();
         void onNewsClicked(ObjectId newsID);
+        void onUserImageClicked(ObjectId userID);
     }
 
     public void addOnMainListener(OnMainListener onMainListener){

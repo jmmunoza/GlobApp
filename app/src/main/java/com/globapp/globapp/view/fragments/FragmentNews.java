@@ -108,6 +108,7 @@ public class FragmentNews extends Fragment {
         newsList.setVisibility(View.INVISIBLE);
         newsPlaceholder.startShimmer();
 
+
         DataRepository.getLatestNews(newsList -> {
             newsListAdapter = new NewsListAdapter(getContext(), newsList, onUserImageClickedListener);
             newsListAdapter.addDataLoadedListener(() -> {

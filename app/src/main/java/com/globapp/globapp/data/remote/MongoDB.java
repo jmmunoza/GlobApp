@@ -1,6 +1,7 @@
 package com.globapp.globapp.data.remote;
 
 import com.globapp.globapp.GlobAppApplication;
+import com.globapp.globapp.data.listeners.OnDatabaseConnectedListener;
 
 
 import org.bson.Document;
@@ -29,31 +30,25 @@ public class MongoDB {
         Realm.init(GlobAppApplication.getAppContext());
     }
 
-    public static void initDB(){
+    public static void initDB(OnDatabaseConnectedListener onDatabaseConnectedListener){
         App app = new App(new AppConfiguration.Builder(APP_ID).build());
         Credentials emailPasswordCredentials = Credentials.emailPassword(DB_EMAIL, DB_PASSWORD);
-
         app.loginAsync(emailPasswordCredentials, it -> {
             if (it.isSuccess()) {
                 User currentUser = app.currentUser();
                 assert currentUser != null;
                 MongoClient mongoClient = currentUser.getMongoClient(DB_SERVICE);
                 databaseInstance = mongoClient.getDatabase(DATABASE_NAME);
+                onDatabaseConnectedListener.onDBConnected();
+            } else {
+                onDatabaseConnectedListener.onError();
             }
         });
     }
 
-    private static MongoDatabase getDatabaseInstance(){
-        if(databaseInstance == null){
-            initDB();
-        }
-
-        return databaseInstance;
-    }
-
     public static MongoCollection<Document> getUserCollection(){
         if(userCollection == null){
-            userCollection = getDatabaseInstance().getCollection("user");
+            userCollection = databaseInstance.getCollection("user");
         }
 
         return userCollection;
@@ -61,7 +56,7 @@ public class MongoDB {
 
     public static MongoCollection<Document> getNewsCollection(){
         if(newsCollection == null){
-            newsCollection = getDatabaseInstance().getCollection("news");
+            newsCollection = databaseInstance.getCollection("news");
         }
 
         return newsCollection;

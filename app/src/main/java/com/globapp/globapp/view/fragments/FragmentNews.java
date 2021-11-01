@@ -106,14 +106,13 @@ public class FragmentNews extends Fragment {
         newsList.setVisibility(View.INVISIBLE);
         newsPlaceholder.startShimmer();
 
-        DataRepository.getLatestNews(newsList -> {
+        DataRepository.getLatestNews(newsList -> newsListAdapter.addDataLoadedListener(() -> {
             newsPlaceholder.stopShimmer();
             newsPlaceholder.setVisibility(View.GONE);
             FragmentNews.this.newsList.setVisibility(View.VISIBLE);
-            newsListAdapter = new NewsListAdapter(getContext(), newsList, onUserImageClickedListener);
             FragmentNews.this.newsList.setAdapter(newsListAdapter);
             newsRefresh.setRefreshing(false);
-        });
+        }));
     }
 
     public void addOnUserImageClickedListener(OnUserImageClickedListener onUserImageClickedListener){

@@ -19,6 +19,9 @@ import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.data.services.IUserSessionController;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.bson.types.ObjectId;
+
 import java.util.concurrent.TimeUnit;
 
 
@@ -127,6 +130,8 @@ public class FragmentMain extends Fragment {
         fragmentNotifications = new FragmentNotifications();
         fragmentAdminPane     = new FragmentAdminPane();
 
+        fragmentNotifications.addOnNotificationsListListener(newsID -> onMainListener.onNewsClicked(newsID));
+
         settingsButton        = requireView().findViewById(R.id.settings_button);
         searchButton          = requireView().findViewById(R.id.search_button);
         bottomNavigationView  = requireView().findViewById(R.id.bottom_navigation_bar);
@@ -174,6 +179,7 @@ public class FragmentMain extends Fragment {
     public interface OnMainListener {
         void search();
         void settings();
+        void onNewsClicked(ObjectId newsID);
     }
 
     public void addOnMainListener(OnMainListener onMainListener){

@@ -29,9 +29,6 @@ import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
 public class MainActivity extends AppCompatActivity {
-    public static final int DESCENDING = -1;
-    public static final int ASCENDING  = 1;
-
     private GifImageView animationContainer;
 
     @Override
@@ -95,6 +92,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void settings() {
                 setFragmentSettings();
+            }
+
+            @Override
+            public void onNewsClicked(ObjectId newsID) {
+                setFragmentOnNotification(newsID);
             }
         });
         addFragmentRight(fragmentMain);

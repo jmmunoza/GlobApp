@@ -12,34 +12,31 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.globapp.globapp.view.MainActivity;
 import com.globapp.globapp.R;
+import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.model.Notification;
-import com.globapp.globapp.model.User;
-import com.globapp.globapp.view.fragments.FragmentOnNotification;
-
-import org.bson.Document;
+import com.globapp.globapp.view.fragments.FragmentNotifications;
 
 import java.util.ArrayList;
 
 public class NotificationsListAdapter extends RecyclerView.Adapter<NotificationsListAdapter.ViewHolder> {
 
-    private ArrayList<Notification> notificationsList;
-    private LayoutInflater          inflater;
-    private int                     loadedNotifications;
-    private DataLoadedListener      dataLoadedListener;
-    Context context;
+    private final ArrayList<Notification> notificationsList;
+    private final LayoutInflater          inflater;
+    private int                           loadedNotifications;
+    private DataLoadedListener            dataLoadedListener;
+    private final FragmentNotifications.OnNotificationsListListener onNotificationsListListener;
 
-    public NotificationsListAdapter(Context context, ArrayList<Notification> notificationsList){
+    public NotificationsListAdapter(Context context, ArrayList<Notification> notificationsList, FragmentNotifications.OnNotificationsListListener onNotificationsListListener){
         this.inflater = LayoutInflater.from(context);
-        this.context = context;
         this.loadedNotifications = 0;
         this.notificationsList = notificationsList;
+        this.onNotificationsListListener = onNotificationsListListener;
     }
 
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if(((MainActivity)context).isDarkMode){
+    @NonNull @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if(Preferences.getDarkMode()){
             return new ViewHolder(inflater.inflate(R.layout.fragment_notification_item_dark, parent, false));
         } else {
             return new ViewHolder(inflater.inflate(R.layout.fragment_notification_item, parent, false));
@@ -49,6 +46,7 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        /*
         Notification notification = notificationsList.get(position);
         holder.notificationDate.setText(notification.getNotificationDate().toString());
 
@@ -125,6 +123,8 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
                 });
             }
         });
+
+         */
     }
 
     public void addDataLoadedListener(DataLoadedListener dataLoadedListener){
@@ -164,7 +164,7 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
             notificationBackground.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((MainActivity)context).addFragmentRight(new FragmentOnNotification(notificationsList.get(getAdapterPosition()).getNotificationNews()));
+                    onNotificationsListListener.onNewsClicked(notificationsList.get(getAdapterPosition()).getNotificationNews());
                 }
             });
         }

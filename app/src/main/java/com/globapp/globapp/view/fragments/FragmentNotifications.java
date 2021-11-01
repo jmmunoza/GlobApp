@@ -18,14 +18,21 @@ import com.globapp.globapp.R;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.view.adapters.NotificationsListAdapter;
 
+import org.bson.types.ObjectId;
+
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class FragmentNotifications extends Fragment {
+
+    // UI COMPONENTS
     private RecyclerView             notificationsList;
     private NotificationsListAdapter notificationsListAdapter;
     private SwipeRefreshLayout       notificationsRefresh;
     private ShimmerFrameLayout       notificationsPlaceHolder;
+
+    // LISTENER
+    private OnNotificationsListListener onNotificationsListListener;
 
     @SuppressLint("InflateParams") @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -84,7 +91,7 @@ public class FragmentNotifications extends Fragment {
         notificationsRefresh.setRefreshing(false);
 
         /*
-        notificationsListAdapter = new NotificationsListAdapter(getContext(), ((MainActivity)getContext()).notifications);
+        notificationsListAdapter = new NotificationsListAdapter(getContext(), ((MainActivity)getContext()).notifications, onNotificationsListListener);
         notificationsListAdapter.addDataLoadedListener(new NotificationsListAdapter.DataLoadedListener() {
             @Override
             public void onDataLoaded() {
@@ -97,5 +104,13 @@ public class FragmentNotifications extends Fragment {
         notificationsList.setAdapter(notificationsListAdapter);
 
          */
+    }
+
+    public interface OnNotificationsListListener {
+        void onNewsClicked(ObjectId newsID);
+    }
+
+    public void addOnNotificationsListListener(OnNotificationsListListener onNotificationsListListener){
+        this.onNotificationsListListener = onNotificationsListListener;
     }
 }

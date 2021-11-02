@@ -1,6 +1,5 @@
 package com.globapp.globapp.data;
 
-import com.globapp.globapp.GlobAppApplication;
 import com.globapp.globapp.data.listeners.OnCommentListLoadedListener;
 import com.globapp.globapp.data.listeners.OnDatabaseConnectedListener;
 import com.globapp.globapp.data.listeners.OnNewsCommentedListener;
@@ -37,7 +36,7 @@ public class DataRepository {
     private static CommentRepository mongoComments;
     private static NewsRepository    mongoNews;
 
-    public static void init(){
+    public static void init(OnDatabaseConnectedListener onDatabaseConnectedListener){
         LocalDB.initDB();
         MongoDB.initDB(new OnDatabaseConnectedListener() {
             @Override
@@ -50,6 +49,8 @@ public class DataRepository {
 
                 mongoComments =
                         new CommentRepository(new CommentInserterMongo(), new CommentGetterMongo());
+
+                onDatabaseConnectedListener.onDBConnected();
             }
 
             @Override

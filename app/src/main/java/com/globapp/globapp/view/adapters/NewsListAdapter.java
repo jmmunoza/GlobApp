@@ -42,7 +42,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
 
     @NonNull @Override
     public NewsListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        System.out.println(parent);
         if(Preferences.getDarkMode()){
             return new NewsListViewHolder(
                     inflater.inflate(R.layout.fragment_news_item_dark, parent, false),
@@ -119,7 +118,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
 
     private void isDataLoaded() {
         if(newsList.size() == loadedNews){
-            System.out.println(newsList.size() + "   " + loadedNews );
             if(dataLoadedListener != null)
                 dataLoadedListener.onDataLoaded();
         }

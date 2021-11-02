@@ -24,8 +24,7 @@ public class FragmentAdderManager {
         fragmentManager = activityInstance.getSupportFragmentManager();
 
         if(UserSessionController.getUserSessionID() != null){
-            //SetFragmentMain.set();
-            SetFragmentLogin.set();
+            SetFragmentMain.set();
         } else {
             SetFragmentLogin.set();
         }
@@ -110,6 +109,14 @@ public class FragmentAdderManager {
                         R.anim.slide_out_left,
                         R.anim.slide_in_left,
                         R.anim.slide_out_right)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .replace(R.id.fragment, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public static void addFragmentFade(Fragment fragment){
+        fragmentManager.beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .replace(R.id.fragment, fragment)
                 .addToBackStack(null)

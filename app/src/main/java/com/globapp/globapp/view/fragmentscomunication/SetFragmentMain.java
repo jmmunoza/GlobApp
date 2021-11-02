@@ -28,6 +28,6 @@ public class SetFragmentMain {
                 SetFragmentUser.set(userID);
             }
         });
-        FragmentAdderManager.addFragmentRight(fragmentMain);
+        FragmentAdderManager.addFragmentFade(fragmentMain);
     }
 }

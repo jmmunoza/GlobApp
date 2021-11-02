@@ -14,7 +14,6 @@ public class GlobAppApplication extends Application {
     public void onCreate() {
         super.onCreate();
         appContext = getApplicationContext();
-        DataRepository.init();
     }
 
     public static Context getAppContext() {

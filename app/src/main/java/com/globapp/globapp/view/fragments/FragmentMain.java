@@ -75,6 +75,7 @@ public class FragmentMain extends Fragment {
     private void mainViewPagerFunction(){
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(requireActivity());
         mainViewPager.setAdapter(viewPagerAdapter);
+        mainViewPager.setOffscreenPageLimit(4);
         mainViewPager.setUserInputEnabled(false);
         mainViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override

@@ -34,6 +34,6 @@ public class SetFragmentLogin {
                 //Toast.makeText(MainActivity.this, "Errorrrrr", Toast.LENGTH_LONG).show();
             }
         });
-        FragmentAdderManager.addFragmentRight(fragmentLogin);
+        FragmentAdderManager.addFragmentFade(fragmentLogin);
     }
 }

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
@@ -36,6 +37,7 @@ public class FragmentNews extends Fragment {
     private NewsPagerAdapter   newsPagerAdapter;
     private SwipeRefreshLayout newsRefresh;
     private ShimmerFrameLayout newsPlaceholder;
+    private NestedScrollView   newsNestedScroll;
 
     // Listeners
     private OnUserImageClickedListener onUserImageClickedListener;
@@ -88,12 +90,28 @@ public class FragmentNews extends Fragment {
         new PagerSnapHelper().attachToRecyclerView(newsPager);
     }
 
+    public void setNewsListOnTop(){
+        System.out.println(getNewsListPosition());
+        newsNestedScroll.post(() -> {
+            newsNestedScroll.fullScroll(RecyclerView.FOCUS_UP);
+            if(getNewsListPosition() > 20000){
+                newsRefresh.setRefreshing(true);
+                loadNews();
+            }
+        });
+    }
+
+    public int  getNewsListPosition(){
+        return newsNestedScroll.getScrollY();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void loadComponents(){
-        newsRefresh     = requireView().findViewById(R.id.news_refresh);
-        newsPlaceholder = requireView().findViewById(R.id.news_placeholder);
-        newsList        = requireView().findViewById(R.id.news_list);
-        newsPager       = requireView().findViewById(R.id.news_pager);
+        newsRefresh      = requireView().findViewById(R.id.news_refresh);
+        newsPlaceholder  = requireView().findViewById(R.id.news_placeholder);
+        newsList         = requireView().findViewById(R.id.news_list);
+        newsPager        = requireView().findViewById(R.id.news_pager);
+        newsNestedScroll = requireView().findViewById(R.id.news_nested_scroll_view);
 
         refreshFunction();
         newsPagerFunction();

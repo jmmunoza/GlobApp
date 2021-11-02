@@ -131,6 +131,14 @@ public class FragmentMain extends Fragment {
         mainViewPager.setCurrentItem(position);
     }
 
+    public void setFragmentNewsListOnTop(){
+        fragmentNews.setNewsListOnTop();
+    }
+
+    public int getFragmentNewsListScrollPosition(){
+        return fragmentNews.getNewsListPosition();
+    }
+
     private void loadComponents(){
         fragmentMe            = new FragmentMe();
         fragmentNews          = new FragmentNews();

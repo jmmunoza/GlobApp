@@ -47,7 +47,11 @@ public class FragmentAdderManager {
                     if(fragment instanceof FragmentMain){
                         FragmentMain fragmentMain = (FragmentMain) fragment;
                         if(fragmentMain.getPagePosition() == FragmentMain.NEWS){
-                            activityInstance.moveTaskToBack(true);
+                            if(fragmentMain.getFragmentNewsListScrollPosition() == 0){
+                                activityInstance.moveTaskToBack(true);
+                            } else {
+                                fragmentMain.setFragmentNewsListOnTop();
+                            }
                         } else {
                             fragmentMain.setPagePosition(FragmentMain.NEWS);
                         }

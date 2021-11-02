@@ -2,13 +2,9 @@ package com.globapp.globapp.view.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.globapp.globapp.R;
@@ -18,12 +14,13 @@ import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.model.Notification;
 import com.globapp.globapp.util.NotificationTextGetter;
 import com.globapp.globapp.view.fragments.FragmentNotifications;
+import com.globapp.globapp.view.viewholders.NotificationListViewHolder;
 
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 
-public class NotificationsListAdapter extends RecyclerView.Adapter<NotificationsListAdapter.ViewHolder> {
+public class NotificationsListAdapter extends RecyclerView.Adapter<NotificationListViewHolder> {
 
     private final ArrayList<Notification> notificationsList;
     private final LayoutInflater          inflater;
@@ -39,18 +36,23 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
     }
 
     @NonNull @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public NotificationListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if(Preferences.getDarkMode()){
-            return new ViewHolder(inflater.inflate(R.layout.fragment_notification_item_dark, parent, false));
+            return new NotificationListViewHolder(
+                    inflater.inflate(R.layout.fragment_notification_item_dark, parent, false),
+                    onNotificationsListListener);
         } else {
-            return new ViewHolder(inflater.inflate(R.layout.fragment_notification_item, parent, false));
+            return new NotificationListViewHolder(
+                    inflater.inflate(R.layout.fragment_notification_item, parent, false),
+                    onNotificationsListListener);
         }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull NotificationListViewHolder holder, int position) {
         Notification notification = notificationsList.get(position);
         holder.notificationDate.setText(notification.getNotificationDate().toString());
+        holder.setNewsID(notification.getNotificationNews());
         DataRepository.getNews(notification.getNotificationNews(), news -> DataRepository.getUser(new ObjectId(news.getNewsUserOwner()), userOwner -> {
             if(userOwner.getUserImage() != null){
                 holder.notificationUserImage.setImageURI(userOwner.getUserImage());
@@ -99,23 +101,5 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
     @Override
     public int getItemCount() {
         return notificationsList.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView           notificationText;
-        ImageView          notificationUserImage;
-        ConstraintLayout   notificationBackground;
-        TextView           notificationDate;
-
-        ViewHolder(View itemView) {
-            super(itemView);
-
-            notificationText        =  itemView.findViewById(R.id.notification_item_text);
-            notificationUserImage   =  itemView.findViewById(R.id.notification_item_user_image);
-            notificationBackground  =  itemView.findViewById(R.id.notification_item_background);
-            notificationDate        =  itemView.findViewById(R.id.notification_item_time);
-
-            notificationBackground.setOnClickListener(v -> onNotificationsListListener.onNewsClicked(notificationsList.get(getAdapterPosition()).getNotificationNews()));
-        }
     }
 }

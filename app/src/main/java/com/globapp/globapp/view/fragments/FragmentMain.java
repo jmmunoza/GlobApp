@@ -135,6 +135,10 @@ public class FragmentMain extends Fragment {
         fragmentNews.setNewsListOnTop();
     }
 
+    public void setFragmentNotificationsListOnTop(){
+        fragmentNotifications.setNotificationsListOnTop();
+    }
+
     public int getFragmentNewsListScrollPosition(){
         return fragmentNews.getNewsListPosition();
     }

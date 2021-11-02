@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +34,7 @@ public class FragmentNotifications extends Fragment {
     private NotificationsListAdapter notificationsListAdapter;
     private SwipeRefreshLayout       notificationsRefresh;
     private ShimmerFrameLayout       notificationsPlaceHolder;
+    private NestedScrollView         notificationsNestedScroll;
 
     // LISTENER
     private OnNotificationsListListener onNotificationsListListener;
@@ -74,10 +76,25 @@ public class FragmentNotifications extends Fragment {
         notificationsRefresh.setOnRefreshListener(this::loadNotifications);
     }
 
+    public void setNotificationsListOnTop(){
+        notificationsNestedScroll.post(() -> {
+            notificationsNestedScroll.fullScroll(RecyclerView.FOCUS_UP);
+            if(getNotificationsListPosition() > 5000){
+                notificationsRefresh.setRefreshing(true);
+                loadNotifications();
+            }
+        });
+    }
+
+    public int  getNotificationsListPosition(){
+        return notificationsNestedScroll.getScrollY();
+    }
+
     private void loadComponents(){
-        notificationsPlaceHolder = requireView().findViewById(R.id.notification_placeholder);
-        notificationsRefresh     = requireView().findViewById(R.id.notification_refresh);
-        notificationsList        = requireView().findViewById(R.id.notifications_list);
+        notificationsPlaceHolder  = requireView().findViewById(R.id.notification_placeholder);
+        notificationsRefresh      = requireView().findViewById(R.id.notification_refresh);
+        notificationsList         = requireView().findViewById(R.id.notifications_list);
+        notificationsNestedScroll = requireView().findViewById(R.id.notification_nested_scroll);
 
         refreshFunction();
         notificationListFunction();

@@ -91,7 +91,6 @@ public class FragmentNews extends Fragment {
     }
 
     public void setNewsListOnTop(){
-        System.out.println(getNewsListPosition());
         newsNestedScroll.post(() -> {
             newsNestedScroll.fullScroll(RecyclerView.FOCUS_UP);
             if(getNewsListPosition() > 20000){
@@ -105,7 +104,6 @@ public class FragmentNews extends Fragment {
         return newsNestedScroll.getScrollY();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void loadComponents(){
         newsRefresh      = requireView().findViewById(R.id.news_refresh);
         newsPlaceholder  = requireView().findViewById(R.id.news_placeholder);

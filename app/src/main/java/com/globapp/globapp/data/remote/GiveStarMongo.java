@@ -1,11 +1,15 @@
 package com.globapp.globapp.data.remote;
 
 import com.globapp.globapp.data.services.IGiveStar;
+import com.globapp.globapp.data.services.INotifier;
+import com.globapp.globapp.model.Notification;
 import com.globapp.globapp.util.DocCreator;
 import com.globapp.globapp.view.fragments.FragmentGiveStar;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
+
+import java.util.Date;
 
 import io.realm.mongodb.mongo.MongoCollection;
 
@@ -34,6 +38,12 @@ public class GiveStarMongo implements IGiveStar {
                     if(userUpdated.isSuccess()){
                         newsCollection.insertOne(newsRecognition).getAsync(result -> {
                             if (result.isSuccess()) {
+                                ObjectId newsInsertedID = result.get().getInsertedId().asObjectId().getValue();
+                                Date     newsDate = newsRecognition.getDate("date");
+                                Notification notification = new Notification(newsDate, newsInsertedID, false);
+
+                                INotifier iNotifier = new NotifierMongo();
+                                iNotifier.notify(notification);
                                 onGiveStarListener.onSuccess();
                             } else {
                                 onGiveStarListener.onError();

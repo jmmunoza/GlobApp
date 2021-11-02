@@ -5,6 +5,7 @@ import android.widget.Adapter;
 import com.globapp.globapp.model.Admin;
 import com.globapp.globapp.model.Comment;
 import com.globapp.globapp.model.News;
+import com.globapp.globapp.model.Notification;
 import com.globapp.globapp.model.User;
 
 import org.bson.Document;
@@ -72,6 +73,14 @@ public class DocConverter {
                 document.getDate("date").toString(),
                 document.getObjectId("userID").toString(),
                 document.getObjectId("newsID").toString()
+        );
+    }
+
+    public static Notification documentToNotification(Document document){
+        return new Notification(
+                document.getDate("date"),
+                document.getObjectId("newsID"),
+                document.getBoolean("seen")
         );
     }
 }

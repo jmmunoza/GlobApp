@@ -71,7 +71,7 @@ public class CommentDialog extends BottomSheetDialogFragment {
             String commentContent = Objects.requireNonNull(commentInput.getText()).toString();
             if(commentContent.length() > 0){
                 commentInput.setText("");
-                DataRepository.insertComment(newsID, commentContent, (commentsCount, newComment) -> {
+                DataRepository.insertComment(newsID, commentContent, newComment -> {
                     ToastMaker.show("comentario publicado");
                     commentListAdapter.insertComment(newComment);
                     commentList.scrollToPosition(commentListAdapter.getItemCount()-1);

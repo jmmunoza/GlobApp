@@ -6,6 +6,7 @@ import com.globapp.globapp.data.listeners.OnNewsCommentedListener;
 import com.globapp.globapp.data.listeners.OnNewsLikedListener;
 import com.globapp.globapp.data.listeners.OnNewsListLoadedListener;
 import com.globapp.globapp.data.listeners.OnNewsLoadedListener;
+import com.globapp.globapp.data.listeners.OnNotificationsLoadedListener;
 import com.globapp.globapp.data.listeners.OnUserLoadedListener;
 import com.globapp.globapp.data.local.LocalDB;
 import com.globapp.globapp.data.remote.CommentGetterMongo;
@@ -14,12 +15,16 @@ import com.globapp.globapp.data.remote.MongoDB;
 import com.globapp.globapp.data.remote.NewsGetterMongo;
 import com.globapp.globapp.data.remote.NewsInserterMongo;
 import com.globapp.globapp.data.remote.NewsLikerMongo;
+import com.globapp.globapp.data.remote.NotificationsGetterMongo;
+import com.globapp.globapp.data.remote.NotifierMongo;
 import com.globapp.globapp.data.remote.UserGetterMongo;
 import com.globapp.globapp.data.remote.UserInserterMongo;
 import com.globapp.globapp.data.repositories.CommentRepository;
 import com.globapp.globapp.data.repositories.NewsRepository;
+import com.globapp.globapp.data.repositories.NotificationRepository;
 import com.globapp.globapp.data.repositories.UserRepository;
 import com.globapp.globapp.model.News;
+import com.globapp.globapp.model.Notification;
 import com.globapp.globapp.model.User;
 
 import org.bson.types.ObjectId;
@@ -32,9 +37,10 @@ public class DataRepository {
     private static UserRepository    localUser;
 
     // MONGO DB REPOSITORIES
-    private static UserRepository    mongoUser;
-    private static CommentRepository mongoComments;
-    private static NewsRepository    mongoNews;
+    private static UserRepository         mongoUser;
+    private static CommentRepository      mongoComments;
+    private static NewsRepository         mongoNews;
+    private static NotificationRepository mongoNotifications;
 
     public static void init(OnDatabaseConnectedListener onDatabaseConnectedListener){
         LocalDB.initDB();
@@ -49,6 +55,9 @@ public class DataRepository {
 
                 mongoComments =
                         new CommentRepository(new CommentInserterMongo(), new CommentGetterMongo());
+
+                mongoNotifications =
+                        new NotificationRepository(new NotifierMongo(), new NotificationsGetterMongo());
 
                 onDatabaseConnectedListener.onDBConnected();
             }
@@ -94,5 +103,13 @@ public class DataRepository {
 
     public static void insertComment(ObjectId newsID, String commentContent, OnNewsCommentedListener onNewsCommentedListener){
         mongoComments.insertComment(newsID, commentContent, onNewsCommentedListener);
+    }
+
+    public static void getNotifications(OnNotificationsLoadedListener onNotificationsLoadedListener){
+        mongoNotifications.getNotifications(onNotificationsLoadedListener);
+    }
+
+    public static void notify(Notification notification){
+        mongoNotifications.notify(notification);
     }
 }

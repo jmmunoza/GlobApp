@@ -99,13 +99,13 @@ public class FragmentOnNotification extends Fragment {
             FragmentOnNotification.this.news = news;
             DataRepository.getIsLiked(newsID, new OnNewsLikedListener() {
                 @Override
-                public void liked(int likesCount) {
+                public void liked() {
                     isUserLiked = true;
                     loadUsersData(news.getNewsUserOwner(), news.getNewsUserRecognized());
                 }
 
                 @Override
-                public void disliked(int likesCount) {
+                public void disliked() {
                     isUserLiked = false;
                     loadUsersData(news.getNewsUserOwner(), news.getNewsUserRecognized());
                 }
@@ -207,13 +207,13 @@ public class FragmentOnNotification extends Fragment {
                 public boolean onDoubleTap(MotionEvent e) {
                     DataRepository.likeNews(newsID, new OnNewsLikedListener() {
                         @Override
-                        public void liked(int likesCount) {
-                            likeNews(likesCount);
+                        public void liked() {
+                            likeNews();
                         }
 
                         @Override
-                        public void disliked(int likesCount) {
-                            dislikeNews(likesCount);
+                        public void disliked() {
+                            dislikeNews();
                         }
                     });
                     return super.onDoubleTap(e);
@@ -252,18 +252,20 @@ public class FragmentOnNotification extends Fragment {
         });
     }
 
-    private void likeNews(int likesCount){
+    private void likeNews(){
         notificationLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);
-        notificationLikeCounter.setText(String.valueOf(likesCount));
+        notificationLikeCounter.setText(
+                String.valueOf(Integer.parseInt(notificationLikeCounter.getText().toString())+1));
     }
 
-    private void dislikeNews(int likesCount){
+    private void dislikeNews(){
         if (Preferences.getDarkMode())
             notificationLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_white_24);
         else
             notificationLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
 
-        notificationLikeCounter.setText(String.valueOf(likesCount));
+        notificationLikeCounter.setText(
+                String.valueOf(Integer.parseInt(notificationLikeCounter.getText().toString())-1));
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -276,13 +278,13 @@ public class FragmentOnNotification extends Fragment {
                 notificationLikeButton.setAlpha((float) 1);
                 DataRepository.likeNews(newsID, new OnNewsLikedListener() {
                     @Override
-                    public void liked(int likesCount) {
-                        likeNews(likesCount);
+                    public void liked() {
+                        likeNews();
                     }
 
                     @Override
-                    public void disliked(int likesCount) {
-                        dislikeNews(likesCount);
+                    public void disliked() {
+                        dislikeNews();
                     }
                 });
 
@@ -303,7 +305,7 @@ public class FragmentOnNotification extends Fragment {
             if(commentContent.length() > 0){
                 notificationCommentInput.setText("");
                 KeyboardManager.hide(requireContext(), notificationCommentInput.getWindowToken());
-                DataRepository.insertComment(newsID, commentContent, (commentsCount, newComment) -> {
+                DataRepository.insertComment(newsID, commentContent, newComment -> {
                     ToastMaker.show("comentario publicado");
                     notificationCommentListAdapter.insertComment(newComment);
                     notificationNestedScroll.post(() -> notificationNestedScroll.fullScroll(RecyclerView.FOCUS_DOWN));

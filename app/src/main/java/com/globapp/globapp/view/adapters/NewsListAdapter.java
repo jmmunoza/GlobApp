@@ -94,12 +94,12 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
 
         DataRepository.getIsLiked(new ObjectId(news.getNewsID()), new OnNewsLikedListener() {
             @Override
-            public void liked(int likesCount) {
+            public void liked() {
                 holder.newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);
             }
 
             @Override
-            public void disliked(int likesCount) {
+            public void disliked() {
                 if (Preferences.getDarkMode())
                     holder.newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_white_24);
                 else

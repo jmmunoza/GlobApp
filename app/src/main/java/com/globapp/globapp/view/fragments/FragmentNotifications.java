@@ -15,7 +15,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.globapp.globapp.R;
+import com.globapp.globapp.data.DataRepository;
+import com.globapp.globapp.data.listeners.OnNotificationsLoadedListener;
 import com.globapp.globapp.data.local.Preferences;
+import com.globapp.globapp.model.Notification;
 import com.globapp.globapp.view.adapters.NotificationsListAdapter;
 
 import org.bson.types.ObjectId;
@@ -86,27 +89,23 @@ public class FragmentNotifications extends Fragment {
         notificationsList.setVisibility(View.INVISIBLE);
         notificationsPlaceHolder.startShimmer();
 
-        // falta acabar las notis
-
-        notificationsList.setVisibility(View.VISIBLE);
-        notificationsPlaceHolder.stopShimmer();
-        notificationsPlaceHolder.setVisibility(View.GONE);
-        notificationsRefresh.setRefreshing(false);
-
-        /*
-        notificationsListAdapter = new NotificationsListAdapter(getContext(), ((MainActivity)getContext()).notifications, onNotificationsListListener);
-        notificationsListAdapter.addDataLoadedListener(new NotificationsListAdapter.DataLoadedListener() {
-            @Override
-            public void onDataLoaded() {
+        DataRepository.getNotifications(notifications -> {
+            if(notifications.size() > 0){
+                notificationsListAdapter = new NotificationsListAdapter(getContext(), notifications, onNotificationsListListener);
+                notificationsList.setAdapter(notificationsListAdapter);
+                notificationsListAdapter.addDataLoadedListener(() -> {
+                    notificationsList.setVisibility(View.VISIBLE);
+                    notificationsPlaceHolder.stopShimmer();
+                    notificationsPlaceHolder.setVisibility(View.GONE);
+                    notificationsRefresh.setRefreshing(false);
+                });
+            } else {
                 notificationsList.setVisibility(View.VISIBLE);
                 notificationsPlaceHolder.stopShimmer();
                 notificationsPlaceHolder.setVisibility(View.GONE);
                 notificationsRefresh.setRefreshing(false);
             }
         });
-        notificationsList.setAdapter(notificationsListAdapter);
-
-         */
     }
 
     public interface OnNotificationsListListener {

@@ -22,24 +22,20 @@ public class CommentInserterMongo implements ICommentInserter {
 
     @Override
     public void comment(ObjectId newsID, String commentContent, OnNewsCommentedListener onNewsCommentedListener) {
+        // Create the Comment as a Document
+        Document commentDoc = DocCreator.createComment(commentContent, newsID);
+
+        // The news query where the comment will be put
         Document newsQuery = new Document("_id", newsID);
-        newsCollection.findOne(newsQuery).getAsync(result -> {
+
+        // The insertion Doc for the new comment
+        Document commentInsertion = new Document("$addToSet", new Document("comments", commentDoc));
+
+        newsCollection.findOneAndUpdate(newsQuery, commentInsertion).getAsync(result -> {
             if(result.isSuccess()){
-                ArrayList<Document> comments = (ArrayList<Document>) result.get().getList(
-                        "comments",
-                        Document.class,
-                        new ArrayList<>());
 
-                Document commentDoc = DocCreator.createComment(commentContent, newsID);
-                comments.add(commentDoc);
-
-                Document newsInsertion = result.get().append("comments", comments);
-                newsCollection.findOneAndUpdate(newsQuery, newsInsertion).getAsync(inserted -> {
-                    if(inserted.isSuccess()){
-                        Comment newComment = DocConverter.documentToComment(commentDoc);
-                        onNewsCommentedListener.onNewsCommented(comments.size(), newComment);
-                    }
-                });
+                Comment newComment = DocConverter.documentToComment(commentDoc);
+                onNewsCommentedListener.onNewsCommented(newComment);
             }
         });
     }

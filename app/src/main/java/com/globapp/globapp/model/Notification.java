@@ -8,10 +8,16 @@ public class Notification {
 
     private ObjectId notificationNews;
     private Date     notificationDate;
+    private boolean  notificationSeen;
 
-    public Notification(Date notificationDate, ObjectId notificationNews){
+    public Notification(Date notificationDate, ObjectId notificationNews, boolean notificationSeen){
         this.notificationNews = notificationNews;
+        this.notificationSeen = notificationSeen;
         this.notificationDate = notificationDate;
+    }
+
+    public boolean isNotificationSeen(){
+        return notificationSeen;
     }
 
     public Date getNotificationDate() {

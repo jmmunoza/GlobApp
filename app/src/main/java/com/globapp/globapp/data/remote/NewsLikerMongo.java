@@ -8,6 +8,8 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import io.realm.mongodb.mongo.MongoCollection;
 
@@ -20,56 +22,62 @@ public class NewsLikerMongo implements INewsLiker {
 
     @Override
     public void like(ObjectId newsID, OnNewsLikedListener onNewsLikedListener) {
-        Document newsQuery = new Document("_id", newsID);
-        newsCollection.findOne(newsQuery).getAsync(result -> {
+
+        ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
+
+        ArrayList<ObjectId> likesListQuery = new ArrayList<>(
+                Collections.singleton(userSessionID));
+
+        Document isUserLikedQuery = new Document("_id", newsID)
+                .append("likes",
+                        new Document("$in", likesListQuery));
+
+
+        newsCollection.findOne(isUserLikedQuery).getAsync(result -> {
             if(result.isSuccess()){
+                Document newsQuery = new Document("_id", newsID);
+                if(result.get() == null){
+                    // User wants to like
 
-                ArrayList<ObjectId> listLikes = new ArrayList<>(
-                                result.get().getList("likes",
-                                ObjectId.class,
-                                new ArrayList<>()));
+                    // The insertion Doc for the user like
+                    Document likeInsertion = new Document("$addToSet", new Document("likes", userSessionID));
 
-                ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
-
-                boolean isLiked = listLikes.contains(userSessionID);
-                if(isLiked){
-                    listLikes.remove(userSessionID);
-                } else {
-                    listLikes.add(userSessionID);
-                }
-
-                Document newsUpdate = result.get().append("likes", listLikes);
-                newsCollection.findOneAndUpdate(newsQuery, newsUpdate).getAsync(result1 -> {
-                    if(result1.isSuccess()){
-                        if(isLiked){
-                            onNewsLikedListener.disliked(listLikes.size());
-                        } else {
-                            onNewsLikedListener.liked(listLikes.size());
+                    newsCollection.findOneAndUpdate(newsQuery, likeInsertion).getAsync(like -> {
+                        if(like.isSuccess()){
+                            onNewsLikedListener.liked();
                         }
-                    }
-                });
+                    });
+                } else {
+                    // User wants to dislike
+                    // The remove Doc for the user like
+                    Document likeRemove = new Document("$pull", new Document("likes", userSessionID));
+                    newsCollection.findOneAndUpdate(newsQuery, likeRemove).getAsync(dislike -> {
+                        if(dislike.isSuccess()){
+                            onNewsLikedListener.disliked();
+                        }
+                    });
+                }
             }
         });
     }
 
     @Override
     public void getIsLiked(ObjectId newsID, OnNewsLikedListener onNewsLikedListener) {
-        Document newsQuery = new Document("_id", newsID);
-        newsCollection.findOne(newsQuery).getAsync(result -> {
+        ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
+
+        ArrayList<ObjectId> likesListQuery = new ArrayList<>(
+                Collections.singleton(userSessionID));
+
+        Document isUserLikedQuery = new Document("_id", newsID)
+                .append("likes",
+                        new Document("$in", likesListQuery));
+
+        newsCollection.findOne(isUserLikedQuery).getAsync(result -> {
             if(result.isSuccess()){
-
-                ArrayList<ObjectId> listLikes = new ArrayList<>(
-                        result.get().getList("likes",
-                                ObjectId.class,
-                                new ArrayList<>()));
-
-                ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
-
-                boolean isLiked = listLikes.contains(userSessionID);
-                if(isLiked){
-                    onNewsLikedListener.liked(listLikes.size());
+                if(result.get() == null){
+                    onNewsLikedListener.disliked();
                 } else {
-                    onNewsLikedListener.disliked(listLikes.size());
+                    onNewsLikedListener.liked();
                 }
             }
         });

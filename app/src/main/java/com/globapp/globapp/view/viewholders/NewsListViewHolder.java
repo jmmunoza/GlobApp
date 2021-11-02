@@ -121,18 +121,19 @@ public class NewsListViewHolder extends RecyclerView.ViewHolder {
                 public boolean onDoubleTap(MotionEvent e) {
                     DataRepository.likeNews(newsID, new OnNewsLikedListener() {
                         @Override
-                        public void liked(int likesCount) {
+                        public void liked() {
                             newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);
-                            newsLikeCounter.setText(String.valueOf(likesCount));
+                            newsLikeCounter.setText(String.valueOf(Integer.parseInt(newsLikeCounter.getText().toString())+1));
+
                         }
 
                         @Override
-                        public void disliked(int likesCount) {
+                        public void disliked() {
                             if (Preferences.getDarkMode())
                                 newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_white_24);
                             else
                                 newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
-                            newsLikeCounter.setText(String.valueOf(likesCount));
+                            newsLikeCounter.setText(String.valueOf(Integer.parseInt(newsLikeCounter.getText().toString())-1));
                         }
                     });
                     return super.onDoubleTap(e);
@@ -156,18 +157,18 @@ public class NewsListViewHolder extends RecyclerView.ViewHolder {
                 newsLikeButton.setAlpha((float) 1);
                 DataRepository.likeNews(newsID, new OnNewsLikedListener() {
                     @Override
-                    public void liked(int likesCount) {
+                    public void liked() {
                         newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);
-                        newsLikeCounter.setText(String.valueOf(likesCount));
+                        newsLikeCounter.setText(String.valueOf(Integer.parseInt(newsLikeCounter.getText().toString())+1));
                     }
 
                     @Override
-                    public void disliked(int likesCount) {
+                    public void disliked() {
                         if (Preferences.getDarkMode())
                             newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_white_24);
                         else
                             newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
-                        newsLikeCounter.setText(String.valueOf(likesCount));
+                        newsLikeCounter.setText(String.valueOf(Integer.parseInt(newsLikeCounter.getText().toString())-1));
                     }
                 });
 

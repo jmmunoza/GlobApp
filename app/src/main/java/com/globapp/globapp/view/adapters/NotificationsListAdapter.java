@@ -1,6 +1,5 @@
 package com.globapp.globapp.view.adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.model.Notification;
+import com.globapp.globapp.util.NotificationTextGetter;
 import com.globapp.globapp.view.fragments.FragmentNotifications;
 
 import org.bson.types.ObjectId;
@@ -29,12 +29,10 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
     private final LayoutInflater          inflater;
     private int                           loadedNotifications;
     private DataLoadedListener            dataLoadedListener;
-    private final Context                 context;
     private final FragmentNotifications.OnNotificationsListListener onNotificationsListListener;
 
     public NotificationsListAdapter(Context context, ArrayList<Notification> notificationsList, FragmentNotifications.OnNotificationsListListener onNotificationsListListener){
         this.inflater = LayoutInflater.from(context);
-        this.context = context;
         this.loadedNotifications = 0;
         this.notificationsList = notificationsList;
         this.onNotificationsListListener = onNotificationsListListener;
@@ -49,10 +47,8 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
         }
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        System.out.println("a");
         Notification notification = notificationsList.get(position);
         holder.notificationDate.setText(notification.getNotificationDate().toString());
         DataRepository.getNews(notification.getNotificationNews(), news -> DataRepository.getUser(new ObjectId(news.getNewsUserOwner()), userOwner -> {
@@ -65,28 +61,18 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
             if(news.getNewsUserRecognized() != null){
                 DataRepository.getUser(new ObjectId(news.getNewsUserRecognized()), userRecognized -> {
                     if (userRecognized.getUserID().equals(UserSessionController.getUserSessionID())) {
-                        holder.notificationText.setText(userOwner.getUserFirstName() + " " +
-                                context.getString(R.string.notification_news_recognition_you));
+                        holder.notificationText.setText(NotificationTextGetter.ifUserRecognizedYou(userOwner));
                     } else {
-                        holder.notificationText.setText(userOwner.getUserFirstName() + " " +
-                                context.getString(R.string.notification_news_recognition_1) + " " +
-                                userRecognized.getUserFirstName() + " " +
-                                context.getString(R.string.notification_news_recognition_2));
+                        holder.notificationText.setText(NotificationTextGetter.ifUserRecognizedSomeoneElse(userOwner, userRecognized));
                     }
                     loadedNotifications++;
                     isDataLoaded();
                 });
             } else {
                 if(userOwner.getUserImage() != null){
-                    holder.notificationText.setText(
-                            userOwner.getUserFirstName() + " " +
-                                    userOwner.getUserLastName()  + " " +
-                                    context.getString(R.string.notification_news_image));
+                    holder.notificationText.setText(NotificationTextGetter.ifUserPostedAnImage(userOwner));
                 } else {
-                    holder.notificationText.setText(
-                            userOwner.getUserFirstName() + " " +
-                                    userOwner.getUserLastName() + " " +
-                                    context.getString(R.string.notification_news_text));
+                    holder.notificationText.setText(NotificationTextGetter.ifUserPosted(userOwner));
                 }
 
                 loadedNotifications++;

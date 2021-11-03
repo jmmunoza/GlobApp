@@ -6,20 +6,23 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
-import org.bson.Document;
+import com.globapp.globapp.util.DateConverter;
+import com.globapp.globapp.util.ObjectIdConverter;
+
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 @Entity
+@TypeConverters({DateConverter.class, ObjectIdConverter.class})
 public class News {
     @PrimaryKey(autoGenerate = true)
     private long roomID;
 
     @ColumnInfo(name = "newsID")
-    private String   newsID;
+    private ObjectId newsID;
 
     @ColumnInfo(name = "title")
     private String newsTitle;
@@ -28,21 +31,21 @@ public class News {
     private String newsContent;
 
     @ColumnInfo(name = "date")
-    private String newsDate;
+    private Date newsDate;
 
     @ColumnInfo(name = "likes")
     private String newsLikes;
 
     @ColumnInfo(name = "ownerID")
-    private String newsUserOwner;
+    private ObjectId newsUserOwner;
 
     @ColumnInfo(name = "recognizedID")
-    private String newsUserRecognized;
+    private ObjectId newsUserRecognized;
 
     @Ignore
     private Uri      newsImage;
 
-    public News(String newsID, String newsTitle, String newsContent, String newsDate, /*Uri newsImage,*/ String newsLikes, String newsUserOwner, String newsUserRecognized){
+    public News(ObjectId newsID, String newsTitle, String newsContent, Date newsDate, /*Uri newsImage,*/ String newsLikes, ObjectId newsUserOwner, ObjectId newsUserRecognized){
         this.newsID             = newsID;
         this.newsContent        = newsContent;
         //this.newsImage          = newsImage;
@@ -61,7 +64,7 @@ public class News {
         this.roomID = roomID;
     }
 
-    public String getNewsDate() {
+    public Date getNewsDate() {
         return newsDate;
     }
 
@@ -78,11 +81,11 @@ public class News {
         return newsContent;
     }
 
-    public String getNewsID() {
+    public ObjectId getNewsID() {
         return newsID;
     }
 
-    public String getNewsUserOwner() {
+    public ObjectId getNewsUserOwner() {
         return newsUserOwner;
     }
 
@@ -90,7 +93,7 @@ public class News {
         return newsTitle;
     }
 
-    public String getNewsUserRecognized() {
+    public ObjectId getNewsUserRecognized() {
         return newsUserRecognized;
     }
 
@@ -98,11 +101,11 @@ public class News {
         this.newsContent = newsContent;
     }
 
-    public void setNewsDate(String newsDate) {
+    public void setNewsDate(Date newsDate) {
         this.newsDate = newsDate;
     }
 
-    public void setNewsID(String newsID) {
+    public void setNewsID(ObjectId newsID) {
         this.newsID = newsID;
     }
 
@@ -118,11 +121,11 @@ public class News {
         this.newsTitle = newsTitle;
     }
 
-    public void setNewsUserOwner(String newsUserOwner) {
+    public void setNewsUserOwner(ObjectId newsUserOwner) {
         this.newsUserOwner = newsUserOwner;
     }
 
-    public void setNewsUserRecognized(String newsUserRecognized) {
+    public void setNewsUserRecognized(ObjectId newsUserRecognized) {
         this.newsUserRecognized = newsUserRecognized;
     }
 }

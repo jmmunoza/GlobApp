@@ -20,7 +20,7 @@ public class NotifierMongo implements INotifier {
 
     @Override
     public void notify(Notification notification) {
-        ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
+        ObjectId userSessionID = UserSessionController.getUserSessionID();
 
         Document usersExceptUserSessionQuery = new Document("_id", new Document("$ne", userSessionID));
 

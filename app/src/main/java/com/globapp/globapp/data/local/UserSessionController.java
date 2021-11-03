@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import com.globapp.globapp.GlobAppApplication;
 
+import org.bson.types.ObjectId;
+
 public class UserSessionController {
     private static final String USER_SESSION = "USER_SESSION";
     private static final String USER_ADMIN   = "USER_ADMIN";
@@ -21,14 +23,14 @@ public class UserSessionController {
         userSessionControllerInstance = new UserSessionController();
     }
 
-    public static String getUserSessionID(){
+    public static ObjectId getUserSessionID(){
         if(userSessionControllerInstance == null) createInstance();
-        return sharedPreferences.getString(USER_SESSION, null);
+        return new ObjectId(sharedPreferences.getString(USER_SESSION, null));
     }
 
-    public static void setUserSessionID(String userSessionID){
+    public static void setUserSessionID(ObjectId userSessionID){
         if(userSessionControllerInstance == null) createInstance();
-        sharedPreferences.edit().putString(USER_SESSION, userSessionID).apply();
+        sharedPreferences.edit().putString(USER_SESSION, userSessionID.toString()).apply();
     }
 
     public static boolean isUserAdmin(){

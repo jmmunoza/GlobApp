@@ -5,7 +5,6 @@ import com.globapp.globapp.data.listeners.OnNewsLoadedListener;
 import com.globapp.globapp.data.services.INewsGetter;
 import com.globapp.globapp.model.News;
 import com.globapp.globapp.util.DocConverter;
-import com.globapp.globapp.view.MainActivity;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;

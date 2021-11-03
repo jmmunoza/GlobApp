@@ -24,7 +24,7 @@ public class NotificationsObserverMongo implements INotificationsObserver {
 
     @Override
     public void subscribe(OnNotificationsUpdatedListener notificationsUpdatedListener) {
-        ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
+        ObjectId userSessionID = UserSessionController.getUserSessionID();
 
         userCollection.watchAsync(userSessionID).get(result -> {
             if(result.isSuccess() && result.get() != null){

@@ -8,9 +8,9 @@ import org.bson.types.ObjectId;
 
 public class SetFragmentUser {
     public static void set(ObjectId userID){
-        String userSessionID = UserSessionController.getUserSessionID();
+        ObjectId userSessionID = UserSessionController.getUserSessionID();
 
-        if(userID.toString().equals(userSessionID)){
+        if(userID.equals(userSessionID)){
             FragmentMe fragmentMe = new FragmentMe();
             FragmentAdderManager.addFragmentRight(fragmentMe);
         } else {

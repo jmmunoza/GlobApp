@@ -20,7 +20,7 @@ public class EditUserMongo implements IEditUser {
 
     @Override
     public void edit(String newDescription) {
-        ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
+        ObjectId userSessionID = UserSessionController.getUserSessionID();
         Document userQuery = new Document().append("_id", userSessionID);
 
         userCollection.findOne(userQuery).getAsync(userData -> {

@@ -12,6 +12,7 @@ import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.model.Notification;
+import com.globapp.globapp.util.DateTextGetter;
 import com.globapp.globapp.util.NotificationTextGetter;
 import com.globapp.globapp.view.fragments.FragmentNotifications;
 import com.globapp.globapp.view.viewholders.NotificationListViewHolder;
@@ -51,9 +52,9 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<NotificationL
     @Override
     public void onBindViewHolder(@NonNull NotificationListViewHolder holder, int position) {
         Notification notification = notificationsList.get(position);
-        holder.notificationDate.setText(notification.getNotificationDate().toString());
+        holder.notificationDate.setText(DateTextGetter.getDateText(notification.getNotificationDate()));
         holder.setNewsID(notification.getNotificationNews());
-        DataRepository.getNews(notification.getNotificationNews(), news -> DataRepository.getUser(new ObjectId(news.getNewsUserOwner()), userOwner -> {
+        DataRepository.getNews(notification.getNotificationNews(), news -> DataRepository.getUser(news.getNewsUserOwner(), userOwner -> {
             if(userOwner.getUserImage() != null){
                 holder.notificationUserImage.setImageURI(userOwner.getUserImage());
             } else {
@@ -61,7 +62,7 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<NotificationL
             }
 
             if(news.getNewsUserRecognized() != null){
-                DataRepository.getUser(new ObjectId(news.getNewsUserRecognized()), userRecognized -> {
+                DataRepository.getUser(news.getNewsUserRecognized(), userRecognized -> {
                     if (userRecognized.getUserID().equals(UserSessionController.getUserSessionID())) {
                         holder.notificationText.setText(NotificationTextGetter.ifUserRecognizedYou(userOwner));
                     } else {

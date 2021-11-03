@@ -23,7 +23,7 @@ public class NewsLikerMongo implements INewsLiker {
     @Override
     public void like(ObjectId newsID, OnNewsLikedListener onNewsLikedListener) {
 
-        ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
+        ObjectId userSessionID = UserSessionController.getUserSessionID();
 
         ArrayList<ObjectId> likesListQuery = new ArrayList<>(
                 Collections.singleton(userSessionID));
@@ -63,7 +63,7 @@ public class NewsLikerMongo implements INewsLiker {
 
     @Override
     public void getIsLiked(ObjectId newsID, OnNewsLikedListener onNewsLikedListener) {
-        ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
+        ObjectId userSessionID = UserSessionController.getUserSessionID();
 
         ArrayList<ObjectId> likesListQuery = new ArrayList<>(
                 Collections.singleton(userSessionID));

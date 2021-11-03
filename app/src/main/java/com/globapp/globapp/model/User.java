@@ -6,17 +6,22 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.globapp.globapp.util.DateConverter;
+import com.globapp.globapp.util.ObjectIdConverter;
 
 import org.bson.types.ObjectId;
 
 @Entity
+@TypeConverters(ObjectIdConverter.class)
 public class User {
 
     @PrimaryKey(autoGenerate = true)
     private long   roomID;
 
     @ColumnInfo(name = "userID")
-    private String userID;
+    private ObjectId userID;
 
     @ColumnInfo(name = "first_name")
     private String userFirstName;
@@ -30,7 +35,6 @@ public class User {
     @ColumnInfo(name = "description")
     private String userDescription;
 
-
     @ColumnInfo(name = "credits")
     private int    userCredits;
 
@@ -43,7 +47,7 @@ public class User {
     @Ignore
     private Uri    userCoverImage;
 
-    public User(String userID,          String userFirstName,
+    public User(ObjectId userID,          String userFirstName,
                 String userSecondName,  String userLastName,
                 String userDescription,// Uri userImage, Uri userCoverImage,
                 int userCredits,        int userStars){
@@ -91,7 +95,7 @@ public class User {
         return userDescription;
     }
 
-    public String getUserID() {
+    public ObjectId getUserID() {
         return userID;
     }
 
@@ -123,15 +127,11 @@ public class User {
         this.userImage = userImage;
     }
 
-    public void giveLike(ObjectId newsID){
-
-    }
-
     public void setUserFirstName(String userFirstName) {
         this.userFirstName = userFirstName;
     }
 
-    public void setUserID(String userID) {
+    public void setUserID(ObjectId userID) {
         this.userID = userID;
     }
 

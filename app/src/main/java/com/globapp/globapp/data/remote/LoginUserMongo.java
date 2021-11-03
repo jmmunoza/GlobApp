@@ -5,6 +5,7 @@ import com.globapp.globapp.data.services.ILoginUser;
 import com.globapp.globapp.view.fragments.FragmentLogin;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import io.realm.mongodb.mongo.MongoCollection;
 
@@ -29,7 +30,7 @@ public class LoginUserMongo implements ILoginUser {
                     if (userLogin.getString("password").equals(password)) {
                         if (userLogin.getString("description") != null) {
 
-                            String userSessionID = userLogin.getObjectId("_id").toString();
+                            ObjectId userSessionID = userLogin.getObjectId("_id");
                             UserSessionController.setUserSessionID(userSessionID);
                             UserSessionController.setUserAdmin(userLogin.getBoolean("admin"));
 

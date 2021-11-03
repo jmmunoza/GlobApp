@@ -4,10 +4,17 @@ package com.globapp.globapp.model;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.globapp.globapp.util.DateConverter;
+import com.globapp.globapp.util.ObjectIdConverter;
+
+import org.bson.types.ObjectId;
 
 import java.util.Date;
 
 @Entity
+@TypeConverters({DateConverter.class, ObjectIdConverter.class})
 public class Comment {
     @PrimaryKey(autoGenerate = true)
     private long     roomID;
@@ -16,15 +23,15 @@ public class Comment {
     private String   commentContent;
 
     @ColumnInfo(name = "date")
-    private String   commentDate;
+    private Date     commentDate;
 
     @ColumnInfo(name = "userID")
     private String   commentUser;
 
     @ColumnInfo(name = "newsID")
-    private String   commentNews;
+    private ObjectId commentNews;
 
-    public Comment(String commentContent, String commentDate, String commentUser, String commentNews){
+    public Comment(String commentContent, Date commentDate, String commentUser, ObjectId commentNews){
         this.commentContent = commentContent;
         this.commentUser    = commentUser;
         this.commentDate    = commentDate;
@@ -39,11 +46,11 @@ public class Comment {
         this.roomID = roomID;
     }
 
-    public String getCommentNews() {
+    public ObjectId getCommentNews() {
         return commentNews;
     }
 
-    public String getCommentDate() {
+    public Date getCommentDate() {
         return commentDate;
     }
 
@@ -59,7 +66,7 @@ public class Comment {
         this.commentContent = commentContent;
     }
 
-    public void setCommentDate(String commentDate) {
+    public void setCommentDate(Date commentDate) {
         this.commentDate = commentDate;
     }
 
@@ -67,7 +74,7 @@ public class Comment {
         this.commentUser = commentUser;
     }
 
-    public void setCommentNews(String commentNews) {
+    public void setCommentNews(ObjectId commentNews) {
         this.commentNews = commentNews;
     }
 }

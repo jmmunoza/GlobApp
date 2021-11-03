@@ -2,7 +2,6 @@ package com.globapp.globapp.view.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +9,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.listeners.OnNewsLikedListener;
@@ -19,6 +16,7 @@ import com.globapp.globapp.data.listeners.OnUserImageClickedListener;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.model.News;
 import com.globapp.globapp.util.ArrayStringConverter;
+import com.globapp.globapp.util.DateTextGetter;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.viewholders.NewsListViewHolder;
 
@@ -62,7 +60,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
     @SuppressLint("CheckResult") @Override
     public void onBindViewHolder(@NonNull NewsListViewHolder holder, int position) {
         News news = newsList.get(position);
-        holder.setNewsID(new ObjectId(news.getNewsID()));
+        holder.setNewsID(news.getNewsID());
 
         /*Glide.with(context)
                 .asBitmap()
@@ -72,11 +70,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
                 .fitCenter()
                 .into(holder.newsPostImage);*/
 
-        DataRepository.getUser(new ObjectId(news.getNewsUserOwner()), userOwner -> {
-            holder.setUserOwnerID(new ObjectId(news.getNewsUserOwner()));
+        DataRepository.getUser(news.getNewsUserOwner(), userOwner -> {
+            holder.setUserOwnerID(news.getNewsUserOwner());
             holder.newsPostContent.setText(news.getNewsContent());
             holder.newsLikeCounter.setText(String.valueOf(ArrayStringConverter.fromString(news.getNewsLikes()).size()));
-            holder.newsTime.setText(news.getNewsDate());
+            holder.newsTime.setText(DateTextGetter.getDateText(news.getNewsDate()));
             if(news.getNewsImage() != null) holder.newsPostImage.setImageURI(news.getNewsImage());
             if(userOwner.getUserImage() != null)
                 holder.newsUserImage.setImageURI(userOwner.getUserImage());
@@ -85,8 +83,8 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
 
             if(news.getNewsUserRecognized() != null){
                 holder.newsRecognitionLayout.setVisibility(View.VISIBLE);
-                DataRepository.getUser(new ObjectId(news.getNewsUserRecognized()), userRecognized -> {
-                    holder.setUserRecognizedID(new ObjectId(news.getNewsUserRecognized()));
+                DataRepository.getUser(news.getNewsUserRecognized(), userRecognized -> {
+                    holder.setUserRecognizedID(news.getNewsUserRecognized());
                     holder.newsUsername.setText(UserNameGetter.getUserNameRecognition(userOwner, userRecognized));
 
                     if(userRecognized.getUserImage() != null)
@@ -105,7 +103,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
             }
         });
 
-        DataRepository.getIsLiked(new ObjectId(news.getNewsID()), new OnNewsLikedListener() {
+        DataRepository.getIsLiked(news.getNewsID(), new OnNewsLikedListener() {
             @Override
             public void liked() {
                 holder.newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);

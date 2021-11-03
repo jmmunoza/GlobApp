@@ -24,7 +24,7 @@ public class NotificationsGetterMongo implements INotificationsGetter {
 
     @Override
     public void getNotifications(OnNotificationsLoadedListener onNotificationsLoadedListener) {
-        ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
+        ObjectId userSessionID = UserSessionController.getUserSessionID();
         Document userSessionQuery = new Document("_id", userSessionID);
 
         userCollection.findOne(userSessionQuery).getAsync(result -> {

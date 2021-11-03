@@ -27,9 +27,11 @@ import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.model.Comment;
 import com.globapp.globapp.model.News;
 import com.globapp.globapp.model.User;
+import com.globapp.globapp.util.DateTextGetter;
 import com.globapp.globapp.util.KeyboardManager;
 import com.globapp.globapp.util.SingleTapConfirm;
 import com.globapp.globapp.util.ToastMaker;
+import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.adapters.CommentListAdapter;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -113,11 +115,11 @@ public class FragmentOnNotification extends Fragment {
         });
     }
 
-    private void loadUsersData(String userOwnerID, String userRecognizedID){
-        DataRepository.getUser(new ObjectId(userOwnerID), userOwner -> {
+    private void loadUsersData(ObjectId userOwnerID, ObjectId userRecognizedID){
+        DataRepository.getUser(userOwnerID, userOwner -> {
             this.userOwner = userOwner;
             if(userRecognizedID != null){
-                DataRepository.getUser(new ObjectId(userRecognizedID), userRecognized -> {
+                DataRepository.getUser(userRecognizedID, userRecognized -> {
                     this.userRecognized = userRecognized;
                     loadComments();
                 });
@@ -142,7 +144,7 @@ public class FragmentOnNotification extends Fragment {
                 notificationLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
         }
 
-        notificationTime.setText(news.getNewsDate());
+        notificationTime.setText(DateTextGetter.getDateText(news.getNewsDate()));
         notificationPostContent.setText(news.getNewsContent());
         notificationLikeCounter.setText(String.valueOf(news.getNewsLikes()));
         notificationCommentCounter.setText(String.valueOf(commentList.size()));
@@ -161,28 +163,17 @@ public class FragmentOnNotification extends Fragment {
         else
             notificationUserImage.setImageResource(R.drawable.user);
 
-
-        String usernameText;
         if(userRecognized != null){
-            usernameText = userOwner.getUserFirstName()      + " " +
-                           userOwner.getUserLastName()       + " congratulated " +
-                           userRecognized.getUserFirstName() + " " +
-                           userRecognized.getUserLastName();
-
-
+            notificationUsername.setText(UserNameGetter.getUserNameRecognition(userOwner, userRecognized));
             if(userRecognized.getUserImage() != null)
                 notificationRecognitionUserImage.setImageURI(userRecognized.getUserImage());
             else
                 notificationRecognitionUserImage.setImageResource(R.drawable.user);
-
         } else {
-            usernameText = userOwner.getUserFirstName()  + " " +
-                           userOwner.getUserSecondName() + " " +
-                           userOwner.getUserLastName();
+            notificationUsername.setText(UserNameGetter.getUserName(userOwner));
 
         }
 
-        notificationUsername.setText(usernameText);
 
         ((GifDrawable)notificationStar.getDrawable()).stop();
         ((GifDrawable)notificationStar.getDrawable()).seekTo(0);
@@ -224,12 +215,12 @@ public class FragmentOnNotification extends Fragment {
 
     private void userImageFunction(){
         notificationUserImage.setOnClickListener(v ->
-                onUserImageClickedListener.onUserImageClicked(new ObjectId(userOwner.getUserID())));
+                onUserImageClickedListener.onUserImageClicked(userOwner.getUserID()));
     }
 
     private void userRecognizedImageFunction(){
         notificationRecognitionUserImage.setOnClickListener(v ->
-                onUserImageClickedListener.onUserImageClicked(new ObjectId(userRecognized.getUserID())));
+                onUserImageClickedListener.onUserImageClicked(userRecognized.getUserID()));
     }
 
     @SuppressLint("ClickableViewAccessibility")

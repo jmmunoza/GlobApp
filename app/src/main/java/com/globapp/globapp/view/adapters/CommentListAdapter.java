@@ -70,7 +70,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListViewHold
 
         DataRepository.getUser(new ObjectId(comment.getCommentUser()), user -> {
             holder.commentContent.setText(comment.getCommentContent());
-            holder.commentTime.setText(comment.getCommentDate());
+            holder.commentTime.setText(comment.getCommentDate().toString());
             holder.commentUsername.setText(UserNameGetter.getUserName(user));
 
             if(user.getUserImage() != null) {

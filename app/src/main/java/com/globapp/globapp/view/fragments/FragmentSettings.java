@@ -97,7 +97,7 @@ public class FragmentSettings extends Fragment {
     }
 
     private void loadUserData(){
-        ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
+        ObjectId userSessionID = UserSessionController.getUserSessionID();
         DataRepository.getUser(userSessionID, user -> {
             me = user;
             loadComponents();

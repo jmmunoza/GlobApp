@@ -10,7 +10,7 @@ import java.util.Calendar;
 
 public class DocCreator {
     public static Document createComment(String commentContent, ObjectId newsID){
-        ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
+        ObjectId userSessionID = UserSessionController.getUserSessionID();
 
         return  new Document()
                 .append("content", commentContent)
@@ -20,7 +20,7 @@ public class DocCreator {
     }
 
     public static Document createRecognitionNews(ObjectId userRecognizedID, String newsContent){
-        ObjectId userSessionID = new ObjectId(UserSessionController.getUserSessionID());
+        ObjectId userSessionID = UserSessionController.getUserSessionID();
 
         return new Document()
                 .append("content", newsContent)

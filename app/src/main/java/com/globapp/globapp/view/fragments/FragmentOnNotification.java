@@ -174,7 +174,6 @@ public class FragmentOnNotification extends Fragment {
 
         }
 
-
         ((GifDrawable)notificationStar.getDrawable()).stop();
         ((GifDrawable)notificationStar.getDrawable()).seekTo(0);
         notificationStar.setOnClickListener(v -> {

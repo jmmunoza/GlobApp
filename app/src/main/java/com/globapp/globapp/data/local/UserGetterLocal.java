@@ -16,7 +16,7 @@ public class UserGetterLocal implements IUserGetter {
 
     @Override
     public void getUser(ObjectId userID, OnUserLoadedListener onUserLoadedListener) {
-        User user = userDAO.getUser(userID.toString());
+        User user = userDAO.getUser(userID);
         onUserLoadedListener.onUserLoaded(user);
     }
 }

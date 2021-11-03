@@ -25,7 +25,7 @@ public class NewsGetterLocal implements INewsGetter {
 
     @Override
     public void getNews(ObjectId newsID, OnNewsLoadedListener onNewsLoadedListener) {
-        News news = newsDAO.getNews(newsID.toString());
+        News news = newsDAO.getNews(newsID);
         onNewsLoadedListener.onNewsLoaded(news);
     }
 }

@@ -34,7 +34,10 @@ public class News {
     private Date newsDate;
 
     @ColumnInfo(name = "likes")
-    private String newsLikes;
+    private int newsLikes;
+
+    @ColumnInfo(name = "comments")
+    private int newsComments;
 
     @ColumnInfo(name = "ownerID")
     private ObjectId newsUserOwner;
@@ -45,11 +48,12 @@ public class News {
     @Ignore
     private Uri      newsImage;
 
-    public News(ObjectId newsID, String newsTitle, String newsContent, Date newsDate, /*Uri newsImage,*/ String newsLikes, ObjectId newsUserOwner, ObjectId newsUserRecognized){
+    public News(ObjectId newsID, String newsTitle, String newsContent, Date newsDate, /*Uri newsImage,*/ int newsLikes, int newsComments, ObjectId newsUserOwner, ObjectId newsUserRecognized){
         this.newsID             = newsID;
         this.newsContent        = newsContent;
         //this.newsImage          = newsImage;
         this.newsUserOwner      = newsUserOwner;
+        this.newsComments       = newsComments;
         this.newsLikes          = newsLikes;
         this.newsDate           = newsDate;
         this.newsTitle          = newsTitle;
@@ -68,8 +72,11 @@ public class News {
         return newsDate;
     }
 
+    public int getNewsComments() {
+        return newsComments;
+    }
 
-    public String getNewsLikes() {
+    public int getNewsLikes() {
         return newsLikes;
     }
 
@@ -113,7 +120,7 @@ public class News {
         this.newsImage = newsImage;
     }
 
-    public void setNewsLikes(String newsLikes) {
+    public void setNewsLikes(int newsLikes) {
         this.newsLikes = newsLikes;
     }
 
@@ -127,5 +134,9 @@ public class News {
 
     public void setNewsUserRecognized(ObjectId newsUserRecognized) {
         this.newsUserRecognized = newsUserRecognized;
+    }
+
+    public void setNewsComments(int newsComments) {
+        this.newsComments = newsComments;
     }
 }

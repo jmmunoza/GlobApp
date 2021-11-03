@@ -13,12 +13,12 @@ import java.util.ArrayList;
 public class DocConverter {
     public static Document newsToDocument(News news){
         return new Document()
-                .append("title", news.getNewsTitle())
-                .append("content", news.getNewsContent())
-                .append("ownerID", news.getNewsUserOwner())
-                .append("likes", ArrayStringConverter.fromString(news.getNewsLikes()))
-                .append("comments", 0)
-                .append("date", news.getNewsDate())
+                .append("title",        news.getNewsTitle())
+                .append("content",      news.getNewsContent())
+                .append("ownerID",      news.getNewsUserOwner())
+                .append("likes",        news.getNewsLikes())
+                .append("comments",     news.getNewsComments())
+                .append("date",         news.getNewsDate())
                 .append("recognizedID", news.getNewsUserRecognized());
     }
 
@@ -29,8 +29,8 @@ public class DocConverter {
                 document.getString("content"),
                 document.getDate("date"),
                 //null,
-                ArrayStringConverter.fromArrayList(new ArrayList<>(document.getList(
-                        "likes", ObjectId.class, new ArrayList<>()))),
+                document.getList("likes",    ObjectId.class, new ArrayList<>()).size(),
+                document.getList("comments", Document.class, new ArrayList<>()).size(),
                 document.getObjectId("ownerID"),
                 document.getObjectId("recognizedID"));
     }

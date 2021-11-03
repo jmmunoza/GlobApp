@@ -15,12 +15,9 @@ import com.globapp.globapp.data.listeners.OnNewsLikedListener;
 import com.globapp.globapp.data.listeners.OnUserImageClickedListener;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.model.News;
-import com.globapp.globapp.util.ArrayStringConverter;
 import com.globapp.globapp.util.DateTextGetter;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.viewholders.NewsListViewHolder;
-
-import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 
@@ -30,7 +27,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
     private final LayoutInflater     inflater;
     private DataLoadedListener       dataLoadedListener;
     private int                      loadedNews;
-    Context context;
+    private final Context            context;
 
     // LISTENERS
     private final OnUserImageClickedListener onUserImageClickedListener;
@@ -73,7 +70,8 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
         DataRepository.getUser(news.getNewsUserOwner(), userOwner -> {
             holder.setUserOwnerID(news.getNewsUserOwner());
             holder.newsPostContent.setText(news.getNewsContent());
-            holder.newsLikeCounter.setText(String.valueOf(ArrayStringConverter.fromString(news.getNewsLikes()).size()));
+            holder.newsLikeCounter.setText(String.valueOf(news.getNewsLikes()));
+            holder.newsCommentCounter.setText(String.valueOf(news.getNewsComments()));
             holder.newsTime.setText(DateTextGetter.getDateText(news.getNewsDate()));
             if(news.getNewsImage() != null) holder.newsPostImage.setImageURI(news.getNewsImage());
             if(userOwner.getUserImage() != null)

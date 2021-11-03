@@ -91,6 +91,10 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<NotificationL
         void onDataLoaded();
     }
 
+    public void insertNotification(Notification notification){
+        notificationsList.add(0, notification);
+    }
+
     private void isDataLoaded() {
         if(notificationsList.size() == loadedNotifications){
             if(dataLoadedListener != null)

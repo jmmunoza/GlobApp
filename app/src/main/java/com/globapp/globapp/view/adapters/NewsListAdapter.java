@@ -1,6 +1,8 @@
 package com.globapp.globapp.view.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +10,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.listeners.OnNewsLikedListener;
@@ -55,10 +59,19 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
         }
     }
 
-    @Override
+    @SuppressLint("CheckResult") @Override
     public void onBindViewHolder(@NonNull NewsListViewHolder holder, int position) {
         News news = newsList.get(position);
         holder.setNewsID(new ObjectId(news.getNewsID()));
+
+        /*Glide.with(context)
+                .asBitmap()
+                .load(BitmapFactory.decodeResource(context.getResources(), R.drawable.cover))
+                .override(400, 200)
+                .transition(new BitmapTransitionOptions().crossFade())
+                .fitCenter()
+                .into(holder.newsPostImage);*/
+
         DataRepository.getUser(new ObjectId(news.getNewsUserOwner()), userOwner -> {
             holder.setUserOwnerID(new ObjectId(news.getNewsUserOwner()));
             holder.newsPostContent.setText(news.getNewsContent());

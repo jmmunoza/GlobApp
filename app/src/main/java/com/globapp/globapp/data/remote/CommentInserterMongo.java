@@ -9,8 +9,6 @@ import com.globapp.globapp.util.DocCreator;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
-
 import io.realm.mongodb.mongo.MongoCollection;
 
 public class CommentInserterMongo implements ICommentInserter {

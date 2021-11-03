@@ -27,17 +27,16 @@ public class LoginUserMongo implements ILoginUser {
                     Document userLogin = result.get();
 
                     if (userLogin.getString("password").equals(password)) {
-
-                        String userSessionID = userLogin.getObjectId("_id").toString();
-                        UserSessionController.setUserSessionID(userSessionID);
-                        UserSessionController.setUserAdmin(userLogin.getBoolean("admin"));
-
                         if (userLogin.getString("description") != null) {
+
+                            String userSessionID = userLogin.getObjectId("_id").toString();
+                            UserSessionController.setUserSessionID(userSessionID);
+                            UserSessionController.setUserAdmin(userLogin.getBoolean("admin"));
+
                             onLoginReadyListener.onUserCreated();
                         } else {
                             onLoginReadyListener.onNewUser(userLogin.getObjectId("_id"));
                         }
-
                     } else {
                         onLoginReadyListener.onWrongPassword();
                     }

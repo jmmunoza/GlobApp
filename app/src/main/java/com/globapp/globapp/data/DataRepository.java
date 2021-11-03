@@ -7,6 +7,7 @@ import com.globapp.globapp.data.listeners.OnNewsLikedListener;
 import com.globapp.globapp.data.listeners.OnNewsListLoadedListener;
 import com.globapp.globapp.data.listeners.OnNewsLoadedListener;
 import com.globapp.globapp.data.listeners.OnNotificationsLoadedListener;
+import com.globapp.globapp.data.listeners.OnNotificationsUpdatedListener;
 import com.globapp.globapp.data.listeners.OnUserLoadedListener;
 import com.globapp.globapp.data.local.LocalDB;
 import com.globapp.globapp.data.remote.CommentGetterMongo;
@@ -16,6 +17,7 @@ import com.globapp.globapp.data.remote.NewsGetterMongo;
 import com.globapp.globapp.data.remote.NewsInserterMongo;
 import com.globapp.globapp.data.remote.NewsLikerMongo;
 import com.globapp.globapp.data.remote.NotificationsGetterMongo;
+import com.globapp.globapp.data.remote.NotificationsObserverMongo;
 import com.globapp.globapp.data.remote.NotifierMongo;
 import com.globapp.globapp.data.remote.UserGetterMongo;
 import com.globapp.globapp.data.remote.UserInserterMongo;
@@ -57,7 +59,7 @@ public class DataRepository {
                         new CommentRepository(new CommentInserterMongo(), new CommentGetterMongo());
 
                 mongoNotifications =
-                        new NotificationRepository(new NotifierMongo(), new NotificationsGetterMongo());
+                        new NotificationRepository(new NotifierMongo(), new NotificationsGetterMongo(), new NotificationsObserverMongo());
 
                 onDatabaseConnectedListener.onDBConnected();
             }
@@ -111,5 +113,9 @@ public class DataRepository {
 
     public static void notify(Notification notification){
         mongoNotifications.notify(notification);
+    }
+
+    public static void subscribeNotifications(OnNotificationsUpdatedListener onNotificationsUpdatedListener){
+        mongoNotifications.subscribe(onNotificationsUpdatedListener);
     }
 }

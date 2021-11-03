@@ -62,6 +62,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/news_list"
                 android:splitMotionEvents="false"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:layout_width="match_parent"
                 android:clipToPadding="false"
                 android:paddingBottom="?actionBarSize"

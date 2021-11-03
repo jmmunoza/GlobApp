@@ -11,6 +11,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import io.realm.mongodb.mongo.MongoCollection;
 
@@ -36,6 +37,8 @@ public class NotificationsGetterMongo implements INotificationsGetter {
 
                 ArrayList<Notification> notifications =
                         new ArrayList<>(Lists.transform(notificationsDoc, DocConverter::documentToNotification));
+
+                Collections.reverse(notifications);
 
                 onNotificationsLoadedListener.onNotificationsLoaded(notifications);
             } else {

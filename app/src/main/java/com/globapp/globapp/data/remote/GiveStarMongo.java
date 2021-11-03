@@ -1,5 +1,6 @@
 package com.globapp.globapp.data.remote;
 
+import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.services.IGiveStar;
 import com.globapp.globapp.data.services.INotifier;
 import com.globapp.globapp.model.Notification;
@@ -39,11 +40,10 @@ public class GiveStarMongo implements IGiveStar {
                         newsCollection.insertOne(newsRecognition).getAsync(result -> {
                             if (result.isSuccess()) {
                                 ObjectId newsInsertedID = result.get().getInsertedId().asObjectId().getValue();
-                                Date     newsDate = newsRecognition.getDate("date");
+                                Date         newsDate = newsRecognition.getDate("date");
                                 Notification notification = new Notification(newsDate, newsInsertedID, false);
 
-                                INotifier iNotifier = new NotifierMongo();
-                                iNotifier.notify(notification);
+                                DataRepository.notify(notification);
                                 onGiveStarListener.onSuccess();
                             } else {
                                 onGiveStarListener.onError();

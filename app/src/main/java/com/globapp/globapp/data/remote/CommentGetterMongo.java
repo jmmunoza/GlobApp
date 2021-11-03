@@ -1,12 +1,9 @@
 package com.globapp.globapp.data.remote;
 
-import androidx.annotation.NonNull;
-
 import com.globapp.globapp.data.listeners.OnCommentListLoadedListener;
 import com.globapp.globapp.data.services.ICommentGetter;
 import com.globapp.globapp.model.Comment;
 import com.globapp.globapp.util.DocConverter;
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import org.bson.Document;

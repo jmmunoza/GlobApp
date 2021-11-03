@@ -1,7 +1,6 @@
 package com.globapp.globapp.view.fragments;
 
 import android.annotation.SuppressLint;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -42,8 +40,7 @@ public class FragmentNews extends Fragment {
     // Listeners
     private OnUserImageClickedListener onUserImageClickedListener;
 
-    @SuppressLint("InflateParams")
-    @Nullable @Override
+    @SuppressLint("InflateParams") @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -57,7 +54,6 @@ public class FragmentNews extends Fragment {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -75,6 +71,7 @@ public class FragmentNews extends Fragment {
                 false);
 
         newsList.setLayoutManager(verticalLayoutManager);
+        newsList.setNestedScrollingEnabled(false);
         newsListAdapter = new NewsListAdapter(getContext(), new ArrayList<>(), onUserImageClickedListener);
         newsList.setAdapter(newsListAdapter);
     }

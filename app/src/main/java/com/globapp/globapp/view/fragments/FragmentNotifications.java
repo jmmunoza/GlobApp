@@ -18,6 +18,7 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.listeners.OnNotificationsLoadedListener;
+import com.globapp.globapp.data.listeners.OnNotificationsUpdatedListener;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.model.Notification;
 import com.globapp.globapp.view.adapters.NotificationsListAdapter;
@@ -25,6 +26,7 @@ import com.globapp.globapp.view.adapters.NotificationsListAdapter;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class FragmentNotifications extends Fragment {
@@ -70,6 +72,12 @@ public class FragmentNotifications extends Fragment {
                 new ArrayList<>(),
                 newsID -> onNotificationsListListener.onNewsClicked(newsID));
         notificationsList.setAdapter(notificationsListAdapter);
+        DataRepository.subscribeNotifications(notification ->{
+            requireActivity().runOnUiThread(() -> {
+                notificationsListAdapter.insertNotification(notification);
+                notificationsListAdapter.notifyItemInserted(0);
+            });
+        });
     }
 
     private void refreshFunction(){

@@ -1,5 +1,6 @@
 package com.globapp.globapp.data.remote;
 
+import com.globapp.globapp.data.factories.CommentFactory;
 import com.globapp.globapp.data.listeners.OnNewsCommentedListener;
 import com.globapp.globapp.data.services.ICommentInserter;
 import com.globapp.globapp.model.Comment;
@@ -32,7 +33,7 @@ public class CommentInserterMongo implements ICommentInserter {
         newsCollection.findOneAndUpdate(newsQuery, commentInsertion).getAsync(result -> {
             if(result.isSuccess()){
 
-                Comment newComment = DocConverter.documentToComment(commentDoc);
+                Comment newComment = CommentFactory.documentToComment(commentDoc);
                 onNewsCommentedListener.onNewsCommented(newComment);
             }
         });

@@ -1,5 +1,6 @@
 package com.globapp.globapp.data.remote;
 
+import com.globapp.globapp.data.factories.NotificationFactory;
 import com.globapp.globapp.data.listeners.OnNotificationsUpdatedListener;
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.data.services.INotificationsObserver;
@@ -42,7 +43,7 @@ public class NotificationsObserverMongo implements INotificationsObserver {
 
                     if(notificationsDocList.size() > 0){
                         Document notificationDoc = notificationsDocList.get(notificationsDocList.size()-1);
-                        Notification notification = DocConverter.documentToNotification(notificationDoc);
+                        Notification notification = NotificationFactory.documentToNotification(notificationDoc);
                         notificationsUpdatedListener.update(notification);
                     }
                 }

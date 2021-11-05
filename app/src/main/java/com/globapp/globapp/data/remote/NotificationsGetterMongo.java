@@ -1,5 +1,6 @@
 package com.globapp.globapp.data.remote;
 
+import com.globapp.globapp.data.factories.NotificationFactory;
 import com.globapp.globapp.data.listeners.OnNotificationsLoadedListener;
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.data.services.INotificationsGetter;
@@ -36,7 +37,7 @@ public class NotificationsGetterMongo implements INotificationsGetter {
                                 new ArrayList<>()));
 
                 ArrayList<Notification> notifications =
-                        new ArrayList<>(Lists.transform(notificationsDoc, DocConverter::documentToNotification));
+                        new ArrayList<>(Lists.transform(notificationsDoc, NotificationFactory::documentToNotification));
 
                 Collections.reverse(notifications);
 

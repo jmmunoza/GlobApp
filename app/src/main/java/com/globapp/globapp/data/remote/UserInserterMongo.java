@@ -2,6 +2,7 @@ package com.globapp.globapp.data.remote;
 
 import com.globapp.globapp.data.services.IUserInserter;
 import com.globapp.globapp.model.User;
+import com.globapp.globapp.util.DocConverter;
 
 import org.bson.Document;
 
@@ -16,7 +17,7 @@ public class UserInserterMongo implements IUserInserter {
 
     @Override
     public void insert(User user) {
-        Document document = new Document();
+        Document document = DocConverter.userToDocument(user);
         userCollection.insertOne(document).getAsync(result -> {
 
         });

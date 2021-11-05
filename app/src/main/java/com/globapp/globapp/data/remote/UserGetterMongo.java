@@ -1,5 +1,6 @@
 package com.globapp.globapp.data.remote;
 
+import com.globapp.globapp.data.factories.UserFactory;
 import com.globapp.globapp.data.listeners.OnUserLoadedListener;
 import com.globapp.globapp.data.services.IUserGetter;
 import com.globapp.globapp.model.User;
@@ -21,7 +22,7 @@ public class UserGetterMongo implements IUserGetter {
         Document userQuery = new Document("_id", userID);
         userCollection.findOne(userQuery).getAsync(userData -> {
             if(userData.isSuccess()) {
-                User user = DocConverter.documentToUser(userData.get());
+                User user = UserFactory.documentToUser(userData.get());
                 onUserLoadedListener.onUserLoaded(user);
             }
         });

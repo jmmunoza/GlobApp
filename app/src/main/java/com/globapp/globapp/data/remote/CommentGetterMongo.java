@@ -1,5 +1,6 @@
 package com.globapp.globapp.data.remote;
 
+import com.globapp.globapp.data.factories.CommentFactory;
 import com.globapp.globapp.data.listeners.OnCommentListLoadedListener;
 import com.globapp.globapp.data.services.ICommentGetter;
 import com.globapp.globapp.model.Comment;
@@ -30,7 +31,7 @@ public class CommentGetterMongo implements ICommentGetter {
                         Document.class,
                         new ArrayList<>());
 
-                ArrayList<Comment> comments = new ArrayList<>(Lists.transform(docComments, DocConverter::documentToComment));
+                ArrayList<Comment> comments = new ArrayList<>(Lists.transform(docComments, CommentFactory::documentToComment));
                 onCommentListLoadedListener.onCommentListLoaded(comments);
             }
         });

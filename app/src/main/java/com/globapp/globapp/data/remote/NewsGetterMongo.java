@@ -1,5 +1,6 @@
 package com.globapp.globapp.data.remote;
 
+import com.globapp.globapp.data.factories.NewsFactory;
 import com.globapp.globapp.data.listeners.OnNewsListLoadedListener;
 import com.globapp.globapp.data.listeners.OnNewsLoadedListener;
 import com.globapp.globapp.data.services.INewsGetter;
@@ -16,7 +17,6 @@ import io.realm.mongodb.mongo.iterable.MongoCursor;
 
 public class NewsGetterMongo implements INewsGetter {
     private static final int DESCENDING = -1;
-    private static final int ASCENDING  = 1;
 
     private final MongoCollection<Document> newsCollection;
 
@@ -34,7 +34,7 @@ public class NewsGetterMongo implements INewsGetter {
                 MongoCursor<Document> newsIterator = result.get();
                 while (newsIterator.hasNext()){
                     Document document = newsIterator.next();
-                    News news = DocConverter.DocumentToNews(document);
+                    News news = NewsFactory.DocumentToNews(document);
                     newsList.add(news);
                 }
                 onNewsListLoadedListener.onNewsListLoaded(newsList);
@@ -48,7 +48,7 @@ public class NewsGetterMongo implements INewsGetter {
         newsCollection.findOne(newsQuery).getAsync(result -> {
             if(result.isSuccess()){
                 Document document = result.get();
-                News news = DocConverter.DocumentToNews(document);
+                News news = NewsFactory.DocumentToNews(document);
                 onNewsLoadedListener.onNewsLoaded(news);
             }
         });

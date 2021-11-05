@@ -315,7 +315,6 @@ public class FragmentOnNotification extends Fragment {
         notificationCommentList.setAdapter(notificationCommentListAdapter);
     }
 
-    @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
     private void loadComponents(){
         notificationUsername             = requireView().findViewById(R.id.on_notification_username);
         notificationUserImage            = requireView().findViewById(R.id.on_notification_user_image);

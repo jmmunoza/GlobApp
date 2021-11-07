@@ -30,6 +30,7 @@ public class ImageConverter {
     }
 
     public static Bitmap ByteArrayToBitmap(byte[] imageByteArray){
+        if(imageByteArray == null) return null;
         byte[] imageByteArrayDecompress = decompress(imageByteArray);
         return BitmapFactory.decodeByteArray(imageByteArrayDecompress, 0, imageByteArrayDecompress.length);
     }

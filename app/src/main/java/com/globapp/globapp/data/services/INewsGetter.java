@@ -5,7 +5,9 @@ import com.globapp.globapp.data.listeners.OnNewsLoadedListener;
 
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+
 public interface INewsGetter {
-    void getLatestNews(OnNewsListLoadedListener onNewsLoadedListener);
+    void getLatestNews(ArrayList<ObjectId> exceptedIDs, OnNewsListLoadedListener onNewsLoadedListener);
     void getNews(ObjectId newsID, OnNewsLoadedListener onNewsLoadedListener);
 }

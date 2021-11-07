@@ -2,10 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,6 +28,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar.Bridge"
             android:id="@+id/textInputLayout"
             android:layout_width="match_parent"
             android:layout_height="60dp"
@@ -55,12 +58,13 @@
                 android:cursorVisible="true"
                 android:fontFamily="@font/opensemibold"
                 android:inputType="textEmailAddress"
-                android:textCursorDrawable="@color/black">
+                android:textCursorDrawable="?attr/titleTextColor">
 
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar.Bridge"
             android:id="@+id/textInputLayout2"
             android:layout_width="match_parent"
             android:layout_height="60dp"
@@ -90,7 +94,7 @@
                 android:cursorVisible="true"
                 android:fontFamily="@font/opensemibold"
                 android:inputType="textPassword"
-                android:textCursorDrawable="@color/black">
+                android:textCursorDrawable="?attr/titleTextColor">
 
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
@@ -125,7 +129,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:contentDescription="TODO" />
+                    android:contentDescription="TODO"
+                    app:tint="@color/black" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -154,7 +159,4 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

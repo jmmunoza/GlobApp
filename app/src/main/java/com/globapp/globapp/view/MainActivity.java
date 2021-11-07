@@ -26,6 +26,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Preferences.init();
+        if (Preferences.getDarkMode()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.Theme_GlobApp);
+        }
         ToastMaker.init(MainActivity.this);
         enableAnimation(R.drawable.loading_animation_1);
         DataRepository.init(new OnDatabaseConnectedListener() {

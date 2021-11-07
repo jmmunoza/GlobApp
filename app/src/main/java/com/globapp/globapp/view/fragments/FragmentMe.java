@@ -50,11 +50,7 @@ public class FragmentMe extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         postponeEnterTransition(1, TimeUnit.MILLISECONDS);
-        if(Preferences.getDarkMode()){
-            return inflater.inflate(R.layout.fragment_me_dark, null);
-        } else {
-            return inflater.inflate(R.layout.fragment_me, null);
-        }
+        return inflater.inflate(R.layout.fragment_me, null);
     }
 
     @Override

@@ -10,6 +10,8 @@ import com.globapp.globapp.model.News;
 
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+
 public class NewsRepository {
     private final INewsInserter iNewsInserter;
     private final INewsGetter   iNewsGetter;
@@ -29,8 +31,8 @@ public class NewsRepository {
         iNewsGetter.getNews(newsID, onNewsLoadedListener);
     }
 
-    public void getLatestNews(OnNewsListLoadedListener onNewsListLoadedListener){
-        iNewsGetter.getLatestNews(onNewsListLoadedListener);
+    public void getLatestNews(ArrayList<ObjectId> exceptedIDs, OnNewsListLoadedListener onNewsListLoadedListener){
+        iNewsGetter.getLatestNews(exceptedIDs, onNewsListLoadedListener);
     }
 
     public void likeNews(ObjectId newsID, OnNewsLikedListener onNewsLikedListener){

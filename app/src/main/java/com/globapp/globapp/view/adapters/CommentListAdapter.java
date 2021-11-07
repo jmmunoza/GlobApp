@@ -49,17 +49,11 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListViewHold
 
     @NonNull @Override
     public CommentListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if(Preferences.getDarkMode()){
-            return new CommentListViewHolder(
-                    inflater.inflate(R.layout.fragment_news_item_comment_item_dark, parent, false),
-                    onUserImageClickedListener,
-                    CommentListAdapter.this.parent);
-        } else {
             return new CommentListViewHolder(
                     inflater.inflate(R.layout.fragment_news_item_comment_item, parent, false),
                     onUserImageClickedListener,
                     CommentListAdapter.this.parent);
-        }
+
     }
 
     @SuppressLint("SetTextI18n")

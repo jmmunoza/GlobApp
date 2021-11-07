@@ -57,12 +57,7 @@ public class FragmentUser extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         postponeEnterTransition(1, TimeUnit.MILLISECONDS);
-
-        if(Preferences.getDarkMode()){
-            return inflater.inflate(R.layout.fragment_user_dark, null);
-        } else {
-            return inflater.inflate(R.layout.fragment_user, null);
-        }
+        return inflater.inflate(R.layout.fragment_user, null);
     }
 
     @Override

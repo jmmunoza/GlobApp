@@ -60,12 +60,7 @@ public class FragmentEditProfile extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         postponeEnterTransition(1, TimeUnit.MILLISECONDS);
-
-        if(Preferences.getDarkMode()){
-            return inflater.inflate(R.layout.framgnet_create_profile_dark, null);
-        } else {
-            return inflater.inflate(R.layout.fragment_create_profile, null);
-        }
+        return inflater.inflate(R.layout.fragment_create_profile, null);
     }
 
     @Override

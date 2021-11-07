@@ -19,11 +19,7 @@ public class LanguageSettingsDialog {
 
     public BottomSheetDialog createDialog(){
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context, R.style.SheetDialog);
-        if(Preferences.getDarkMode()){
-            bottomSheetDialog.setContentView(R.layout.fragment_settings_language_dark);
-        } else {
-            bottomSheetDialog.setContentView(R.layout.fragment_settings_language);
-        }
+        bottomSheetDialog.setContentView(R.layout.fragment_settings_language);
 
         CardView spanish = bottomSheetDialog.findViewById(R.id.spanish_button);
         CardView english = bottomSheetDialog.findViewById(R.id.english_button);

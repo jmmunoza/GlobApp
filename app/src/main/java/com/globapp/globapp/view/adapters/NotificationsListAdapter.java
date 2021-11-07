@@ -26,7 +26,6 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<NotificationL
     private final ArrayList<Notification> notificationsList;
     private final LayoutInflater          inflater;
     private int                           loadedNotifications;
-    private DataLoadedListener            dataLoadedListener;
     private final FragmentNotifications.OnNotificationsListListener onNotificationsListListener;
 
     public NotificationsListAdapter(Context context, ArrayList<Notification> notificationsList, FragmentNotifications.OnNotificationsListListener onNotificationsListListener){
@@ -38,20 +37,15 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<NotificationL
 
     @NonNull @Override
     public NotificationListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if(Preferences.getDarkMode()){
-            return new NotificationListViewHolder(
-                    inflater.inflate(R.layout.fragment_notification_item_dark, parent, false),
-                    onNotificationsListListener);
-        } else {
             return new NotificationListViewHolder(
                     inflater.inflate(R.layout.fragment_notification_item, parent, false),
                     onNotificationsListListener);
-        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull NotificationListViewHolder holder, int position) {
         Notification notification = notificationsList.get(position);
+        //-------------------
         holder.notificationDate.setText(DateTextGetter.getDateText(notification.getNotificationDate()));
         holder.setNewsID(notification.getNotificationNews());
         DataRepository.getNews(notification.getNotificationNews(), news -> DataRepository.getUser(news.getNewsUserOwner(), userOwner -> {
@@ -68,8 +62,6 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<NotificationL
                     } else {
                         holder.notificationText.setText(NotificationTextGetter.ifUserRecognizedSomeoneElse(userOwner, userRecognized));
                     }
-                    loadedNotifications++;
-                    isDataLoaded();
                 });
             } else {
                 if(userOwner.getUserImage() != null){
@@ -77,30 +69,12 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<NotificationL
                 } else {
                     holder.notificationText.setText(NotificationTextGetter.ifUserPosted(userOwner));
                 }
-
-                loadedNotifications++;
-                isDataLoaded();
             }
         }));
     }
 
-    public void addDataLoadedListener(DataLoadedListener dataLoadedListener){
-        this.dataLoadedListener = dataLoadedListener;
-    }
-
-    public interface DataLoadedListener {
-        void onDataLoaded();
-    }
-
     public void insertNotification(Notification notification){
         notificationsList.add(0, notification);
-    }
-
-    private void isDataLoaded() {
-        if(notificationsList.size() == loadedNotifications){
-            if(dataLoadedListener != null)
-                dataLoadedListener.onDataLoaded();
-        }
     }
 
     @Override

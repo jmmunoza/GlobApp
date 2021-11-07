@@ -51,11 +51,7 @@ public class FragmentMain extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         postponeEnterTransition(1, TimeUnit.MILLISECONDS);
-        if(Preferences.getDarkMode()){
-            return inflater.inflate(R.layout.fragment_activity_main_dark, null);
-        } else {
-            return inflater.inflate(R.layout.fragment_activity_main, null);
-        }
+        return inflater.inflate(R.layout.fragment_activity_main, null);
     }
 
     @Override
@@ -131,16 +127,8 @@ public class FragmentMain extends Fragment {
         mainViewPager.setCurrentItem(position);
     }
 
-    public void setFragmentNewsListOnTop(){
-        fragmentNews.setNewsListOnTop();
-    }
-
     public void setFragmentNotificationsListOnTop(){
         fragmentNotifications.setNotificationsListOnTop();
-    }
-
-    public int getFragmentNewsListScrollPosition(){
-        return fragmentNews.getNewsListPosition();
     }
 
     private void loadComponents(){

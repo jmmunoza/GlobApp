@@ -18,7 +18,7 @@ public class NewsGetterLocal implements INewsGetter {
     }
 
     @Override
-    public void getLatestNews(OnNewsListLoadedListener onNewsListLoadedListener) {
+    public void getLatestNews(ArrayList<ObjectId> exceptedIDs, OnNewsListLoadedListener onNewsListLoadedListener) {
         ArrayList<News> newsList = (ArrayList<News>) newsDAO.getLatestNews();
         onNewsListLoadedListener.onNewsListLoaded(newsList);
     }

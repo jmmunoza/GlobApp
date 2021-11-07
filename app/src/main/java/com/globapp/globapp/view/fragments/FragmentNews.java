@@ -23,6 +23,8 @@ import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.view.adapters.NewsListAdapter;
 import com.globapp.globapp.view.adapters.NewsPagerAdapter;
 
+import org.bson.types.ObjectId;
+
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -35,7 +37,6 @@ public class FragmentNews extends Fragment {
     private NewsPagerAdapter   newsPagerAdapter;
     private SwipeRefreshLayout newsRefresh;
     private ShimmerFrameLayout newsPlaceholder;
-    private NestedScrollView   newsNestedScroll;
 
     // Listeners
     private OnUserImageClickedListener onUserImageClickedListener;
@@ -46,12 +47,7 @@ public class FragmentNews extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         postponeEnterTransition(1, TimeUnit.MILLISECONDS);
-
-        if(Preferences.getDarkMode()){
-            return inflater.inflate(R.layout.fragment_news_dark, null);
-        } else {
-            return inflater.inflate(R.layout.fragment_news, null);
-        }
+        return inflater.inflate(R.layout.fragment_news, null);
     }
 
     @Override
@@ -61,7 +57,11 @@ public class FragmentNews extends Fragment {
     }
 
     private void refreshFunction(){
-        newsRefresh.setOnRefreshListener(this::loadNews);
+        newsRefresh.setOnRefreshListener(() -> {
+            newsListAdapter.clear();
+            newsListAdapter.notifyDataSetChanged();
+            loadNews(new ArrayList<>());
+        });
     }
 
     private void newsListFunction(){
@@ -74,6 +74,15 @@ public class FragmentNews extends Fragment {
         newsList.setNestedScrollingEnabled(false);
         newsListAdapter = new NewsListAdapter(getContext(), new ArrayList<>(), onUserImageClickedListener);
         newsList.setAdapter(newsListAdapter);
+        newsList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    loadNews(newsListAdapter.getExceptedIDs());
+                }
+            }
+        });
     }
 
     private void newsPagerFunction(){
@@ -87,48 +96,38 @@ public class FragmentNews extends Fragment {
         new PagerSnapHelper().attachToRecyclerView(newsPager);
     }
 
-    public void setNewsListOnTop(){
-        newsNestedScroll.post(() -> {
-            newsNestedScroll.fullScroll(RecyclerView.FOCUS_UP);
-            if(getNewsListPosition() > 20000){
-                newsRefresh.setRefreshing(true);
-                loadNews();
-            }
-        });
-    }
-
-    public int  getNewsListPosition(){
-        return newsNestedScroll.getScrollY();
-    }
-
     private void loadComponents(){
         newsRefresh      = requireView().findViewById(R.id.news_refresh);
         newsPlaceholder  = requireView().findViewById(R.id.news_placeholder);
         newsList         = requireView().findViewById(R.id.news_list);
         newsPager        = requireView().findViewById(R.id.news_pager);
-        newsNestedScroll = requireView().findViewById(R.id.news_nested_scroll_view);
 
         refreshFunction();
         newsPagerFunction();
         newsListFunction();
-        loadNews();
+        loadNews(new ArrayList<>());
     }
 
-    private void loadNews(){
-        newsList.setVisibility(View.INVISIBLE);
-        newsPlaceholder.setVisibility(View.VISIBLE);
-        newsPlaceholder.startShimmer();
+    private void loadNews(ArrayList<ObjectId> exceptedIDs){
+        newsPlaceholder.setVisibility(View.GONE);
+        //newsList.setVisibility(View.INVISIBLE);
+       // newsPlaceholder.setVisibility(View.VISIBLE);
+        //newsPlaceholder.startShimmer();
 
-        DataRepository.getLatestNews(newsList -> {
-            newsListAdapter = new NewsListAdapter(getContext(), newsList, onUserImageClickedListener);
-            FragmentNews.this.newsList.setAdapter(newsListAdapter);
+        DataRepository.getLatestNews(exceptedIDs, newsList -> getActivity().runOnUiThread(() -> {
+            newsListAdapter.addNews(newsList);
+            newsListAdapter.notifyItemRangeInserted(
+                    newsListAdapter.getItemCount()-newsList.size(),
+                    newsListAdapter.getItemCount());
+            newsRefresh.setRefreshing(false);
+
+
             newsListAdapter.addDataLoadedListener(() -> {
                 newsPlaceholder.stopShimmer();
                 newsPlaceholder.setVisibility(View.GONE);
                 FragmentNews.this.newsList.setVisibility(View.VISIBLE);
-                newsRefresh.setRefreshing(false);
             });
-        });
+        }));
     }
 
     public void addOnUserImageClickedListener(OnUserImageClickedListener onUserImageClickedListener){

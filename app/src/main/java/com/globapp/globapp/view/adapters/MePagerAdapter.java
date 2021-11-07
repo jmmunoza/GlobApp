@@ -27,11 +27,7 @@ public class MePagerAdapter extends RecyclerView.Adapter<MePagerViewHolder> {
 
     @SuppressLint("InflateParams") @NonNull @Override
     public MePagerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if(Preferences.getDarkMode()){
-            return new MePagerViewHolder(inflater.inflate(R.layout.fragment_me_recognition_dark, null));
-        } else {
-            return new MePagerViewHolder(inflater.inflate(R.layout.fragment_me_recognition, null));
-        }
+        return new MePagerViewHolder(inflater.inflate(R.layout.fragment_me_recognition, null));
     }
 
     @Override

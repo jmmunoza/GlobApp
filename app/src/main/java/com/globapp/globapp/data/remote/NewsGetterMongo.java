@@ -5,9 +5,9 @@ import com.globapp.globapp.data.listeners.OnNewsListLoadedListener;
 import com.globapp.globapp.data.listeners.OnNewsLoadedListener;
 import com.globapp.globapp.data.services.INewsGetter;
 import com.globapp.globapp.model.News;
-import com.globapp.globapp.util.DocConverter;
 
 import org.bson.Document;
+import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -25,11 +25,16 @@ public class NewsGetterMongo implements INewsGetter {
     }
 
     @Override
-    public void getLatestNews(OnNewsListLoadedListener onNewsListLoadedListener) {
+    public void getLatestNews(ArrayList<ObjectId> exceptedIDs, OnNewsListLoadedListener onNewsListLoadedListener) {
         ArrayList<News> newsList = new ArrayList<>();
+
+        // Except news IDs
+        Document exceptIdsQuery = new Document("_id", new Document("$nin", exceptedIDs));
+
+        // Sort by date
         Document descendingDate  = new Document("date", DESCENDING);
 
-        newsCollection.find().sort(descendingDate).limit(50).iterator().getAsync(result -> {
+        newsCollection.find(exceptIdsQuery).sort(descendingDate).limit(3).iterator().getAsync(result -> {
             if(result.isSuccess()){
                 MongoCursor<Document> newsIterator = result.get();
                 while (newsIterator.hasNext()){
@@ -46,7 +51,7 @@ public class NewsGetterMongo implements INewsGetter {
     public void getNews(ObjectId newsID, OnNewsLoadedListener onNewsLoadedListener) {
         Document newsQuery = new Document("_id", newsID);
         newsCollection.findOne(newsQuery).getAsync(result -> {
-            if(result.isSuccess()){
+            if(result.isSuccess() && result.get() != null){
                 Document document = result.get();
                 News news = NewsFactory.DocumentToNews(document);
                 onNewsLoadedListener.onNewsLoaded(news);

@@ -15,12 +15,7 @@ public class AboutSettingsDialog {
 
     public BottomSheetDialog createDialog(){
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context, R.style.SheetDialog);
-        if(Preferences.getDarkMode()){
-            bottomSheetDialog.setContentView(R.layout.fragment_settings_about_dark);
-        } else {
-            bottomSheetDialog.setContentView(R.layout.fragment_settings_about);
-        }
-
+        bottomSheetDialog.setContentView(R.layout.fragment_settings_about);
         return bottomSheetDialog;
     }
 }

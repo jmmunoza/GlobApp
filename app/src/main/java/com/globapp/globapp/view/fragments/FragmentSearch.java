@@ -19,11 +19,7 @@ public class FragmentSearch extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         postponeEnterTransition(1, TimeUnit.MILLISECONDS);
-        if(Preferences.getDarkMode()){
-            return inflater.inflate(R.layout.fragment_search_dark, null);
-        } else {
-            return inflater.inflate(R.layout.fragment_search, null);
-        }
+        return inflater.inflate(R.layout.fragment_search, null);
     }
 
     @Override

@@ -12,7 +12,7 @@
     android:layout_marginRight="10dp"
     android:layout_marginTop="20dp"
     app:cardCornerRadius="10sp"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="?attr/colorPrimary"
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -38,7 +38,7 @@
             android:fontFamily="@font/robotobold"
             android:maxLines="1"
             android:text="@string/username"
-            android:textColor="@color/black"
+            android:textColor="?attr/titleTextColor"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +54,7 @@
             android:fontFamily="@font/robotoregular"
             android:maxLines="2"
             android:text="@string/about_content"
-            android:textColor="@color/black"
+            android:textColor="?attr/titleTextColor"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

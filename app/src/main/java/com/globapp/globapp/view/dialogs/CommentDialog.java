@@ -44,12 +44,7 @@ public class CommentDialog extends BottomSheetDialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         setStyle(STYLE_NORMAL, R.style.SheetDialog);
-        View view;
-        if(Preferences.getDarkMode()){
-            view = View.inflate(getContext(), R.layout.fragment_news_item_comment_dark, null);
-        } else {
-            view = View.inflate(getContext(), R.layout.fragment_news_item_comment, null);
-        }
+        View view = View.inflate(getContext(), R.layout.fragment_news_item_comment, null);
 
         commentInput      = view.findViewById(R.id.comment_input);
         commentSendButton = view.findViewById(R.id.comment_send_button);

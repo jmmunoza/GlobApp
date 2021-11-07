@@ -1,6 +1,9 @@
 package com.globapp.globapp.data.remote;
 
+import android.net.Uri;
+
 import com.globapp.globapp.data.DataRepository;
+import com.globapp.globapp.data.factories.NewsFactory;
 import com.globapp.globapp.data.services.IGiveStar;
 import com.globapp.globapp.data.services.INotifier;
 import com.globapp.globapp.model.Notification;
@@ -13,6 +16,7 @@ import org.bson.types.ObjectId;
 import java.util.Date;
 
 import io.realm.mongodb.mongo.MongoCollection;
+import io.realm.mongodb.mongo.MongoDatabase;
 
 public class GiveStarMongo implements IGiveStar {
     private final MongoCollection<Document> userCollection, newsCollection;
@@ -25,9 +29,10 @@ public class GiveStarMongo implements IGiveStar {
     }
 
     @Override
-    public void giveStar(ObjectId userID, String congratulationsMessage) {
+    public void giveStar(ObjectId userID, String congratulationsMessage, Uri imageUri) {
         Document userQuery = new Document("_id", userID);
-        Document newsRecognition = DocCreator.createRecognitionNews(userID, congratulationsMessage);
+        Document newsRecognition = NewsFactory.createRecognitionNews(userID, congratulationsMessage, imageUri);
+        System.out.println(newsRecognition.toJson());
 
         userCollection.findOne(userQuery).getAsync(userData -> {
             if(userData.isSuccess()){

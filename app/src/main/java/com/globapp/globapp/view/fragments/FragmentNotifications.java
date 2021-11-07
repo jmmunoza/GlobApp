@@ -47,11 +47,7 @@ public class FragmentNotifications extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         postponeEnterTransition(1, TimeUnit.MILLISECONDS);
-        if(Preferences.getDarkMode()){
-            return inflater.inflate(R.layout.fragment_notifications_dark, null);
-        } else {
-            return inflater.inflate(R.layout.fragment_notifications, null);
-        }
+        return inflater.inflate(R.layout.fragment_notifications, null);
     }
 
     @Override
@@ -118,12 +114,12 @@ public class FragmentNotifications extends Fragment {
             if(notifications.size() > 0){
                 notificationsListAdapter = new NotificationsListAdapter(getContext(), notifications, onNotificationsListListener);
                 notificationsList.setAdapter(notificationsListAdapter);
-                notificationsListAdapter.addDataLoadedListener(() -> {
+                //notificationsListAdapter.addDataLoadedListener(() -> {
                     notificationsList.setVisibility(View.VISIBLE);
                     notificationsPlaceHolder.stopShimmer();
                     notificationsPlaceHolder.setVisibility(View.GONE);
                     notificationsRefresh.setRefreshing(false);
-                });
+               // });
             } else {
                 notificationsList.setVisibility(View.VISIBLE);
                 notificationsPlaceHolder.stopShimmer();

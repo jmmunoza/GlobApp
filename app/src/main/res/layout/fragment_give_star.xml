@@ -2,12 +2,12 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/gray_bg"
+    android:background="?attr/colorSecondary"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="@color/gray_bg"
+        android:background="?attr/colorSecondary"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
@@ -29,7 +29,7 @@
                 android:layout_margin="10dp"
                 android:clickable="true"
                 android:foreground="?android:selectableItemBackground"
-                app:cardBackgroundColor="@color/white"
+                app:cardBackgroundColor="?attr/colorPrimary"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -43,7 +43,7 @@
                     android:fontFamily="@font/robotomedium"
                     android:gravity="center"
                     android:text="@string/cancel"
-                    android:textColor="@color/black"
+                    android:textColor="?attr/titleTextColor"
                     android:textSize="15sp" />
             </androidx.cardview.widget.CardView>
 
@@ -54,7 +54,7 @@
                 android:layout_margin="10dp"
                 android:clickable="true"
                 android:foreground="?android:selectableItemBackground"
-                app:cardBackgroundColor="@color/white"
+                app:cardBackgroundColor="?attr/colorPrimary"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -68,7 +68,7 @@
                     android:fontFamily="@font/robotomedium"
                     android:gravity="center"
                     android:text="@string/post"
-                    android:textColor="@color/black"
+                    android:textColor="?attr/titleTextColor"
                     android:textSize="15sp" />
             </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -80,7 +80,7 @@
             android:layout_margin="20dp"
             android:fontFamily="@font/robotomedium"
             android:text="@string/type_to"
-            android:textColor="@color/black"
+            android:textColor="?attr/titleTextColor"
             android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -115,8 +115,8 @@
                     android:fontFamily="@font/robotoregular"
                     android:hint="Type something :)"
                     android:textAlignment="textStart"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/light_gray"
+                    android:textColor="?attr/titleTextColor"
+                    android:textColorHint="?attr/subtitleTextColor"
                     android:textSize="17sp" />
 
                 <ImageView
@@ -135,7 +135,7 @@
             android:layout_margin="20dp"
             android:clickable="true"
             android:foreground="?android:selectableItemBackground"
-            app:cardBackgroundColor="@color/white"
+            app:cardBackgroundColor="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -154,14 +154,15 @@
                     android:src="@drawable/ic_baseline_image_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="?attr/titleTextColor" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/robotobold"
                     android:text="Add image"
-                    android:textColor="@color/black"
+                    android:textColor="?attr/titleTextColor"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imageView7"

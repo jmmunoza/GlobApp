@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/me_refresh"
-    android:background="@color/gray_bg"
+    android:background="?attr/colorSecondary"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -68,7 +68,7 @@
             <TextView
                 android:id="@+id/me_user_name"
                 android:text="@string/username"
-                android:textColor="@color/black"
+                android:textColor="?attr/titleTextColor"
                 android:textAlignment="center"
                 android:textSize="25sp"
                 android:layout_margin="10dp"
@@ -94,7 +94,7 @@
                     app:layout_constraintWidth_percent="0.48">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:background="@color/white"
+                        android:background="?attr/colorPrimary"
                         android:padding="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -118,7 +118,7 @@
                             android:fontFamily="@font/openbold"
                             android:text="25"
                             android:textAlignment="center"
-                            android:textColor="@color/black"
+                            android:textColor="?attr/titleTextColor"
                             android:textSize="30sp"
                             app:layout_constraintBottom_toTopOf="@+id/textView4"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -131,7 +131,7 @@
                             android:text="Total credits"
                             android:textAlignment="center"
                             android:textSize="15sp"
-                            android:textColor="@color/black"
+                            android:textColor="?attr/titleTextColor"
                             android:fontFamily="@font/robotobold"
                             app:layout_constraintBottom_toBottomOf="parent"
                             tools:layout_editor_absoluteX="5dp">
@@ -150,7 +150,7 @@
                     app:layout_constraintWidth_percent="0.48">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:background="@color/white"
+                        android:background="?attr/colorPrimary"
                         android:padding="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -175,7 +175,7 @@
                             android:fontFamily="@font/openbold"
                             android:text="666"
                             android:textAlignment="center"
-                            android:textColor="@color/black"
+                            android:textColor="?attr/titleTextColor"
                             android:textSize="30sp"
                             app:layout_constraintBottom_toTopOf="@+id/textView5"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -190,7 +190,7 @@
                             android:text="Total stars"
                             android:textAlignment="center"
                             android:textSize="15sp"
-                            android:textColor="@color/black"
+                            android:textColor="?attr/titleTextColor"
                             android:fontFamily="@font/robotobold"
                             app:layout_constraintBottom_toBottomOf="parent"
                             tools:layout_editor_absoluteX="5dp">
@@ -207,7 +207,7 @@
                 android:padding="20dp"
                 android:textAlignment="center"
                 android:text="@string/about_content"
-                android:textColor="@color/black"
+                android:textColor="?attr/titleTextColor"
                 android:textSize="18sp">
             </TextView>
 
@@ -219,7 +219,7 @@
                 android:padding="20dp"
                 android:textAlignment="center"
                 android:text="@string/recognitions"
-                android:textColor="@color/black"
+                android:textColor="?attr/titleTextColor"
                 android:textSize="30sp">
             </TextView>
 

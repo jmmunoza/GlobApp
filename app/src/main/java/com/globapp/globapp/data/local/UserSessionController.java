@@ -25,12 +25,17 @@ public class UserSessionController {
 
     public static ObjectId getUserSessionID(){
         if(userSessionControllerInstance == null) createInstance();
-        return new ObjectId(sharedPreferences.getString(USER_SESSION, null));
+        if(sharedPreferences.getString(USER_SESSION, null) == null) return null;
+        else return new ObjectId(sharedPreferences.getString(USER_SESSION, null));
     }
 
     public static void setUserSessionID(ObjectId userSessionID){
         if(userSessionControllerInstance == null) createInstance();
-        sharedPreferences.edit().putString(USER_SESSION, userSessionID.toString()).apply();
+        if(userSessionID == null){
+            sharedPreferences.edit().putString(USER_SESSION, null).apply();
+        } else {
+            sharedPreferences.edit().putString(USER_SESSION, userSessionID.toString()).apply();
+        }
     }
 
     public static boolean isUserAdmin(){

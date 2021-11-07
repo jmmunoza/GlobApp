@@ -8,7 +8,7 @@
 
     <androidx.cardview.widget.CardView
         app:cardCornerRadius="15dp"
-        app:cardBackgroundColor="@color/gray_bg"
+        app:cardBackgroundColor="?attr/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -48,18 +48,19 @@
                 android:id="@+id/view3"
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
-                android:background="@color/globant_main_color"
+                android:background="?attr/colorAccent"
                 app:layout_constraintBottom_toTopOf="@+id/textInputLayout">
 
             </View>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar.Bridge"
                 android:id="@+id/textInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:layout_margin="10dp"
                 android:hint="Add a comment"
-                android:textColorHint="@color/black"
+                android:textColorHint="?attr/titleTextColor"
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="10dp"
                 app:boxCornerRadiusBottomStart="10dp"
@@ -80,8 +81,8 @@
                     android:cursorVisible="true"
                     android:fontFamily="@font/opensemibold"
                     android:inputType="textMultiLine"
-                    android:textColor="@color/black"
-                    android:textCursorDrawable="@color/white">
+                    android:textColor="?attr/titleTextColor"
+                    android:textCursorDrawable="?attr/colorPrimary">
 
                 </com.google.android.material.textfield.TextInputEditText>
             </com.google.android.material.textfield.TextInputLayout>

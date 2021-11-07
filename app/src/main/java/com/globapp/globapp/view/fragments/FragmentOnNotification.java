@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.listeners.OnNewsLikedListener;
@@ -28,6 +30,7 @@ import com.globapp.globapp.model.Comment;
 import com.globapp.globapp.model.News;
 import com.globapp.globapp.model.User;
 import com.globapp.globapp.util.DateTextGetter;
+import com.globapp.globapp.util.ImageConverter;
 import com.globapp.globapp.util.KeyboardManager;
 import com.globapp.globapp.util.SingleTapConfirm;
 import com.globapp.globapp.util.ToastMaker;
@@ -75,6 +78,8 @@ public class FragmentOnNotification extends Fragment {
     private RecyclerView       notificationCommentList;
     private NestedScrollView   notificationNestedScroll;
     private TextView           notificationTime;
+    private ShimmerFrameLayout notificationPlaceholder;
+    private FrameLayout        notificationPlaceholderLayout;
 
     public FragmentOnNotification(ObjectId newsID){
         this.newsID = newsID;
@@ -83,11 +88,7 @@ public class FragmentOnNotification extends Fragment {
     @SuppressLint("InflateParams") @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         postponeEnterTransition(1, TimeUnit.MILLISECONDS);
-        if(Preferences.getDarkMode()){
-            return inflater.inflate(R.layout.fragment_on_notification_dark, null);
-        } else {
-            return inflater.inflate(R.layout.fragment_on_notification, null);
-        }
+        return inflater.inflate(R.layout.fragment_on_notification, null);
     }
 
     @Override
@@ -150,7 +151,7 @@ public class FragmentOnNotification extends Fragment {
         notificationCommentCounter.setText(String.valueOf(commentList.size()));
 
         if(news.getNewsImage() != null)
-            notificationPostImage.setImageURI(news.getNewsImage());
+            notificationPostImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(news.getNewsImage()));
 
         if(news.getNewsUserRecognized() != null){
             notificationRecognitionLayout.setVisibility(View.VISIBLE);
@@ -315,6 +316,12 @@ public class FragmentOnNotification extends Fragment {
         notificationCommentList.setAdapter(notificationCommentListAdapter);
     }
 
+    private void placeholderFunction(){
+        notificationPlaceholder.stopShimmer();
+        notificationPlaceholder.setVisibility(View.GONE);
+        notificationPlaceholderLayout.setVisibility(View.GONE);
+    }
+
     private void loadComponents(){
         notificationUsername             = requireView().findViewById(R.id.on_notification_username);
         notificationUserImage            = requireView().findViewById(R.id.on_notification_user_image);
@@ -334,6 +341,8 @@ public class FragmentOnNotification extends Fragment {
         notificationCommentList          = requireView().findViewById(R.id.on_notification_comment_list);
         notificationNestedScroll         = requireView().findViewById(R.id.on_notification_nested_scroll);
         notificationTime                 = requireView().findViewById(R.id.on_notification_time);
+        notificationPlaceholder          = requireView().findViewById(R.id.on_notification_placeholder);
+        notificationPlaceholderLayout    = requireView().findViewById(R.id.on_notification_placeholder_layout);
 
         refreshPostData();
         commentButtonFunction();
@@ -343,6 +352,7 @@ public class FragmentOnNotification extends Fragment {
         userImageFunction();
         userRecognizedImageFunction();
         commentListFunction();
+        placeholderFunction();
     }
 
      public void addOnUserImageClickedListener(OnUserImageClickedListener onUserImageClickedListener){

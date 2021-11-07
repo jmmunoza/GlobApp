@@ -31,6 +31,8 @@ import com.globapp.globapp.model.User;
 
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+
 public class DataRepository {
 
     // LOCAL DB REPOSITORIES
@@ -83,8 +85,8 @@ public class DataRepository {
         mongoNews.getNews(newsID, onNewsLoadedListener);
     }
 
-    public static void  getLatestNews(OnNewsListLoadedListener onNewsListLoadedListener){
-        mongoNews.getLatestNews(onNewsListLoadedListener);
+    public static void  getLatestNews(ArrayList<ObjectId> exceptedIDs, OnNewsListLoadedListener onNewsListLoadedListener){
+        mongoNews.getLatestNews(exceptedIDs, onNewsListLoadedListener);
     }
 
     public static void insertNews(News news){

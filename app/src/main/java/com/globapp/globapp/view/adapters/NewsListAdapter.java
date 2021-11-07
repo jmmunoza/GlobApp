@@ -16,8 +16,13 @@ import com.globapp.globapp.data.listeners.OnUserImageClickedListener;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.model.News;
 import com.globapp.globapp.util.DateTextGetter;
+import com.globapp.globapp.util.ImageConverter;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.viewholders.NewsListViewHolder;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 
@@ -41,17 +46,22 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
 
     @NonNull @Override
     public NewsListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if(Preferences.getDarkMode()){
-            return new NewsListViewHolder(
-                    inflater.inflate(R.layout.fragment_news_item_dark, parent, false),
-                    context,
-                    onUserImageClickedListener);
-        } else {
-            return new NewsListViewHolder(
+        return new NewsListViewHolder(
                     inflater.inflate(R.layout.fragment_news_item, parent, false),
                     context,
                     onUserImageClickedListener);
-        }
+    }
+
+    public void addNews(ArrayList<News> news){
+        newsList.addAll(news);
+    }
+
+    public void clear(){
+        newsList.clear();
+    }
+
+    public ArrayList<ObjectId> getExceptedIDs(){
+        return new ArrayList<>(Lists.transform(newsList, News::getNewsID));
     }
 
     @SuppressLint("CheckResult") @Override
@@ -73,7 +83,14 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
             holder.newsLikeCounter.setText(String.valueOf(news.getNewsLikes()));
             holder.newsCommentCounter.setText(String.valueOf(news.getNewsComments()));
             holder.newsTime.setText(DateTextGetter.getDateText(news.getNewsDate()));
-            if(news.getNewsImage() != null) holder.newsPostImage.setImageURI(news.getNewsImage());
+            if(news.getNewsImage() != null){
+                holder.newsPostImage.setVisibility(View.VISIBLE);
+                holder.newsPostImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(news.getNewsImage()));
+            }
+            else{
+                holder.newsPostImage.setImageBitmap(null);
+                holder.newsPostImage.setVisibility(View.GONE);
+            }
             if(userOwner.getUserImage() != null)
                 holder.newsUserImage.setImageURI(userOwner.getUserImage());
             else
@@ -104,15 +121,18 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
         DataRepository.getIsLiked(news.getNewsID(), new OnNewsLikedListener() {
             @Override
             public void liked() {
+                holder.newsLikeButton.setColorFilter(context.getResources().getColor(R.color.red));
                 holder.newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);
             }
 
             @Override
             public void disliked() {
                 if (Preferences.getDarkMode())
-                    holder.newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_white_24);
+                    holder.newsLikeButton.setColorFilter(context.getResources().getColor(R.color.white));
                 else
-                    holder.newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                    holder.newsLikeButton.setColorFilter(context.getResources().getColor(R.color.black));
+
+                holder.newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
             }
         });
     }

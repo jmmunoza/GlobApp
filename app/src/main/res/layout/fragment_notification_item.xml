@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
+    android:background="?attr/colorPrimary"
     android:layout_height="wrap_content">
 
 
@@ -41,7 +41,7 @@
             android:fontFamily="@font/robotoregular"
             android:maxLines="2"
             android:text="@string/about_content"
-            android:textColor="@color/black"
+            android:textColor="?attr/titleTextColor"
             android:textSize="15sp">
 
         </TextView>
@@ -54,7 +54,7 @@
             android:fontFamily="@font/robotolight"
             android:maxLines="1"
             android:text="20 min"
-            android:textColor="@color/black"
+            android:textColor="?attr/subtitleTextColor"
             android:textSize="10sp"
             tools:ignore="SmallSp">
 

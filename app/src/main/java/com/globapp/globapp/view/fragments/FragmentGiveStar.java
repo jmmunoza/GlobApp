@@ -58,11 +58,7 @@ public class FragmentGiveStar extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         postponeEnterTransition(1, TimeUnit.MILLISECONDS);
-        if(Preferences.getDarkMode()){
-            return inflater.inflate(R.layout.fragment_give_star_dark, null);
-        } else {
-            return inflater.inflate(R.layout.fragment_give_star, null);
-        }
+        return inflater.inflate(R.layout.fragment_give_star, null);
     }
 
     @Override
@@ -72,9 +68,11 @@ public class FragmentGiveStar extends Fragment {
 
         if (resultCode == MainActivity.RESULT_OK && requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            assert result != null;
             imageAdded.setImageURI(result.getUri());
             imageAddedURI = result.getUri();
         } else if (resultCode == MainActivity.RESULT_OK && requestCode == 9998) {
+            assert data != null;
             CropImage.activity(data.getData()).start(requireContext(), this);
         } else {
             Toast.makeText(getContext(), getString(R.string.you_havent_picked_image),Toast.LENGTH_LONG).show();
@@ -112,9 +110,9 @@ public class FragmentGiveStar extends Fragment {
             int textLength = postText.getText().toString().length();
             if(textLength > 20 && textLength < 500){
                 postButton.setEnabled(false);
-                KeyboardManager.hide(getContext(), postText.getWindowToken());
+                KeyboardManager.hide(requireContext(), postText.getWindowToken());
                 IGiveStar iGiveStar = new GiveStarMongo(onGiveStarListener);
-                iGiveStar.giveStar(userID, postText.getText().toString());
+                iGiveStar.giveStar(userID, postText.getText().toString(), imageAddedURI);
 
             } else {
                 if(textLength <= 20){

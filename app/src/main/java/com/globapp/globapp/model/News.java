@@ -1,16 +1,15 @@
 package com.globapp.globapp.model;
 
-import android.net.Uri;
-
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.globapp.globapp.util.DateConverter;
 import com.globapp.globapp.util.ObjectIdConverter;
 
+import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
@@ -45,13 +44,13 @@ public class News {
     @ColumnInfo(name = "recognizedID")
     private ObjectId newsUserRecognized;
 
-    @Ignore
-    private Uri      newsImage;
+    @ColumnInfo(name = "image",typeAffinity = ColumnInfo.BLOB)
+    private byte[] newsImage;
 
-    public News(ObjectId newsID, String newsTitle, String newsContent, Date newsDate, /*Uri newsImage,*/ int newsLikes, int newsComments, ObjectId newsUserOwner, ObjectId newsUserRecognized){
+    public News(ObjectId newsID, String newsTitle, String newsContent, Date newsDate, byte[] newsImage, int newsLikes, int newsComments, ObjectId newsUserOwner, ObjectId newsUserRecognized){
         this.newsID             = newsID;
         this.newsContent        = newsContent;
-        //this.newsImage          = newsImage;
+        this.newsImage          = newsImage;
         this.newsUserOwner      = newsUserOwner;
         this.newsComments       = newsComments;
         this.newsLikes          = newsLikes;
@@ -80,7 +79,7 @@ public class News {
         return newsLikes;
     }
 
-    public Uri getNewsImage() {
+    public byte[] getNewsImage() {
         return newsImage;
     }
 
@@ -88,6 +87,7 @@ public class News {
         return newsContent;
     }
 
+    @NonNull
     public ObjectId getNewsID() {
         return newsID;
     }
@@ -116,8 +116,9 @@ public class News {
         this.newsID = newsID;
     }
 
-    public void setNewsImage(Uri newsImage) {
-        this.newsImage = newsImage;
+    public void setNewsImage(Binary newsImage2) {
+        if(newsImage2 != null)
+        this.newsImage = newsImage2.getData();
     }
 
     public void setNewsLikes(int newsLikes) {

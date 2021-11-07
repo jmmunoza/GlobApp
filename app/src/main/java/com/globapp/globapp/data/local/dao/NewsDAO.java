@@ -24,6 +24,9 @@ public interface NewsDAO {
     @Query("SELECT * FROM news WHERE newsID = :newsID")
     News getNews(ObjectId newsID);
 
+    @Query("SELECT newsID FROM news")
+    List<ObjectId> getAllNews();
+
     @Insert
     void insert (News news);
 }

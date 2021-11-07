@@ -15,10 +15,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.DataRepository;
-import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.model.User;
+import com.globapp.globapp.util.ImageConverter;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.adapters.MePagerAdapter;
 
@@ -97,9 +99,20 @@ public class FragmentUser extends Fragment {
     private void updateUserData(){
         userStars.setText(String.valueOf(user.getUserStars()));
         userName.setText(UserNameGetter.getUserName(user));
-        userImage.setImageURI(user.getUserImage());
-        userCoverImage.setImageURI(user.getUserCoverImage());
+        userImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(user.getUserImage()));
+
         userDescription.setText(user.getUserDescription());
+        if(user.getUserCoverImage() != null){
+            userCoverImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(user.getUserCoverImage()));
+        } else {
+            userCoverImage.setImageResource(R.drawable.user);
+        }
+
+        if(user.getUserImage() != null){
+            userImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(user.getUserImage()));
+        } else {
+            userImage.setImageResource(R.drawable.user);
+        }
     }
 
     private void starButtonFunction(){

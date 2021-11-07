@@ -2,6 +2,7 @@ package com.globapp.globapp.view.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,8 @@ public class FragmentCreateProfile extends Fragment {
     // DATA
     private final ObjectId userID;
     private User     userInstance;
+    private Uri      userImageUri;
+    private Uri      coverImageUri;
 
     // Listener
     private OnCreateProfileListener onCreateProfileListener;
@@ -85,8 +88,11 @@ public class FragmentCreateProfile extends Fragment {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             assert result != null;
             if(buttonClicked){
+                userImageUri = result.getUri();
                 userImage.setImageURI(result.getUri());
+
             } else {
+                coverImageUri = result.getUri();
                 coverImage.setImageURI(result.getUri());
             }
 
@@ -152,7 +158,7 @@ public class FragmentCreateProfile extends Fragment {
                 continueButton.setClickable(false);
                 KeyboardManager.hide(getContext(), userDescription.getWindowToken());
                 ICreateProfile iCreateProfile = new CreateProfile(onCreateProfileListener);
-                iCreateProfile.create(userID, userDescription.getText().toString());
+                iCreateProfile.create(userID, userDescription.getText().toString(), userImageUri, coverImageUri);
             } else {
                 if(textLength <= 20){
                     Toast.makeText(

@@ -41,15 +41,15 @@ public class User {
     @ColumnInfo(name = "stars")
     private int    userStars;
 
-    @Ignore
-    private Uri    userImage;
+    @ColumnInfo(name = "userImage",typeAffinity = ColumnInfo.BLOB)
+    private byte[] userImage;
 
-    @Ignore
-    private Uri    userCoverImage;
+    @ColumnInfo(name = "coverImage",typeAffinity = ColumnInfo.BLOB)
+    private byte[] userCoverImage;
 
-    public User(ObjectId userID,          String userFirstName,
+    public User(ObjectId userID,        String userFirstName,
                 String userSecondName,  String userLastName,
-                String userDescription,// Uri userImage, Uri userCoverImage,
+                String userDescription, byte[] userImage, byte[] userCoverImage,
                 int userCredits,        int userStars){
 
         this.userCredits      = userCredits;
@@ -71,11 +71,11 @@ public class User {
         this.roomID = roomID;
     }
 
-    public Uri getUserImage() {
+    public byte[] getUserImage() {
         return userImage;
     }
 
-    public Uri getUserCoverImage() {
+    public byte[] getUserCoverImage() {
         return userCoverImage;
     }
 
@@ -115,7 +115,7 @@ public class User {
         this.userCredits = userCredits;
     }
 
-    public void setUserCoverImage(Uri userCoverImage) {
+    public void setUserCoverImage(byte[] userCoverImage) {
         this.userCoverImage = userCoverImage;
     }
 
@@ -123,7 +123,7 @@ public class User {
         this.userStars = userStars;
     }
 
-    public void setUserImage(Uri userImage) {
+    public void setUserImage(byte[] userImage) {
         this.userImage = userImage;
     }
 

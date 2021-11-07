@@ -57,8 +57,9 @@
                 android:layout_height="match_parent"
                 android:cursorVisible="true"
                 android:fontFamily="@font/opensemibold"
+                android:textColor="@color/black"
                 android:inputType="textEmailAddress"
-                android:textCursorDrawable="?attr/titleTextColor">
+                android:textCursorDrawable="@color/black">
 
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
@@ -94,7 +95,8 @@
                 android:cursorVisible="true"
                 android:fontFamily="@font/opensemibold"
                 android:inputType="textPassword"
-                android:textCursorDrawable="?attr/titleTextColor">
+                android:textColor="@color/black"
+                android:textCursorDrawable="@color/black">
 
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>

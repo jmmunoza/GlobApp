@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.listeners.OnNewsLikedListener;
@@ -91,8 +93,9 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
                 holder.newsPostImage.setImageBitmap(null);
                 holder.newsPostImage.setVisibility(View.GONE);
             }
+
             if(userOwner.getUserImage() != null)
-                holder.newsUserImage.setImageURI(userOwner.getUserImage());
+                holder.newsUserImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(userOwner.getUserImage()));
             else
                 holder.newsUserImage.setImageResource(R.drawable.user);
 
@@ -102,8 +105,9 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
                     holder.setUserRecognizedID(news.getNewsUserRecognized());
                     holder.newsUsername.setText(UserNameGetter.getUserNameRecognition(userOwner, userRecognized));
 
+
                     if(userRecognized.getUserImage() != null)
-                        holder.newsRecognitionUserImage.setImageURI(userRecognized.getUserImage());
+                        holder.newsRecognitionUserImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(userRecognized.getUserImage()));
                     else
                         holder.newsRecognitionUserImage.setImageResource(R.drawable.user);
 

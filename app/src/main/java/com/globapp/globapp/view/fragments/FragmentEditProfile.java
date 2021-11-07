@@ -18,13 +18,15 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.DataRepository;
-import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.data.remote.EditUserMongo;
 import com.globapp.globapp.data.services.IEditUser;
 import com.globapp.globapp.model.User;
+import com.globapp.globapp.util.ImageConverter;
 import com.globapp.globapp.util.KeyboardManager;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.MainActivity;
@@ -106,15 +108,13 @@ public class FragmentEditProfile extends Fragment {
 
     private void userImageFunction(){
         if(me.getUserImage() != null){
-            userImageURI = me.getUserImage();
-            userImage.setImageURI(me.getUserImage());
+            userImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(me.getUserImage()));
         }
     }
 
     private void  coverImageFunction(){
         if(me.getUserCoverImage() != null){
-            coverImageURI = me.getUserCoverImage();
-            coverImage.setImageURI(me.getUserCoverImage());
+            coverImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(me.getUserCoverImage()));
         }
     }
 
@@ -147,7 +147,7 @@ public class FragmentEditProfile extends Fragment {
 
                 KeyboardManager.hide(getContext(), userDescription.getWindowToken());
                 IEditUser iEditUser = new EditUserMongo(onEditProfileListener);
-                iEditUser.edit(userDescription.getText().toString());
+                iEditUser.edit(userDescription.getText().toString(), userImageURI, coverImageURI);
 
             } else {
                 if (textLength <= 20) {

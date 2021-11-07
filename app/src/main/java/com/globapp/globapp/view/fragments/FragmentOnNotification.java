@@ -20,6 +20,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.DataRepository;
@@ -162,15 +164,20 @@ public class FragmentOnNotification extends Fragment {
             notificationRecognitionLayout.setVisibility(View.GONE);
         }
 
-        if(userOwner.getUserImage() != null)
-            notificationUserImage.setImageURI(userOwner.getUserImage());
-        else
-            notificationUserImage.setImageResource(R.drawable.user);
+        Glide.with(requireContext())
+                .load(userOwner.getUserImage())
+                .override(80,80)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .error(R.drawable.user)
+                .placeholder(R.drawable.user)
+                .into(notificationUserImage);
 
         if(userRecognized != null){
             notificationUsername.setText(UserNameGetter.getUserNameRecognition(userOwner, userRecognized));
+
             if(userRecognized.getUserImage() != null)
-                notificationRecognitionUserImage.setImageURI(userRecognized.getUserImage());
+                notificationRecognitionUserImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(userRecognized.getUserImage()));
             else
                 notificationRecognitionUserImage.setImageResource(R.drawable.user);
         } else {

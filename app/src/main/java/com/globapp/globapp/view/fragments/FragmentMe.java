@@ -19,6 +19,7 @@ import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.model.User;
+import com.globapp.globapp.util.ImageConverter;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.adapters.MePagerAdapter;
 
@@ -72,8 +73,18 @@ public class FragmentMe extends Fragment {
         meDescription.setText(me.getUserDescription());
         meStars.setText(String.valueOf(me.getUserStars()));
         meCredits.setText(String.valueOf(me.getUserCredits()));
-        meImage.setImageURI(me.getUserImage());
-        meCoverImage.setImageURI(me.getUserCoverImage());
+        if(me.getUserImage() != null){
+            meImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(me.getUserImage()));
+        } else {
+            meImage.setImageResource(R.drawable.user);
+        }
+
+        if(me.getUserCoverImage() != null){
+            meCoverImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(me.getUserCoverImage()));
+        } else {
+            meCoverImage.setImageResource(R.drawable.user);
+        }
+
     }
 
     private void refreshFunction(){

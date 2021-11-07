@@ -20,6 +20,7 @@ import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.model.User;
+import com.globapp.globapp.util.ImageConverter;
 import com.globapp.globapp.view.MainActivity;
 import com.globapp.globapp.view.dialogs.AboutSettingsDialog;
 import com.globapp.globapp.view.dialogs.LanguageSettingsDialog;
@@ -111,7 +112,7 @@ public class FragmentSettings extends Fragment {
     }
 
     private void userImageFunction(){
-        if(me.getUserImage() != null) userImage.setImageURI(me.getUserImage());
+        if(me.getUserImage() != null) userImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(me.getUserImage()));
     }
 
     private void usernameFunction(){

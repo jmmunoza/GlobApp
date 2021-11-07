@@ -1,6 +1,5 @@
 package com.globapp.globapp.view.adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -8,12 +7,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.listeners.OnUserImageClickedListener;
-import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.model.Comment;
 import com.globapp.globapp.util.DateTextGetter;
+import com.globapp.globapp.util.ImageConverter;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.viewholders.CommentListViewHolder;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -26,17 +27,19 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListViewHold
 
     private final ArrayList<Comment> newsComments;
     private final LayoutInflater      inflater;
-
+    private final Context             context;
     private BottomSheetDialogFragment parent;
     private final OnUserImageClickedListener onUserImageClickedListener;
 
     public CommentListAdapter(Context context, ArrayList<Comment> newsComments, OnUserImageClickedListener onUserImageClickedListener){
+        this.context      = context;
         this.inflater     = LayoutInflater.from(context);
         this.newsComments = newsComments;
         this.onUserImageClickedListener = onUserImageClickedListener;
     }
 
     public CommentListAdapter(Context context, ArrayList<Comment> newsComments, OnUserImageClickedListener onUserImageClickedListener, BottomSheetDialogFragment parent){
+        this.context      = context;
         this.inflater     = LayoutInflater.from(context);
         this.newsComments = newsComments;
         this.parent       = parent;
@@ -68,7 +71,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListViewHold
             holder.commentUsername.setText(UserNameGetter.getUserName(user));
 
             if(user.getUserImage() != null) {
-                holder.commentUserImage.setImageURI(user.getUserImage());
+                holder.commentUserImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(user.getUserImage()));
             } else {
                 holder.commentUserImage.setImageResource(R.drawable.user);
             }

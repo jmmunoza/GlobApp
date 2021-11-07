@@ -137,12 +137,15 @@ public class FragmentOnNotification extends Fragment {
 
     private void refreshPostData(){
         if(isUserLiked) {
+            notificationLikeButton.setColorFilter(getResources().getColor(R.color.red));
             notificationLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);
         } else {
             if (Preferences.getDarkMode())
-                notificationLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_white_24);
+                notificationLikeButton.setColorFilter(getResources().getColor(R.color.white));
             else
-                notificationLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                notificationLikeButton.setColorFilter(getResources().getColor(R.color.black));
+
+            notificationLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
         }
 
         notificationTime.setText(DateTextGetter.getDateText(news.getNewsDate()));
@@ -244,6 +247,7 @@ public class FragmentOnNotification extends Fragment {
     }
 
     private void likeNews(){
+        notificationLikeButton.setColorFilter(getResources().getColor(R.color.red));
         notificationLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);
         notificationLikeCounter.setText(
                 String.valueOf(Integer.parseInt(notificationLikeCounter.getText().toString())+1));
@@ -251,9 +255,11 @@ public class FragmentOnNotification extends Fragment {
 
     private void dislikeNews(){
         if (Preferences.getDarkMode())
-            notificationLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_white_24);
+            notificationLikeButton.setColorFilter(getResources().getColor(R.color.white));
         else
-            notificationLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+            notificationLikeButton.setColorFilter(getResources().getColor(R.color.black));
+
+        notificationLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
 
         notificationLikeCounter.setText(
                 String.valueOf(Integer.parseInt(notificationLikeCounter.getText().toString())-1));

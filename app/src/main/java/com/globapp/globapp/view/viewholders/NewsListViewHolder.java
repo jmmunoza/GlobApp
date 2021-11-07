@@ -122,6 +122,7 @@ public class NewsListViewHolder extends RecyclerView.ViewHolder {
                     DataRepository.likeNews(newsID, new OnNewsLikedListener() {
                         @Override
                         public void liked() {
+                            newsLikeButton.setColorFilter(context.getResources().getColor(R.color.red));
                             newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_red_24);
                             newsLikeCounter.setText(String.valueOf(Integer.parseInt(newsLikeCounter.getText().toString())+1));
 
@@ -130,9 +131,11 @@ public class NewsListViewHolder extends RecyclerView.ViewHolder {
                         @Override
                         public void disliked() {
                             if (Preferences.getDarkMode())
-                                newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_white_24);
+                                newsLikeButton.setColorFilter(context.getResources().getColor(R.color.white));
                             else
-                                newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                                newsLikeButton.setColorFilter(context.getResources().getColor(R.color.black));
+
+                            newsLikeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
                             newsLikeCounter.setText(String.valueOf(Integer.parseInt(newsLikeCounter.getText().toString())-1));
                         }
                     });

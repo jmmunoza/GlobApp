@@ -94,6 +94,7 @@
                 <ImageView
                     android:id="@+id/imageView8"
                     android:layout_width="40dp"
+                    app:tint="?attr/titleTextColor"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_baseline_dark_mode_24"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -144,6 +145,7 @@
                 <ImageView
                     android:id="@+id/imageView9"
                     android:layout_width="40dp"
+                    app:tint="?attr/titleTextColor"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_baseline_language_24"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -166,6 +168,7 @@
 
                 <ImageView
                     android:layout_width="40dp"
+                    app:tint="?attr/titleTextColor"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -192,6 +195,7 @@
 
                 <ImageView
                     android:id="@+id/imageView10"
+                    app:tint="?attr/titleTextColor"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_baseline_notifications_24"
@@ -216,6 +220,7 @@
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    app:tint="?attr/titleTextColor"
                     android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -242,6 +247,7 @@
                 <ImageView
                     android:id="@+id/imageView12"
                     android:layout_width="40dp"
+                    app:tint="?attr/titleTextColor"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_baseline_info_24"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -265,6 +271,7 @@
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    app:tint="?attr/titleTextColor"
                     android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

@@ -13,6 +13,7 @@ import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.listeners.OnUserImageClickedListener;
 import com.globapp.globapp.data.local.Preferences;
 import com.globapp.globapp.model.Comment;
+import com.globapp.globapp.util.DateTextGetter;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.viewholders.CommentListViewHolder;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -56,7 +57,6 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListViewHold
 
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull CommentListViewHolder holder, int position) {
         Comment comment = newsComments.get(position);
@@ -64,7 +64,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListViewHold
 
         DataRepository.getUser(new ObjectId(comment.getCommentUser()), user -> {
             holder.commentContent.setText(comment.getCommentContent());
-            holder.commentTime.setText(comment.getCommentDate().toString());
+            holder.commentTime.setText(DateTextGetter.getDateText(comment.getCommentDate()));
             holder.commentUsername.setText(UserNameGetter.getUserName(user));
 
             if(user.getUserImage() != null) {

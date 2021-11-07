@@ -8,6 +8,8 @@ import com.globapp.globapp.GlobAppApplication;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.InflaterOutputStream;
 
 public class ImageConverter {
     public static byte[] UriToByteArray(Uri imageUri){
@@ -20,7 +22,7 @@ public class ImageConverter {
             while ((len = iStream.read(buffer)) != -1) {
                 byteBuffer.write(buffer, 0, len);
             }
-            return byteBuffer.toByteArray();
+            return compress(byteBuffer.toByteArray());
 
         } catch (Exception e){
             return null;
@@ -28,6 +30,35 @@ public class ImageConverter {
     }
 
     public static Bitmap ByteArrayToBitmap(byte[] imageByteArray){
-        return BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+        byte[] imageByteArrayDecompress = decompress(imageByteArray);
+        return BitmapFactory.decodeByteArray(imageByteArrayDecompress, 0, imageByteArrayDecompress.length);
+    }
+
+    private static byte[] compress(byte[] in) {
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            DeflaterOutputStream defl = new DeflaterOutputStream(out);
+            defl.write(in);
+            defl.flush();
+            defl.close();
+
+            return out.toByteArray();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static byte[] decompress(byte[] in) {
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            InflaterOutputStream infl = new InflaterOutputStream(out);
+            infl.write(in);
+            infl.flush();
+            infl.close();
+
+            return out.toByteArray();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

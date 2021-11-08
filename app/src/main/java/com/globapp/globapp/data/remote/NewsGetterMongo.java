@@ -3,6 +3,7 @@ package com.globapp.globapp.data.remote;
 import com.globapp.globapp.data.factories.NewsFactory;
 import com.globapp.globapp.data.listeners.OnNewsListLoadedListener;
 import com.globapp.globapp.data.listeners.OnNewsLoadedListener;
+import com.globapp.globapp.data.local.LocalDB;
 import com.globapp.globapp.data.services.INewsGetter;
 import com.globapp.globapp.model.News;
 

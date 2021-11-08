@@ -28,4 +28,5 @@ public class NewsGetterLocal implements INewsGetter {
         News news = newsDAO.getNews(newsID);
         onNewsLoadedListener.onNewsLoaded(news);
     }
+
 }

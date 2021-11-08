@@ -2,6 +2,7 @@ package com.globapp.globapp.data.remote;
 
 import com.globapp.globapp.data.factories.UserFactory;
 import com.globapp.globapp.data.listeners.OnUserLoadedListener;
+import com.globapp.globapp.data.local.LocalDB;
 import com.globapp.globapp.data.services.IUserGetter;
 import com.globapp.globapp.model.User;
 import com.globapp.globapp.util.DocConverter;

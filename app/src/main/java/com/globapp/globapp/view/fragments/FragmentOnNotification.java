@@ -164,14 +164,10 @@ public class FragmentOnNotification extends Fragment {
             notificationRecognitionLayout.setVisibility(View.GONE);
         }
 
-        Glide.with(requireContext())
-                .load(userOwner.getUserImage())
-                .override(80,80)
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .error(R.drawable.user)
-                .placeholder(R.drawable.user)
-                .into(notificationUserImage);
+        if(userOwner.getUserImage() != null)
+            notificationUserImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(userOwner.getUserImage()));
+        else
+            notificationUserImage.setImageResource(R.drawable.user);
 
         if(userRecognized != null){
             notificationUsername.setText(UserNameGetter.getUserNameRecognition(userOwner, userRecognized));

@@ -27,6 +27,9 @@ public interface NewsDAO {
     @Query("SELECT newsID FROM news")
     List<ObjectId> getAllNews();
 
+    @Query("SELECT COUNT() FROM news WHERE newsID = :newsID")
+    boolean newsExists(ObjectId newsID);
+
     @Insert
     void insert (News news);
 }

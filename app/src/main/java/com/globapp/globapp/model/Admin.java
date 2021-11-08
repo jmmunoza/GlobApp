@@ -1,12 +1,6 @@
 package com.globapp.globapp.model;
 
-import android.net.Uri;
-
-import com.globapp.globapp.GlobAppApplication;
-
 import org.bson.types.ObjectId;
-
-import java.util.ArrayList;
 
 public class Admin extends User {
     public Admin(ObjectId userID,       String userFirstName,   String userSecondName,

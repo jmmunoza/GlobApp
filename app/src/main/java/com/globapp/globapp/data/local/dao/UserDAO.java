@@ -22,6 +22,9 @@ public interface UserDAO {
     @Query("SELECT * FROM user WHERE userID = :userID")
     User getUser(ObjectId userID);
 
+    @Query("SELECT COUNT() FROM user WHERE userID = :userID LIMIT 1")
+    boolean userExists(ObjectId userID);
+
     @Insert
     void insert (User user);
 }

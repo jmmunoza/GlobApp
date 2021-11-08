@@ -12,7 +12,7 @@ public class UserRepository {
     private final IUserInserter iUserInserter;
 
     public UserRepository(IUserInserter iUserInserter, IUserGetter iUserGetter){
-        this.iUserGetter = iUserGetter;
+        this.iUserGetter   = iUserGetter;
         this.iUserInserter = iUserInserter;
     }
 

@@ -2,6 +2,7 @@ package com.globapp.globapp.view.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.RequestBuilder;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.DataRepository;
 import com.globapp.globapp.data.listeners.OnNewsLikedListener;
@@ -21,7 +22,6 @@ import com.globapp.globapp.util.DateTextGetter;
 import com.globapp.globapp.util.ImageConverter;
 import com.globapp.globapp.util.UserNameGetter;
 import com.globapp.globapp.view.viewholders.NewsListViewHolder;
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import org.bson.types.ObjectId;
@@ -71,20 +71,14 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListViewHolder> {
         News news = newsList.get(position);
         holder.setNewsID(news.getNewsID());
 
-        /*Glide.with(context)
-                .asBitmap()
-                .load(BitmapFactory.decodeResource(context.getResources(), R.drawable.cover))
-                .override(400, 200)
-                .transition(new BitmapTransitionOptions().crossFade())
-                .fitCenter()
-                .into(holder.newsPostImage);*/
-
         DataRepository.getUser(news.getNewsUserOwner(), userOwner -> {
             holder.setUserOwnerID(news.getNewsUserOwner());
             holder.newsPostContent.setText(news.getNewsContent());
             holder.newsLikeCounter.setText(String.valueOf(news.getNewsLikes()));
             holder.newsCommentCounter.setText(String.valueOf(news.getNewsComments()));
             holder.newsTime.setText(DateTextGetter.getDateText(news.getNewsDate()));
+
+
             if(news.getNewsImage() != null){
                 holder.newsPostImage.setVisibility(View.VISIBLE);
                 holder.newsPostImage.setImageBitmap(ImageConverter.ByteArrayToBitmap(news.getNewsImage()));

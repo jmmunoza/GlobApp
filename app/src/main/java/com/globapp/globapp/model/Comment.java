@@ -26,12 +26,12 @@ public class Comment {
     private Date     commentDate;
 
     @ColumnInfo(name = "userID")
-    private String   commentUser;
+    private ObjectId commentUser;
 
     @ColumnInfo(name = "newsID")
     private ObjectId commentNews;
 
-    public Comment(String commentContent, Date commentDate, String commentUser, ObjectId commentNews){
+    public Comment(String commentContent, Date commentDate, ObjectId commentUser, ObjectId commentNews){
         this.commentContent = commentContent;
         this.commentUser    = commentUser;
         this.commentDate    = commentDate;
@@ -58,7 +58,7 @@ public class Comment {
         return commentContent;
     }
 
-    public String getCommentUser() {
+    public ObjectId getCommentUser() {
         return commentUser;
     }
 
@@ -70,7 +70,7 @@ public class Comment {
         this.commentDate = commentDate;
     }
 
-    public void setCommentUser(String commentUser) {
+    public void setCommentUser(ObjectId commentUser) {
         this.commentUser = commentUser;
     }
 

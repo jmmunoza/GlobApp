@@ -15,7 +15,7 @@ import com.globapp.globapp.model.User;
 import com.globapp.globapp.util.DateConverter;
 import com.globapp.globapp.util.ObjectIdConverter;
 
-@Database(entities = {User.class,     News.class}, version = 1)
+@Database(entities = {User.class, News.class}, version = 1)
 @TypeConverters({ObjectIdConverter.class, DateConverter.class})
 public abstract class LocalDB extends RoomDatabase {
     private final static String DATABASE_NAME = "GlobappLocalDB";

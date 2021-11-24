@@ -29,4 +29,8 @@ public class NotificationRepository {
     public void subscribe(OnNotificationsUpdatedListener onNotificationsUpdatedListener){
         iNotificationsObserver.subscribe(onNotificationsUpdatedListener);
     }
+
+    public void unsubscribe(OnNotificationsUpdatedListener onNotificationsUpdatedListener){
+        iNotificationsObserver.unsubscribe(onNotificationsUpdatedListener);
+    }
 }

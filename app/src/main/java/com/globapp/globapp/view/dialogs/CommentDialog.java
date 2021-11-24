@@ -12,8 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.DataRepository;
+import com.globapp.globapp.data.listeners.OnCommentAddedListener;
 import com.globapp.globapp.data.listeners.OnUserImageClickedListener;
-import com.globapp.globapp.data.local.Preferences;
+import com.globapp.globapp.model.Comment;
 import com.globapp.globapp.util.KeyboardManager;
 import com.globapp.globapp.util.ToastMaker;
 import com.globapp.globapp.view.adapters.CommentListAdapter;
@@ -27,7 +28,7 @@ import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class CommentDialog extends BottomSheetDialogFragment {
+public class CommentDialog extends BottomSheetDialogFragment implements OnCommentAddedListener {
     private CommentListAdapter  commentListAdapter;
     private TextInputEditText   commentInput;
     private ImageButton         commentSendButton;
@@ -40,8 +41,7 @@ public class CommentDialog extends BottomSheetDialogFragment {
     // LISTENER
     private OnUserImageClickedListener onUserImageClickedListener;
 
-    @NonNull
-    @Override
+    @NonNull @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         setStyle(STYLE_NORMAL, R.style.SheetDialog);
         View view = View.inflate(getContext(), R.layout.fragment_news_item_comment, null);
@@ -53,6 +53,8 @@ public class CommentDialog extends BottomSheetDialogFragment {
         sendButtonFunction();
         commentListFunction();
         loadComments();
+
+        DataRepository.subscribeComment(this, newsID);
 
         BottomSheetDialog parent = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
         parent.setContentView(view);
@@ -102,8 +104,19 @@ public class CommentDialog extends BottomSheetDialogFragment {
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        DataRepository.unsubscribeComment(this);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         commentBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    @Override
+    public void update(Comment comment) {
+        getActivity().runOnUiThread(() -> commentListAdapter.insertComment(comment));
     }
 }

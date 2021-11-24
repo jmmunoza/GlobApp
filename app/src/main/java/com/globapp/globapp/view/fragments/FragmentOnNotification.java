@@ -25,6 +25,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.globapp.globapp.R;
 import com.globapp.globapp.data.DataRepository;
+import com.globapp.globapp.data.listeners.OnCommentAddedListener;
 import com.globapp.globapp.data.listeners.OnNewsLikedListener;
 import com.globapp.globapp.data.listeners.OnUserImageClickedListener;
 import com.globapp.globapp.data.local.Preferences;
@@ -48,7 +49,7 @@ import java.util.concurrent.TimeUnit;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
-public class FragmentOnNotification extends Fragment {
+public class FragmentOnNotification extends Fragment implements OnCommentAddedListener {
     // DATA
     private final ObjectId           newsID;
     private News                     news;
@@ -85,6 +86,7 @@ public class FragmentOnNotification extends Fragment {
 
     public FragmentOnNotification(ObjectId newsID){
         this.newsID = newsID;
+        DataRepository.subscribeComment(this, newsID);
     }
 
     @SuppressLint("InflateParams") @Nullable @Override
@@ -367,4 +369,16 @@ public class FragmentOnNotification extends Fragment {
      public void addOnUserImageClickedListener(OnUserImageClickedListener onUserImageClickedListener){
         this.onUserImageClickedListener = onUserImageClickedListener;
      }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        DataRepository.unsubscribeComment(this);
+    }
+
+    @Override
+    public void update(Comment comment) {
+        getActivity().runOnUiThread(() -> notificationCommentListAdapter.insertComment(comment));
+
+    }
 }

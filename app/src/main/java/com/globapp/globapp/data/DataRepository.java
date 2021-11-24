@@ -1,5 +1,6 @@
 package com.globapp.globapp.data;
 
+import com.globapp.globapp.data.listeners.OnCommentAddedListener;
 import com.globapp.globapp.data.listeners.OnCommentListLoadedListener;
 import com.globapp.globapp.data.listeners.OnDatabaseConnectedListener;
 import com.globapp.globapp.data.listeners.OnNewsCommentedListener;
@@ -16,6 +17,7 @@ import com.globapp.globapp.data.local.UserGetterLocal;
 import com.globapp.globapp.data.local.UserInserterLocal;
 import com.globapp.globapp.data.remote.CommentGetterMongo;
 import com.globapp.globapp.data.remote.CommentInserterMongo;
+import com.globapp.globapp.data.remote.CommentObserverMongo;
 import com.globapp.globapp.data.remote.MongoDB;
 import com.globapp.globapp.data.remote.NewsGetterMongo;
 import com.globapp.globapp.data.remote.NewsInserterMongo;
@@ -62,7 +64,7 @@ public class DataRepository {
                         new NewsRepository(new NewsInserterMongo(), new NewsGetterMongo(), new NewsLikerMongo());
 
                 mongoComments =
-                        new CommentRepository(new CommentInserterMongo(), new CommentGetterMongo());
+                        new CommentRepository(new CommentInserterMongo(), new CommentGetterMongo(), new CommentObserverMongo());
 
                 mongoNotifications =
                         new NotificationRepository(new NotifierMongo(), new NotificationsGetterMongo(), new NotificationsObserverMongo());
@@ -123,5 +125,17 @@ public class DataRepository {
 
     public static void subscribeNotifications(OnNotificationsUpdatedListener onNotificationsUpdatedListener){
         mongoNotifications.subscribe(onNotificationsUpdatedListener);
+    }
+
+    public static void unsubscribeNotifications(OnNotificationsUpdatedListener onNotificationsUpdatedListener){
+        mongoNotifications.unsubscribe(onNotificationsUpdatedListener);
+    }
+
+    public static void subscribeComment(OnCommentAddedListener onCommentAddedListener, ObjectId newsID){
+        mongoComments.subscribe(onCommentAddedListener, newsID);
+    }
+
+    public static void unsubscribeComment(OnCommentAddedListener onCommentAddedListener){
+        mongoComments.unsubscribe(onCommentAddedListener);
     }
 }

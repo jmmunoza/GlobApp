@@ -9,7 +9,7 @@ public class CommentFactory {
         return new Comment(
                 document.getString("content"),
                 document.getDate("date"),
-                document.getObjectId("userID").toString(),
+                document.getObjectId("userID"),
                 document.getObjectId("newsID")
         );
     }

@@ -5,7 +5,6 @@ import com.globapp.globapp.data.listeners.OnNotificationsUpdatedListener;
 import com.globapp.globapp.data.local.UserSessionController;
 import com.globapp.globapp.data.services.INotificationsObserver;
 import com.globapp.globapp.model.Notification;
-import com.globapp.globapp.util.DocConverter;
 
 import org.bson.BsonDocument;
 import org.bson.Document;
@@ -17,16 +16,34 @@ import io.realm.mongodb.mongo.MongoCollection;
 import io.realm.mongodb.mongo.events.BaseChangeEvent;
 
 public class NotificationsObserverMongo implements INotificationsObserver {
-    private final MongoCollection<Document> userCollection;
+    private final ArrayList<OnNotificationsUpdatedListener> notificationsUpdatedList;
 
     public NotificationsObserverMongo(){
-        this.userCollection = MongoDB.getUserCollection();
+        notificationsUpdatedList = new ArrayList<>();
+        loadMongoObserver();
     }
 
     @Override
     public void subscribe(OnNotificationsUpdatedListener notificationsUpdatedListener) {
+        notificationsUpdatedList.add(notificationsUpdatedListener);
+    }
+
+    @Override
+    public void unsubscribe(OnNotificationsUpdatedListener onNotificationsUpdatedListener) {
+        notificationsUpdatedList.remove(onNotificationsUpdatedListener);
+    }
+
+    @Override
+    public void notify(Notification notification){
+        for(OnNotificationsUpdatedListener listener: notificationsUpdatedList){
+            listener.update(notification);
+        }
+    }
+
+    private void loadMongoObserver(){
         ObjectId userSessionID = UserSessionController.getUserSessionID();
 
+        MongoCollection<Document> userCollection = MongoDB.getUserCollection();
         userCollection.watchAsync(userSessionID).get(result -> {
             if(result.isSuccess() && result.get() != null){
 
@@ -44,7 +61,7 @@ public class NotificationsObserverMongo implements INotificationsObserver {
                     if(notificationsDocList.size() > 0){
                         Document notificationDoc = notificationsDocList.get(notificationsDocList.size()-1);
                         Notification notification = NotificationFactory.documentToNotification(notificationDoc);
-                        notificationsUpdatedListener.update(notification);
+                        notify(notification);
                     }
                 }
             }

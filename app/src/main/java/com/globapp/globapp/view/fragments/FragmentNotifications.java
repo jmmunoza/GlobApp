@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public class FragmentNotifications extends Fragment {
+public class FragmentNotifications extends Fragment implements OnNotificationsUpdatedListener {
 
     // UI COMPONENTS
     private RecyclerView             notificationsList;
@@ -40,6 +40,10 @@ public class FragmentNotifications extends Fragment {
 
     // LISTENER
     private OnNotificationsListListener onNotificationsListListener;
+
+    public FragmentNotifications(){
+        DataRepository.subscribeNotifications(this);
+    }
 
     @SuppressLint("InflateParams") @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -68,12 +72,6 @@ public class FragmentNotifications extends Fragment {
                 new ArrayList<>(),
                 newsID -> onNotificationsListListener.onNewsClicked(newsID));
         notificationsList.setAdapter(notificationsListAdapter);
-        DataRepository.subscribeNotifications(notification ->{
-            requireActivity().runOnUiThread(() -> {
-                notificationsListAdapter.insertNotification(notification);
-                notificationsListAdapter.notifyItemInserted(0);
-            });
-        });
     }
 
     private void refreshFunction(){
@@ -127,6 +125,18 @@ public class FragmentNotifications extends Fragment {
                 notificationsRefresh.setRefreshing(false);
             }
         });
+    }
+
+    @Override
+    public void update(Notification notification) {
+        notificationsListAdapter.insertNotification(notification);
+        notificationsListAdapter.notifyItemInserted(0);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        DataRepository.unsubscribeNotifications(this);
     }
 
     public interface OnNotificationsListListener {
